@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, TextInput, View, Alert } from "react-native";
+import { Button, StyleSheet, Text, View, TextInput, Switch, Alert } from "react-native";
 import React, { useState } from "react";
 
 pastEventData = [{
@@ -16,6 +16,9 @@ userBadges = [{
 
 const Profile = ({name, bio}) => {
   // Define state for each input field
+  const [isPrivate, setIsPrivate] = useState(false); 
+  const toggleSwitch = () => setIsPrivate(previousState => !previousState);
+
   return (
     <View style={styles.container}>
       <Text>Profile Page</Text>
@@ -38,6 +41,18 @@ const Profile = ({name, bio}) => {
           <Text style={styles.eventText}>Theme: {event.theme}</Text>
         </View>
       ))}
+
+      <Text> Privacy Settings</Text>
+      <Switch
+          trackColor={{false: '#767577', true: '#81b0ff'}}
+          onValueChange={toggleSwitch}
+          value={isPrivate}
+        />
+        {isPrivate ? (
+        <Text style={styles.message}>Your data is now private.</Text>
+      ) : (
+        <Text style={styles.message}>Your data is visible to others.</Text>
+      )}
 
       <Button onPress={() => Alert.alert('form submitted :)')} title = "submit" color = "pink"/>
     </View>
