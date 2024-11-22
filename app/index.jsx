@@ -10,6 +10,9 @@ export default function App() {
       <Link href="/page1" style={{ color: "blue" }}>
         Go to Page1
       </Link>
+      <Link href="/program_page" style={{ color: "blue" }}>
+        Go to Program Page
+      </Link>
     </View>
   );
 }
