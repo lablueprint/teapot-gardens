@@ -28,7 +28,7 @@ npm install
 3. Start the development server:
 
 ```
-npx expo start
+npx expo start --tunnel
 ```
 
 ## Learn more
