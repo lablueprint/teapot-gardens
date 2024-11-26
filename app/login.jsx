@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, TextInput, View, Alert } from "react-native";
+import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert } from "react-native";
 import React, { useState } from "react";
 
 const Login = () => {
@@ -13,7 +13,7 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Login Page</Text>
+      <Text style={styles.title}>Login Page</Text>
 
       <Text>First Name</Text>
       <TextInput
@@ -65,7 +65,9 @@ const Login = () => {
         onChangeText={(text) => setIncome(text)}
       />
 
-      <Button onPress={() => Alert.alert('form submitted :)')} title = "submit" color = "pink"/>
+      <TouchableOpacity style={styles.button} onPress={() => Alert.alert('form submitted :)')} >
+        <Text>Submit</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -77,10 +79,21 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   input: {
-    height: 40,
+    height: 30,
     borderColor: "gray",
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
   },
+  title: {
+    fontSize: 20, 
+    paddingBottom: 20,
+  }, 
+  button: {
+    backgroundColor: "pink", 
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center", 
+    borderRadius: 20,
+  }
 });
