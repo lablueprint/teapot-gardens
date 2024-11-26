@@ -60,8 +60,8 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile Page</Text>
-      <Text style={styles.info}>Name: Victoria </Text>
-      <Text style={styles.info}>Bio: I like gardens </Text>
+      <Text style={styles.name}>Name: Victoria </Text>
+      <Text style={styles.info}>Bio: I like crashing cars </Text>
 
       <Text style={styles.subtitle}>My badges </Text>
       <FlatList
@@ -134,10 +134,19 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
   },
+  name: {
+    textAlign: "center",
+    fontSize: 20,
+    textDecorationLine: "underline"
+  },
+  bio: {
+    textAlign: "center",
+  },
   title: {
     textAlign: "center",
     fontSize: 20,
     marginBottom: 10,
+    backgroundColor: "#90EE90",
   },
   subtitle: {
     fontSize: 15,
