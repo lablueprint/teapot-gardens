@@ -10,6 +10,31 @@ const Login = () => {
   const [race, setRace] = useState("");
   const [birthday, setBirthday] = useState("");
   const [income, setIncome] = useState("");
+  
+  const handleSubmit = () => {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !race ||
+      !birthday ||
+      !income
+    ) {
+      Alert.alert("Error", "Please fill out all the fields.");
+    } else {
+      Alert.alert("Success", "Form submitted successfully!");
+      console.log({
+        firstName,
+        lastName,
+        email,
+        password,
+        race,
+        birthday,
+        income,
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -65,7 +90,7 @@ const Login = () => {
         onChangeText={(text) => setIncome(text)}
       />
 
-      <TouchableOpacity style={styles.button} onPress={() => Alert.alert('form submitted :)')} >
+      <TouchableOpacity style={styles.button} onPress={handleSubmit} >
         <Text>Submit</Text>
       </TouchableOpacity>
     </View>
