@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
     },
     content: {
         fontsize: 20,
-        textAlign: 'center'
+        textAlign: 'center',
+        paddingBottom: 20
     },
     bulletContainer: {
         fontSize: 20,
@@ -36,6 +37,10 @@ const styles = StyleSheet.create({
         height: 200,
         marginLeft: 5,
         marginRight: 5
+    },
+    collapsible: {
+        margin: 2,
+        backgroundColor: '#D3D3D3'
     }
 })
 
