@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, ScrollView, Image, Text, StyleSheet, Dimensions } from 'react-native';
 const { width } = Dimensions.get('window');
+import Event from './event';
 
 export default function CustomCarousel({ data }) {
   return (
@@ -12,13 +13,11 @@ export default function CustomCarousel({ data }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContainer}
       >
-        {data.map((item, index) => (
-          <View style={styles.itemContainer} key={index}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.title}>{item.time}</Text>
-            <Text style={styles.details}> {item.details}</Text>
-          </View>
-        ))}
+      {data.map((item, index) => (
+        <Event index = {index} title = {item.title} time = {item.time} details={item.details}/>
+
+                  ))}
+
       </ScrollView>
     </View>
   );
