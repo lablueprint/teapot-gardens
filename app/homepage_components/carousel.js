@@ -16,6 +16,7 @@ export default function CustomCarousel({ data }) {
           <View style={styles.itemContainer} key={index}>
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.title}>{item.time}</Text>
+            <Text style={styles.details}> {item.details}</Text>
           </View>
         ))}
       </ScrollView>
@@ -26,7 +27,7 @@ export default function CustomCarousel({ data }) {
 const styles = StyleSheet.create({
   carouselContainer: {
     width: width,
-    backgroundColor: 'red'
+    backgroundColor: 'antiquewhite'
   },
   scrollViewContainer: {
     alignItems: 'center',
@@ -36,7 +37,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    marginTop: 10,
+    marginTop: 5,
+    fontSize: 24,
+    color: '#333',
+  },
+  details: {
     fontSize: 18,
     color: '#333',
   },
