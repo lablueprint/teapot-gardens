@@ -1,4 +1,5 @@
 import { Text, View, Image, ScrollView, Pressable } from "react-native";
+import { Link } from "expo-router";
 import React, { useState } from "react";
 import Event from './event';
 import styles from './program_page_style';
@@ -64,7 +65,9 @@ const ProgramPage = () => {
       <Text style={ styles.header }>Upcoming Events</Text>
       <ScrollView horizontal={ true } style={ styles.carouselContainer }>
         <View style={ styles.carouselContainer }>
-          <Event title='Reaping' date='September 10th'/>
+          <Link href="/event_pages" style={{ color: "blue" }}>
+            <Event title='Reaping' date='September 10th'/>
+          </Link>
           <Event title='Sowing' date='March 10th'/>
         </View>
       </ScrollView>
