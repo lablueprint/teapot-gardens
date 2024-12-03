@@ -14,9 +14,7 @@ export default function CustomCarousel({ data }) {
         contentContainerStyle={styles.scrollViewContainer}
       >
       {data.map((item, index) => (
-        <Event index = {index} title = {item.title} time = {item.time} details={item.details}/>
-
-                  ))}
+        <Event index = {index} title = {item.title} time = {item.time} details={item.details}/>))}
 
       </ScrollView>
     </View>
