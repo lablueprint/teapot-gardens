@@ -1,37 +1,34 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import Placeholder from './homepage_components/Placeholder';
+import CustomCarousel from './homepage_components/carousel';
+import { upcomingEvents, programPages } from './homepage_components/data';
+import sample_logo from '../assets/sample_logo.png';
 
-export default function Page() {
+export default function Homepage() {
   return (
     <View style={styles.main_container}>
-      <Text>Placeholder</Text>
-      {/* <Image source={} style={styles.image} resizeMode="contain" /> */}
+        <Placeholder imageSource={sample_logo} />
       <View style={styles.carousel_container}>
-        <Text>Carousel for Upcoming Events</Text>
+        <CustomCarousel data={upcomingEvents} />
       </View>
       <View style={styles.carousel_container}>
-        <Text>Carousel for Program Pages</Text>
+        <CustomCarousel data={programPages} />
       </View>
     </View>
-    
   );
 }
-
-// create a component for the place holder
-// create a component for the carousel 
-// create local data for upcoming events and program pages so we can feed it into carousel
 
 const styles = StyleSheet.create({
   main_container: {
     flex: 1,
-    justifyContent: 'flex-start', 
     alignItems: 'center',
-    padding: 10,
-    m
+    justifyContent: 'space-between',
   },
   carousel_container: {
-    backgroundColor: 'red',
-
+    flex: 1,
+    width: '100%', 
+    justifyContent: 'center', 
+    alignItems: 'center',
   },
 });
-
