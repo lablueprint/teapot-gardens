@@ -8,7 +8,7 @@ export default function App() {
       <Text>Welcome to the Garden Gangggggggg</Text>
       <StatusBar style="auto" />
       <Link href="/page1" style={{ color: "blue" }}>
-        Go to Page1
+        Go to Page1=
       </Link>
       <Link href="/homepage" style={{ color: "blue" }}>
         Go to Homepage

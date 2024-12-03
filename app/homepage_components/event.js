@@ -6,7 +6,6 @@ const { width } = Dimensions.get('window');
 export default function event ({ index, title, time, details }) {
     return (
       <View>
-          
             <View style={styles.itemContainer} key={index}>
               <Text style={styles.title}>{title}</Text>
               <Text style={styles.title}>{time}</Text>
