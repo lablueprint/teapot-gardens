@@ -1,12 +1,14 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import Placeholder from './homepage_components/Placeholder';
 import CustomCarousel from './homepage_components/carousel';
-import { upcomingEvents, programPages } from './homepage_components/data';
+import { upcomingEvents, programPages, notificationData } from './homepage_components/data';
 import sample_logo from '../assets/sample_logo.png';
+import Notification from './homepage_components/notification';
 
 export default function Homepage() {
   return (
+    <ScrollView>
     <View style={styles.main_container}>
         <Placeholder imageSource={sample_logo} />
       <View style={styles.carousel_container}>
@@ -15,7 +17,9 @@ export default function Homepage() {
       <View style={styles.carousel_container}>
         <CustomCarousel data={programPages} />
       </View>
+      
     </View>
+    </ScrollView>
   );
 }
 
