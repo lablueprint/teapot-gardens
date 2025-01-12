@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function Notification ({ data }) {
+export default function Notification (data) {
   return (
-    <View style={styles.notifcationContainer}>
+    <View style={styles.notificationContainer}>
         <Text style={styles.headerTitle}>
         {data.title}
         </Text>
