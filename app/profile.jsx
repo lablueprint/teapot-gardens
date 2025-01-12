@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, FlatList, Switch, Alert } from "react-native";
+import { Button, StyleSheet, Text, View, FlatList, Switch, Alert, Image } from "react-native";
 import React, { useState } from "react";
 
 pastEventData = [{
@@ -60,9 +60,13 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile Page</Text>
+      <Image 
+          source={require('../assets/grapes.jpg')} // Replace with your image path
+          style={styles.image}
+      />
       <Text style={styles.name}>Name: Victoria </Text>
-      <Text style={styles.info}>Bio: I like crashing cars </Text>
-
+      <Text style={styles.handle}>@victoria </Text>
+      <Text style={styles.info}>Bio: I like grapes </Text>
       <Text style={styles.subtitle}>My badges </Text>
       <FlatList
         data={userBadges}
@@ -72,6 +76,7 @@ const Profile = () => {
         renderItem={({ item }) => (
           <View style={styles.badgeContainer}>
             <Text style={styles.badgeText}>Name: {item.name}</Text>
+            <Text style={styles.badgeText}>@ {item.name}</Text>
             <Text style={styles.badgeText}>Description: {item.description}</Text>
           </View>
         )}
@@ -137,7 +142,13 @@ const styles = StyleSheet.create({
   name: {
     textAlign: "center",
     fontSize: 20,
-    textDecorationLine: "underline"
+    textDecorationLine: "underline",
+    marginBottom: 10,
+  },
+  handle: {
+    textAlign: "center",
+    fontSize: 16,
+    marginBottom: 10,
   },
   bio: {
     textAlign: "center",
@@ -176,5 +187,13 @@ const styles = StyleSheet.create({
   }, 
   privacy: {
     display: "flex"
-  }
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 50, 
+    alignSelf: "center",
+    justifyContent: "center",
+    marginVertical: 15,
+  },
 });
