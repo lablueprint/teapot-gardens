@@ -1,22 +1,28 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
-import React from "react";
-import styles from './event_style';
+import { Text, View } from "react-native";
+import { Link } from "expo-router"; 
+import styles from "./event_style";
 
 const Event = (props) => {
-  const Popup = () => {
-    console.log('popup')
-  }
-  
   return (
-    <View style={ styles.eventContainer }>
-      <Pressable onPress={Popup}>
-        <Text>
-          {props.title}
-        </Text>
-        <Text>
-          {props.date}
-        </Text>
-      </Pressable>
+    <View style={styles.eventContainer}>
+      <Link
+        href={{
+          pathname: "/event_page",
+          params: {
+            title: props.title,
+            date: props.date,
+            location: props.location,
+            time: props.time,
+            details: props.details,
+          },
+        }}
+        style={styles.link}
+      >
+        <View>
+          <Text style={styles.eventTitle}>{props.title}</Text>
+          <Text style={styles.eventDate}>{props.date}</Text>
+        </View>
+      </Link>
     </View>
   );
 };
