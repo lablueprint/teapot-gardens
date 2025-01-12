@@ -2,6 +2,7 @@ import React, { useState, useEffect} from "react";
 import { Text, View, Pressable, StyleSheet } from "react-native";
 import UserCard from './user_card.jsx';
 import Collapsible from 'react-native-collapsible';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import garden from '../assets/garden.jpg';
 import grapes from '../assets/grapes.jpg';
 import { useLocalSearchParams, useGlobalSearchParams } from "expo-router";
@@ -22,8 +23,9 @@ const EventPage = () => {
       "profilePicture": grapes
     }
   ]
+  
   const { title, date, location, time, details} = useLocalSearchParams();
-
+  
   return (
     <View style={styles.container}>
       {/* Event Header */}
@@ -43,13 +45,19 @@ const EventPage = () => {
       <View>
         <Pressable onPress={toggleCollapsed} style={styles.attendeesButton}>
           <Text style={styles.attendeesButtonText}>Attendees</Text>
+          <AntDesign
+            color='black'
+            name={isCollapsed ? "down": "up"}
+            size={13}
+            style={{ paddingTop: 2 }}
+          />
         </Pressable>
         <Collapsible collapsed={isCollapsed}>
-          {attendees?.map((attendee, index) => (
+          {attendees?.map((attendees, index) => (
             <UserCard
               key={index}
-              name={attendee.name}
-              profilePicture={attendee.profilePicture}
+              name={attendees.name}
+              profilePicture={attendees.profilePicture}
               style={styles.attendeeCard}
             />
           ))}
@@ -96,6 +104,8 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgray",
     borderRadius: 8,
     marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   attendeesButtonText: {
     textAlign: "center",
