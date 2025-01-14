@@ -1,20 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable, TouchableOpacity } from  'react-native';
 import Collapsible from 'react-native-collapsible';
-import styles from './collapsible';
+import styles from './collapsible_style';
 
 
 export default function CollapsibleComp ( { data }) {
+    const [isCollapsed, setIsCollapsed] = useState(true);
+
     const toggleCollapsed = () => {
         setIsCollapsed((prevState) => !prevState);
     }
     
-    const [isCollapsed, setIsCollapsed] = useState(true);
     
     const handleFollow = () => {
         //handlefollow add console log
         console.log("Patricks: @gucci.poochy")
     }
+    return (
     <View style={ styles.container }>
         <Pressable onPress={ toggleCollapsed }>
             <Text style={ styles.title }>
@@ -22,9 +24,6 @@ export default function CollapsibleComp ( { data }) {
             </Text>
         </Pressable>
         <Collapsible collapsed= { isCollapsed }>
-            <Text style= { styles.subTitle }>
-                { data.title}
-            </Text>
             <Text style= { styles.body }>
                 { data.body}
             </Text>
@@ -33,6 +32,7 @@ export default function CollapsibleComp ( { data }) {
             </TouchableOpacity>
         </Collapsible>
     </View>
+    );
 }
 
 
