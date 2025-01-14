@@ -1,4 +1,5 @@
 import { Text, View, Image, ScrollView, Pressable } from "react-native";
+import { Link } from "expo-router";
 import React, { useState } from "react";
 import Event from './event';
 import styles from './program_page_style';
@@ -6,6 +7,7 @@ import garden from '../assets/garden.jpg';
 import garden2 from '../assets/garden2.jpg';
 import notAIGarden from '../assets/notAIGarden.jpg';
 import Collapsible from 'react-native-collapsible';
+import eventData from './eventData.json';
 
 const BulletPoints = (props) => {
   return (
@@ -36,7 +38,6 @@ const ProgramPage = () => {
     <ScrollView contentContainerStyle={ styles.outerContainer }>
       <Text style={ styles.programTitle }>Garden Sundaze</Text>
 
-      {/*  Info  */}
       <View style={ styles.contentContainer }>
       <Text style={ styles.header }>Background</Text>
         <Text style={ styles.content }>
@@ -64,8 +65,9 @@ const ProgramPage = () => {
       <Text style={ styles.header }>Upcoming Events</Text>
       <ScrollView horizontal={ true } style={ styles.carouselContainer }>
         <View style={ styles.carouselContainer }>
-          <Event title='Reaping' date='September 10th'/>
-          <Event title='Sowing' date='March 10th'/>
+          {eventData.events.map((event, index) => (
+              <Event {...event} key={index}/>
+            ))}
         </View>
       </ScrollView>
 
