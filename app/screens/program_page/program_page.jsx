@@ -3,9 +3,9 @@ import { Link } from "expo-router";
 import React, { useState } from "react";
 import Event from './event';
 import styles from './program_page_style';
-import garden from '../assets/garden.jpg';
-import garden2 from '../assets/garden2.jpg';
-import notAIGarden from '../assets/notAIGarden.jpg';
+import garden from '../../../assets/garden.jpg';
+import garden2 from '../../../assets/garden2.jpg';
+import notAIGarden from '../../../assets/notAIGarden.jpg';
 import Collapsible from 'react-native-collapsible';
 import eventData from './eventData.json';
 

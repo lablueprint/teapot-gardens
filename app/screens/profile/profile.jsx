@@ -61,7 +61,7 @@ const Profile = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Profile Page</Text>
       <Image 
-          source={require('../assets/grapes.jpg')} // Replace with your image path
+          source={require('../../../assets/grapes.jpg')} // Replace with your image path
           style={styles.image}
       />
       <Text style={styles.name}>Name: Victoria </Text>
