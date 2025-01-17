@@ -16,6 +16,7 @@
     "expo-linking": "~7.0.4",
     "expo-router": "~4.0.16",
     "expo-status-bar": "~2.0.1",
+    "express": "^4.21.2",
     "react": "18.3.1",
     "react-native": "0.76.6",
     "react-native-autogrow-textinput": "^5.4.0",
@@ -30,5 +31,17 @@
   "devDependencies": {
     "@babel/core": "^7.20.0"
   },
-  "private": true
+  "private": true,
+  "description": "This is the Github repository for the web app created for Teapot Gardens by LA Blueprint.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lablueprint/teapot-gardens.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lablueprint/teapot-gardens/issues"
+  },
+  "homepage": "https://github.com/lablueprint/teapot-gardens#readme"
 }
