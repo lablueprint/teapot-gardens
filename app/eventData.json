@@ -2,10 +2,11 @@
     "events": [
       {
         "title": "Kimchi Gardens", 
-        "date": "September 10", 
-        "location": "LA", 
-        "time": "5PM", 
-        "details": "Learn about kimchi!"
+        "date": "Thu, Jan 23", 
+        "location": "1234 John Wooden Dr. Los Angeles, CA, 90024", 
+        "time": "11:00AM - 3:00 PM PST", 
+        "details": "Learn about kimchi! Lorem ipsum dolor sit amet, consectetur adipsiscing elit",
+        "pic": "../assets/kimchi.jpg" 
       },
       {
         "title": "Reaping",

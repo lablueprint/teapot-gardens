@@ -14,6 +14,7 @@ const Event = (props) => {
             location: props.location,
             time: props.time,
             details: props.details,
+            pic: props.pic
           },
         }}
         style={styles.link}

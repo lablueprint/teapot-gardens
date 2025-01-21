@@ -1,12 +1,12 @@
 import React, { useState, useEffect} from "react";
-import { Text, View, Pressable, StyleSheet } from "react-native";
+import { Text, View, Pressable, StyleSheet, Image } from "react-native";
 import UserCard from './user_card.jsx';
 import Collapsible from 'react-native-collapsible';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import garden from '../assets/garden.jpg';
 import grapes from '../assets/grapes.jpg';
 import AdminDashboard from './admin_dashboard';
-import { useLocalSearchParams, useGlobalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
 const EventPage = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -29,20 +29,25 @@ const EventPage = () => {
   
   return (
     <View style={styles.container}>
-      {/* Event Header */}
+      <Image 
+        style={styles.image}
+        source = {garden}
+      />
+
       <Text style={styles.eventHeader}>{title}</Text>
 
-      {/* Event Subtext */}
-      <Text style={styles.subtext}>Event Location: {location}</Text>
-      <Text style={styles.subtext}>Date: {date}</Text>
-      <Text style={styles.subtext}>Time: {time}</Text>
-      <Text style={styles.details}>Details: {details}</Text>
+      <Text style={styles.subtext}>{date}, {time}</Text>
+      <Text style={styles.subtext}>Location </Text>
+      <Text>{location}</Text>
 
-      {/* Host Information */}
-      <Text style={styles.sectionHeader}>Host:</Text>
-      <UserCard name="Bob" profilePicture={garden} style={styles.hostCard} />
+      <Text style={styles.details}>About Event</Text>
+      <Text>{details}</Text>
+
 
       {/* Attendees Section */}
+      <Text style={styles.sectionHeader}>Host:</Text>
+      <UserCard name="Bob" profilePicture={garden} style={styles.hostCard} />
+      
       <View>
         <Pressable onPress={toggleCollapsed} style={styles.attendeesButton}>
           <Text style={styles.attendeesButtonText}>Attendees</Text>
@@ -94,8 +99,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 18,
     fontWeight: "bold",
-    marginTop: 16,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   hostCard: {
     fontSize: 12,  
@@ -127,6 +131,15 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
+  image: {
+    width: '100%', 
+    height: '30%',
+    borderRadius: 10,
+    marginBottom: 10,
+  }, 
+  subtext: {
+    fontStyle: 'bold',
+  }
 });
 
 export default EventPage;
