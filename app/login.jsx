@@ -1,7 +1,8 @@
-import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert } from "react-native";
+import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image } from "react-native";
 import React, { useState } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
+import planticon from '../assets/planticon.png';
 
 const Login = () => {
   // Define state for each input field
@@ -89,13 +90,17 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Create an Account</Text>
+        <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } />
+      </View>
 
       <Text>Name</Text>
       <TextInput
         style={styles.input}
         value={name}
         onChangeText={(text) => setName(text)}
+        placeholder="Enter your name"
       />
 
       {/* <Text>Last Name</Text>
@@ -110,14 +115,7 @@ const Login = () => {
         style={styles.input}
         value={email}
         onChangeText={(text) => setEmail(text)}
-      />
-
-      <Text>Password</Text>
-      <TextInput
-        style={styles.input}
-        value={password}
-        secureTextEntry
-        onChangeText={(text) => setPassword(text)}
+        placeholder="Enter your email"
       />
 
       {/* <Text>Gender</Text>
@@ -152,6 +150,7 @@ const Login = () => {
         style={styles.input}
         value={birthday}
         onChangeText={(text) => setBirthday(text)}
+        placeholder="MM/DD/YYYY"
       />
 
       <Text>Username</Text>
@@ -159,7 +158,18 @@ const Login = () => {
           style={styles.input}
           value={username}
           onChangeText={(text) => setUsername(text)}
+          placeholder="Create a username"
         />
+
+      <Text>Password</Text>
+        <TextInput
+          style={styles.input}
+          value={password}
+          secureTextEntry
+          onChangeText={(text) => setPassword(text)}
+          placeholder="Create a password"
+        />
+
       {/* <Text>Income Level (optional)</Text>
       <TextInput
         style={styles.input}
@@ -167,10 +177,20 @@ const Login = () => {
         onChangeText={(text) => setIncome(text)}
       /> */}
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-        <Text>Submit</Text>
-      </TouchableOpacity>
+      {/* <View style={styles.lineContainer}>
+        <View style={styles.line} />
+        <Text style={styles.text}>Or</Text>
+        <View style={styles.line} />
+      </View>
+    */}
+
+      <View style={styles.buttonContainer} >
+        <TouchableOpacity style={styles.button} onPress={handleSubmit} >
+          <Text style={{ fontSize: 18,}} >Sign Up</Text>
+        </TouchableOpacity>
+      </View>
     </View>
+
   );
 };
 
@@ -186,16 +206,46 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+    borderRadius: 8,
   },
   title: {
-    fontSize: 20, 
-    paddingBottom: 20,
+    fontSize: 30, 
+    fontWeight: 'bold',
   }, 
+  header: {
+    flexDirection: 'row', 
+    fontSize: 40,
+    marginTop: 90,
+    marginBottom: 40,
+  },
   button: {
-    backgroundColor: "pink", 
     padding: 10,
     justifyContent: "center",
     alignItems: "center", 
-    borderRadius: 20,
-  }
+    borderRadius: 30,
+    width: '50%',
+    borderColor: 'black',
+    borderWidth: 1,
+    height: '27%',
+  },
+  buttonContainer: {
+    alignItems: "center",
+    justifyContent: 'flex-end',
+    height: '30%',
+  },
+  lineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'black',
+  },
+  text: {
+    paddingHorizontal: 10,
+  },
+
 });
