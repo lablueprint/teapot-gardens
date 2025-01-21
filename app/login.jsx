@@ -38,52 +38,17 @@ const Login = () => {
       Alert.alert("Error", "Please fill out all the fields.");
     } else {
       Alert.alert("Success", "Form submitted successfully!");
-      // console.log({
-      //   name,
-      //   email,
-      //   password,
-      //   birthday,
-      //   username,
-      // });
 
       const user = {name: name, email: email, password: password, dob: birthday, username: username}
-      // const user = {
-      //   admin: true,
-      //   userId: 1,
-      //   name,
-      //   email,
-      //   password,
-      //   dob: birthday,
-      //   username,
-      //   tamagatchiType: "garden2",
-      //   tamagatchiXP: 100,
-      //   followedPrograms: [1, 2, 3],
-      //   attendedEvents: [50, 51],
-      //   attendingEvents: [10, 12],
-      // };
-
       
-      // const response = await fetch('/api/users', {
-      //   method: 'POST',
-      //   body: JSON.stringify(user),
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   }
-      // })
+      console.log(user)
       try {
-        const response = await axios.post('https://localhost:4000/api/users/createUser', user);
+        const response = await axios.post('https://2906-2607-f010-2a7-103f-599a-5e21-16b1-1c05.ngrok-free.app/api/users/', user);
         console.log(response.data)
       }
       catch (error) {
         console.log("error", error)
       }
-      
-
-      const json = await response.json()
-      console.log(json)
-
-      
-
 
     }
   };
