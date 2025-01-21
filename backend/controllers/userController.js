@@ -23,6 +23,7 @@ const getUser = async(req, res) => {
 
 // create a new user
 const createUser = async (req, res) => {
+    console.log("create a user")
     // add doc to db
     try{
         const user = await User.create(req.body)

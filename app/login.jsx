@@ -1,73 +1,109 @@
 import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert } from "react-native";
 import React, { useState } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
+import axios from 'axios';
 
 const Login = () => {
   // Define state for each input field
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState("");
+  // const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [zipcode, setZipcode] = useState("");
-  const [race, setRace] = useState("");
+  // const [zipcode, setZipcode] = useState("");
+  // const [race, setRace] = useState("");
   const [birthday, setBirthday] = useState("");
-  const [income, setIncome] = useState("");
-  const [gender, setGender] = useState('female')
+  const [username, setUsername] = useState("");
+  // const [income, setIncome] = useState("");
+  // const [gender, setGender] = useState('female')
 
-  const [open, setOpen] = useState(false); // Controls dropdown visibility
-  const [value, setValue] = useState(null); // Selected value
-  const [items, setItems] = useState([
-      { label: 'Female', value: 'female' },
-      { label: 'Male', value: 'male' },
-      { label: 'Nonbinary', value: 'nonbinary' },
-      { label: 'Prefer not to say', value: 'prefnot' },
-  ]);
+  // const [open, setOpen] = useState(false); // Controls dropdown visibility
+  // const [value, setValue] = useState(null); // Selected value
+  // const [items, setItems] = useState([
+  //     { label: 'Female', value: 'female' },
+  //     { label: 'Male', value: 'male' },
+  //     { label: 'Nonbinary', value: 'nonbinary' },
+  //     { label: 'Prefer not to say', value: 'prefnot' },
+  // ]);
 
   
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
-      !firstName ||
-      !lastName ||
+      !name ||
       !email ||
       !password ||
-      !gender ||
-      !race ||
       !birthday ||
-      !zipcode
+      !username
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
     } else {
       Alert.alert("Success", "Form submitted successfully!");
-      console.log({
-        firstName,
-        lastName,
-        email,
-        password,
-        gender,
-        race,
-        birthday,
-        income,
-      });
+      // console.log({
+      //   name,
+      //   email,
+      //   password,
+      //   birthday,
+      //   username,
+      // });
+
+      const user = {name: name, email: email, password: password, dob: birthday, username: username}
+      // const user = {
+      //   admin: true,
+      //   userId: 1,
+      //   name,
+      //   email,
+      //   password,
+      //   dob: birthday,
+      //   username,
+      //   tamagatchiType: "garden2",
+      //   tamagatchiXP: 100,
+      //   followedPrograms: [1, 2, 3],
+      //   attendedEvents: [50, 51],
+      //   attendingEvents: [10, 12],
+      // };
+
+      
+      // const response = await fetch('/api/users', {
+      //   method: 'POST',
+      //   body: JSON.stringify(user),
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   }
+      // })
+      try {
+        const response = await axios.post('https://localhost:4000/api/users/createUser', user);
+        console.log(response.data)
+      }
+      catch (error) {
+        console.log("error", error)
+      }
+      
+
+      const json = await response.json()
+      console.log(json)
+
+      
+
+
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login Page</Text>
+      <Text style={styles.title}>Create an Account</Text>
 
-      <Text>First Name</Text>
+      <Text>Name</Text>
       <TextInput
         style={styles.input}
-        value={firstName}
-        onChangeText={(text) => setFirstName(text)}
+        value={name}
+        onChangeText={(text) => setName(text)}
       />
 
-      <Text>Last Name</Text>
+      {/* <Text>Last Name</Text>
       <TextInput
         style={styles.input}
         value={lastName}
         onChangeText={(text) => setLastName(text)}
-      />
+      /> */}
 
       <Text>Email</Text>
       <TextInput
@@ -84,7 +120,7 @@ const Login = () => {
         onChangeText={(text) => setPassword(text)}
       />
 
-      <Text>Gender</Text>
+      {/* <Text>Gender</Text>
       <DropDownPicker
                 open={open}
                 value={value}
@@ -97,19 +133,19 @@ const Login = () => {
                 dropDownContainerStyle={styles.dropdownContainer}
             />
 
-      <Text>Race</Text>
-      <TextInput
+      <Text>Race</Text> */}
+      {/* <TextInput
         style={styles.input}
         value={race}
         onChangeText={(text) => setRace(text)}
-      />
+      /> */}
 
-      <Text>Zipcode</Text>
+      {/* <Text>Zipcode</Text>
       <TextInput
         style={styles.input}
         value={zipcode}
         onChangeText={(text) => setZipcode(text)}
-      />
+      /> */}
 
       <Text>Birthday</Text>
       <TextInput
@@ -118,12 +154,18 @@ const Login = () => {
         onChangeText={(text) => setBirthday(text)}
       />
 
-      <Text>Income Level (optional)</Text>
+      <Text>Username</Text>
+        <TextInput
+          style={styles.input}
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+        />
+      {/* <Text>Income Level (optional)</Text>
       <TextInput
         style={styles.input}
         value={income}
         onChangeText={(text) => setIncome(text)}
-      />
+      /> */}
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit} >
         <Text>Submit</Text>
