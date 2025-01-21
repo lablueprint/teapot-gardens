@@ -6,8 +6,24 @@ import { upcomingEvents, programPages } from './homepage_components/data';
 import { Link } from "expo-router";
 import sample_logo from '../assets/sample_logo.png';
 import bellIcon from '../assets/dingdingsample-icon.png';
+import pichu from '../assets/pichu.jpg';
+import pikachu from '../assets/pikachu.jpg';
+import raichu from '../assets/raichu.jpg';
 
 export default function Homepage() {
+  const user = {
+    xp: 0,
+  }
+
+  let level_img;
+  if (user.xp < 1000) {
+    level_img = pichu;
+  } else if (user.xp <= 2000) {
+    level_img = pikachu;
+  } else {
+    level_img = raichu;
+  }
+
   return (
     <ScrollView>
       <View style={styles.main_container}>
