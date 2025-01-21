@@ -12,7 +12,14 @@
         "date": "March 10", 
         "location": "LA", 
         "time": "5PM", 
-        "details": "Learn about reaping!", 
+        "details": "Learn about reaping!"
+      }, 
+      {
+        "title": "Sewing",
+        "date": "March 10", 
+        "location": "LA", 
+        "time": "5PM", 
+        "details": "Learn about reaping!"
       }
     ]
   }

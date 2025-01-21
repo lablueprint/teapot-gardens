@@ -35,4 +35,13 @@ export const upcomingEvents = [
       details: 'details details details details details'
     },
   ];
+
+   export const notificationData = [
+      {
+        title: 'Event Update',
+        messageText: 'Kimchi Workshop time has been updated to 5:00pm',
+        time: '6 pm'
+      },
+
+  ];
   

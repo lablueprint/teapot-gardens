@@ -25,7 +25,9 @@ export default function App() {
       <Link href="/discover/discover_page" style={{ color: "blue" }}>
         Go to Discover Page
       </Link>
-
+      <Link href="/admin_dashboard" style={{ color: "blue" }}>
+        Go to Admin Dashboard
+      </Link>
     </View>
   );
 }
