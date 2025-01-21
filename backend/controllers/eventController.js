@@ -1,4 +1,3 @@
-const { default: event } = require('../../app/homepage_components/event')
 const Event = require('../models/EventModel')
 const mongoose = require('mongoose')
 
