@@ -1,4 +1,4 @@
-import { Text, View, Image, ScrollView, Pressable } from "react-native";
+import { Text, View, Image, ScrollView, Pressable, ViewComponent } from "react-native";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import Event from './event';
@@ -36,40 +36,28 @@ const ProgramPage = () => {
 
   return (
     <ScrollView contentContainerStyle={ styles.outerContainer }>
-      <Text style={ styles.programTitle }>Garden Sundaze</Text>
-
+      <Image 
+        style={styles.banner}
+        source={garden}
+      />
       <View style={ styles.contentContainer }>
-      <Text style={ styles.header }>Background</Text>
-        <Text style={ styles.content }>
+        <Text style={ styles.programTitle }>Garden Sundaze</Text>
+        <Text style={ styles.description }>
           Garden Sundaze is an organization that likes to garden and grow tomatoes!
         </Text>
-        <View style={ styles.collapsible }>
-          <Pressable onPress={ toggleCollapsedGoals } >
-            <Text style={ styles.header }>Goals</Text>
+        <Pressable onPress={ toggleCollapsedActivities } >
+            <Text style={styles.button}>Follow Program</Text>
           </Pressable>
-          <Collapsible collapsed={ isCollapsedGoals } >
-            <BulletPoints items={ goals } ></BulletPoints>
-          </Collapsible>
-        </View>
-        <View style={ styles.collapsible }>
-          <Pressable onPress={ toggleCollapsedActivities } >
-            <Text style={ styles.header }>Activities</Text>
-          </Pressable>
-          <Collapsible collapsed={ isCollapsedActivities } >
-            <BulletPoints items={ activities } ></BulletPoints>
-          </Collapsible>
-        </View>
-      </View>
 
       {/*  Upcoming Events Carousel  */}
       <Text style={ styles.header }>Upcoming Events</Text>
-      <ScrollView horizontal={ true } style={ styles.carouselContainer }>
-        <View style={ styles.carouselContainer }>
+        <ScrollView>
+          <View>
           {eventData.events.map((event, index) => (
               <Event {...event} key={index}/>
             ))}
-        </View>
-      </ScrollView>
+          </View>
+        </ScrollView>
 
       {/*  Past Events Carousel  */}
       <Text style={ styles.header }>Past Events</Text>
@@ -90,7 +78,23 @@ const ProgramPage = () => {
         </View>
       </ScrollView>
 
-
+      {/* <View style={ styles.collapsible }>
+          <Pressable onPress={ toggleCollapsedGoals } >
+            <Text style={ styles.header }>Goals</Text>
+          </Pressable>
+          <Collapsible collapsed={ isCollapsedGoals } >
+            <BulletPoints items={ goals } ></BulletPoints>
+          </Collapsible>
+        </View>
+      <View style={ styles.collapsible }>
+        <Pressable onPress={ toggleCollapsedActivities } >
+          <Text style={ styles.header }>Activities</Text>
+        </Pressable>
+        <Collapsible collapsed={ isCollapsedActivities } >
+          <BulletPoints items={ activities } ></BulletPoints>
+        </Collapsible>
+      </View> */}
+      </View>
     </ScrollView>
   );
 };

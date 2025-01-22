@@ -3,24 +3,24 @@
       {
         "title": "Kimchi Gardens", 
         "date": "Thu, Jan 23", 
-        "location": "1234 John Wooden Dr. Los Angeles, CA, 90024", 
+        "location": "1234 John Wooden Dr.", 
         "time": "11:00AM - 3:00 PM PST", 
         "details": "Learn about kimchi! Lorem ipsum dolor sit amet, consectetur adipsiscing elit",
         "pic": "../assets/kimchi.jpg" 
       },
       {
         "title": "Reaping",
-        "date": "March 10", 
-        "location": "LA", 
-        "time": "5PM", 
-        "details": "Learn about reaping!"
+        "date": "Sat, March 11", 
+        "location": "4321 John Wooden Dr.", 
+        "time": "5:00 - 8:00 PM PST", 
+        "details": "Learn about reaping! Lorem ipsum dolor sit amet, consectetur adipsiscing elit"
       }, 
       {
         "title": "Sewing",
-        "date": "March 10", 
-        "location": "LA", 
+        "date": "Fri, March 10", 
+        "location": "1234 Hedrick Hall", 
         "time": "5PM", 
-        "details": "Learn about reaping!"
+        "details": "Learn about sewing! Lorem ipsum dolor sit amet, consectetur adipsiscing elit"
       }
     ]
   }
