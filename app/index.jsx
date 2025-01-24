@@ -22,6 +22,9 @@ export default function App() {
       <Link href="/screens/program_page/program_page" style={{ color: "blue" }}>
         Go to Program Page
       </Link>
+      <Link href="/screens/admin_dashboard/admin_dashboard" style={{ color: "blue" }}>
+        Go to Admin Dashboard
+      </Link>
     </View>
   );
 }

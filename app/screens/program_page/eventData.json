@@ -1,19 +1,25 @@
 {
-    "events": [
-      {
-        "title": "Kimchi Gardens", 
-        "date": "September 10", 
-        "location": "LA", 
-        "time": "5PM", 
-        "details": "Learn about kimchi!"
-      },
-      {
-        "title": "Reaping",
-        "date": "March 10", 
-        "location": "LA", 
-        "time": "5PM", 
-        "details": "Learn about reaping!"
-      }
-    ]
-  }
-  
+  "events": [
+    {
+      "title": "Kimchi Gardens", 
+      "date": "September 10", 
+      "location": "LA", 
+      "time": "5PM", 
+      "details": "Learn about kimchi!"
+    },
+    {
+      "title": "Reaping",
+      "date": "March 10", 
+      "location": "LA", 
+      "time": "5PM", 
+      "details": "Learn about reaping!"
+    }, 
+    {
+      "title": "Sewing",
+      "date": "March 10", 
+      "location": "LA", 
+      "time": "5PM", 
+      "details": "Learn about reaping!"
+    }
+  ]
+}
