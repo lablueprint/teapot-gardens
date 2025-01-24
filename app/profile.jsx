@@ -1,5 +1,6 @@
 import { Button, StyleSheet, Text, View, FlatList, Switch, Alert, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
 
 pastEventData = [{
     name: "Chinese Drama", 
@@ -55,7 +56,26 @@ userBadges = [{
 const Profile = () => {
   // Define state for each input field
   const [isPrivate, setIsPrivate] = useState(false); 
+  const [user, setUser] = useState({});
   const toggleSwitch = () => setIsPrivate(previousState => !previousState);
+
+  const tempUserId = '6789f49f8e0a009647312c7a'
+
+  useEffect(() => {
+    getUser();
+    console.log(user);
+  }, [user])
+
+  const getUser = async () => {
+    try {
+      const response = await axios.get(`https://2356-2603-8001-d3f0-da0-cd86-8774-73ab-3673.ngrok-free.app/api/users/${tempUserId}`)
+      setUser(response.data)
+    }
+    catch (error) {
+      console.log("Error getting user", error)
+    }
+    
+  }
 
   return (
     <View style={styles.container}>
@@ -64,7 +84,7 @@ const Profile = () => {
           source={require('../assets/grapes.jpg')} // Replace with your image path
           style={styles.image}
       />
-      <Text style={styles.name}>Name: Victoria </Text>
+      <Text style={styles.name}>Name: {user.name} </Text>
       <Text style={styles.handle}>@victoria </Text>
       <Text style={styles.info}>Bio: I like grapes </Text>
       <Text style={styles.subtitle}>My badges </Text>

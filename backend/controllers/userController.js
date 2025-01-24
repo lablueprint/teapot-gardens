@@ -3,12 +3,14 @@ const mongoose = require('mongoose')
 
 // get all users
 const getUsers = async (req, res) => {
+    console.log("get users")
     const users = await User.find({}).sort({createdAt: -1})
     res.status(200).json(users)
 }
 
 // get a single user
 const getUser = async(req, res) => {
+    console.log("get single user")
     const { id } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(id)){
