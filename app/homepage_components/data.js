@@ -45,3 +45,7 @@ export const upcomingEvents = [
 
   ];
   
+// Dummy default export for route handling
+export default function PlaceholderComponent() {
+  return null;
+}
