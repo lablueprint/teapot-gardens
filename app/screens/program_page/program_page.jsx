@@ -1,13 +1,13 @@
 import { Text, View, Image, ScrollView, Pressable } from "react-native";
 import { Link } from "expo-router";
 import React, { useState } from "react";
-import Event from './event';
-import styles from './program_page_style';
-import garden from '../../../assets/garden.jpg';
-import garden2 from '../../../assets/garden2.jpg';
-import notAIGarden from '../../../assets/notAIGarden.jpg';
+import Event from '@screens/program_page/event';
+import styles from '@screens/program_page/program_page_style';
+import garden from '@assets/garden.jpg';
+import garden2 from '@assets/garden2.jpg';
+import notAIGarden from '@assets/notAIGarden.jpg';
 import Collapsible from 'react-native-collapsible';
-import eventData from './eventData.json';
+import eventData from '@screens/program_page/eventData.json';
 
 const BulletPoints = (props) => {
   return (

@@ -5,7 +5,7 @@ import Collapsible from 'react-native-collapsible';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import garden from '@assets/garden.jpg';
 import grapes from '@assets/grapes.jpg';
-import AdminDashboard from '@app/screens/admin_dashboard/admin_dashboard.jsx';
+import AdminDashboard from '@screens/admin_dashboard/admin_dashboard.jsx';
 import { useLocalSearchParams, useGlobalSearchParams } from "expo-router";
 
 const EventPage = () => {
