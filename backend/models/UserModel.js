@@ -40,9 +40,11 @@ const userSchema = new Schema({
         type: String
     },
     tamagatchiType: {
+        default: "",
         type: String
     },
     tamagatchiXP: {
+        default: 0,
         type: Number
     },
     followedPrograms: {
