@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
         alignItems: 'left',
     },
     banner: {
-        height: '35%', 
+        height: '200', 
     },
     contentContainer: {
         alignItems: 'left',

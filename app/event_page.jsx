@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from "react";
-import { Text, View, Pressable, StyleSheet, Image } from "react-native";
+import { Text, ScrollView, View, Pressable, StyleSheet, Image } from "react-native";
 import UserCard from './user_card.jsx';
 import Collapsible from 'react-native-collapsible';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -7,9 +7,13 @@ import garden from '../assets/garden.jpg';
 import grapes from '../assets/grapes.jpg';
 import AdminDashboard from './admin_dashboard';
 import { useLocalSearchParams } from "expo-router";
+import axios from 'axios';
+
 
 const EventPage = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [user, setUser] = useState(null); 
+  const [event] = useState(null);
 
   const toggleCollapsed = () => {
     setIsCollapsed((prevState) => !prevState);
@@ -26,9 +30,42 @@ const EventPage = () => {
   ]
   
   const { title, date, location, time, details} = useLocalSearchParams();
+
+  //update user events
+
+  // useEffect(() => {
+  //   getUser();
+  //   console.log(user);
+  // }, [user])
+
+  // const getUser = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:4000/api/users/6789f49f8e0a009647312c7a');
+  //     setUser(response.data)
+  //   }
+  //   catch (error) {
+  //     console.log("Error getting user", error)
+  //   }
+  // }
+
+//   const updateUserEvents = async () => {
+//     try {
+//         const response = await axios.patch(
+//             'http://localhost:4000/api/users/updateEvents', 
+//             {
+//                 userId: 1,
+//                 eventId: 1 // Replace with actual eventId
+//             }
+//         );
+
+//         console.log('Updated User:', response.data);
+//     } catch (error) {
+//         console.error('Error:', error);
+//     }
+// };
   
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Image 
         style={styles.image}
         source = {garden}
@@ -70,11 +107,15 @@ const EventPage = () => {
         </Collapsible>
       </View>
 
+      <Pressable style={styles.shareButton}>
+        <Text style={styles.shareButtonText}>Attending</Text>
+      </Pressable>
+
       {/* Share Button */}
       <Pressable style={styles.shareButton}>
         <Text style={styles.shareButtonText}>Share</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -132,8 +173,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   image: {
-    width: '100%', 
-    height: '30%',
+    width: '340',
+    height: '200',
     borderRadius: 10,
     marginBottom: 10,
   }, 

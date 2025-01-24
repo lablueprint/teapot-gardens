@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     eventContainer: {
-        width: '100%',
         height: 80,
         marginTop: 10,
         borderColor: 'gray',
@@ -13,7 +12,7 @@ const styles = StyleSheet.create({
     },
     eventPic: {
         width: 70, 
-        height: '100%',
+        height: '200',
         borderRadius: 5, 
     }, 
     eventInfo: {

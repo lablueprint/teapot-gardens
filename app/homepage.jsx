@@ -9,6 +9,7 @@ import pichu from '../assets/pichu.jpg';
 import pikachu from '../assets/pikachu.jpg';
 import raichu from '../assets/raichu.jpg';
 
+
 export default function Homepage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

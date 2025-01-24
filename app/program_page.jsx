@@ -1,6 +1,6 @@
 import { Text, View, Image, ScrollView, Pressable, ViewComponent } from "react-native";
 import { Link } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Event from './event';
 import styles from './program_page_style';
 import garden from '../assets/garden.jpg';
@@ -8,6 +8,7 @@ import garden2 from '../assets/garden2.jpg';
 import notAIGarden from '../assets/notAIGarden.jpg';
 import Collapsible from 'react-native-collapsible';
 import eventData from './eventData.json';
+import axios from 'axios';
 
 const BulletPoints = (props) => {
   return (
@@ -33,6 +34,9 @@ const ProgramPage = () => {
   const toggleCollapsedActivities = () => {
     setIsCollapsedActivities((prevState) => !prevState);
   }
+  
+  // get program's pastEvent array
+  // get event's pictures
 
   return (
     <ScrollView contentContainerStyle={ styles.outerContainer }>
@@ -51,17 +55,17 @@ const ProgramPage = () => {
 
       {/*  Upcoming Events Carousel  */}
       <Text style={ styles.header }>Upcoming Events</Text>
-        <ScrollView>
+        <View>
           <View>
           {eventData.events.map((event, index) => (
               <Event {...event} key={index}/>
             ))}
           </View>
-        </ScrollView>
+        </View>
 
       {/*  Past Events Carousel  */}
       <Text style={ styles.header }>Past Events</Text>
-      <ScrollView horizontal={ true } style={ styles.carouselContainer }>
+      {/* <ScrollView horizontal={ true } style={ styles.carouselContainer }> */}
         <View style={ styles.carouselContainer }>
           <Image 
             style = { styles.image }
@@ -76,7 +80,7 @@ const ProgramPage = () => {
             source = { notAIGarden }
           />
         </View>
-      </ScrollView>
+      {/* </ScrollView> */}
 
       {/* <View style={ styles.collapsible }>
           <Pressable onPress={ toggleCollapsedGoals } >
