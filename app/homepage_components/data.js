@@ -1,38 +1,48 @@
 // data.js
+import bear from '../../assets/bear.jpg';
 
 export const upcomingEvents = [
     {
       title: 'Event One',
       time: '6 pm',
-      details: 'details details details details details'
+      details: 'details details details details details',
+      image: bear
     },
     {
       title: 'Event Two',
       time: '7 pm',
-      details: 'details details details details details'
+      details: 'details details details details details',
+      image: bear
     },
-    {
+    { 
       title: 'Event Three',
       time: '8 pm',
-      details: 'details details details details details'
+      details: 'details details details details details',
+      image: bear
     },
   ];
   
   export const programPages = [
     {
       title: 'Program A',
+      location: 'ucla',
+      date: 'Jan 12',
       time: '6 pm',
-      details: 'details details details details details'
+      image: bear
     },
     {
       title: 'Program B',
+      location: '123 abc drive',
+      date: 'Aug 22',
       time: '7 pm',
-      details: 'details details details details details'
+      image: bear
     },
     {
       title: 'Program C',
+      location: '723 matcha lane',
+      date: 'Sept 10',
       time: '8 pm',
-      details: 'details details details details details'
+      image: bear
     },
   ];
 

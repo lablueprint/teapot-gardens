@@ -24,7 +24,7 @@ export default function CustomCarousel({ data }) {
 const styles = StyleSheet.create({
   carouselContainer: {
     width: width,
-    backgroundColor: 'antiquewhite'
+    backgroundColor: '#E9E9E9'
   },
   scrollViewContainer: {
     alignItems: 'center',
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     width: width,
     alignItems: 'center',
+    borderRadius: 10,
   },
   title: {
     marginTop: 5,

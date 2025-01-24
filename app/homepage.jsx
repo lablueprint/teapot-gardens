@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import axios from 'axios';
-import Placeholder from './homepage_components/Placeholder';
-import CustomCarousel from './homepage_components/carousel';
-import { upcomingEvents, programPages } from './homepage_components/data';
+import Placeholder from './homepage_components/mainimage';
+import EventCard from './homepage_components/eventcard';
+import { programPages, upcomingEvents } from './homepage_components/data';
 import sample_logo from '../assets/sample_logo.png';
 import pichu from '../assets/pichu.jpg';
 import pikachu from '../assets/pikachu.jpg';
@@ -12,6 +12,7 @@ import raichu from '../assets/raichu.jpg';
 export default function Homepage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  let level_img = sample_logo;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -33,8 +34,6 @@ export default function Homepage() {
     fetchUser();
   }, []);
   
-  let level_img = sample_logo;
-  
   if (user && user.tamagatchiXP !== undefined) {
     if (user.tamagatchiXP < 1000) {
       level_img = pichu;
@@ -46,28 +45,45 @@ export default function Homepage() {
   }
 
   return (
-    <View style={styles.main_container}>
+    <ScrollView style={styles.main_container}>
+      <Text style = {styles.title}> Your Teapot Garden </Text>
       <Placeholder imageSource={level_img} />
-      <View style={styles.carousel_container}>
-        <CustomCarousel data={upcomingEvents} />
+      <Text style = {styles.subtitle}> Subscribe to a Program </Text>
+      <View style={styles.events_container}>
+        {programPages.map((event, index) => (
+          <EventCard key={index} title={event.title} time={event.time} date={event.date} location={event.location} image={event.image} />
+        ))}
       </View>
-      <View style={styles.carousel_container}>
-        <CustomCarousel data={programPages} />
-      </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  title: {
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: 600,
+    marginVertical: 40,
+    textAlign: 'center',
+    color: '#737373',
+    marginBottom: 50
+  },
+  subtitle: {
+    fontFamily: 'Inter',
+    fontSize: 24,
+    fontWeight: 600,
+    marginTop: 40,
+    margin: 20,
+    textAlign: 'left',
+    color: '#000000'
+  },
   main_container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: '#FCFCFC'
   },
-  carousel_container: {
-    flex: 1,
-    width: '100%', 
-    justifyContent: 'center', 
-    alignItems: 'center',
+  events_container: {
+    marginTop: 20,
+    paddingHorizontal: 20,
   },
+  
 });
