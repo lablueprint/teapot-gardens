@@ -33,10 +33,10 @@ export default function Homepage() {
     };
 
     fetchUser();
-  }, []);
+  }, [user]);
   
   if (user && user.tamagatchiXP !== undefined) {
-    if (user.tamagatchiXP < 1000) {
+    if (user.tamagatchiXP <= 1000) {
       level_img = pichu;
     } else if (user.tamagatchiXP <= 2000) {
       level_img = pikachu;
