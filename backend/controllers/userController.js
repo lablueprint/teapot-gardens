@@ -52,6 +52,7 @@ const deleteUser = async (req, res) => {
 
 // update a user
 const updateUser = async (req, res) => {
+    console.log("update user")
     const { id } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(id)){
