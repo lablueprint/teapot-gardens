@@ -38,20 +38,20 @@ const getPastEvents = async(req, res) => {
     res.status(200).json(pastEvents)
 }
 
-const getEvent = async(req, res) => {
-    const { id } = req.params
+// const getEvent = async(req, res) => {
+//     const { id } = req.params
 
-    if (!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(404).json({error: "Program not found"})
-    }
-    const program = await Program.findById(id)
-    if (!program) {
-        return res.status(404).json({error: "Program not found"})
-    }
+//     if (!mongoose.Types.ObjectId.isValid(id)){
+//         return res.status(404).json({error: "Program not found"})
+//     }
+//     const program = await Program.findById(id)
+//     if (!program) {
+//         return res.status(404).json({error: "Program not found"})
+//     }
 
-    const pastEvents = program.pastEvents;
-    res.status(200).json(pastEvents)
-}
+//     const pastEvents = program.pastEvents;
+//     res.status(200).json(pastEvents)
+// }
 
 // create a new program
 const createProgram = async (req, res) => {

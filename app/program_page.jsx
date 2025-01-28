@@ -37,23 +37,34 @@ const ProgramPage = () => {
   
   // get program's pastEvent array
   useEffect(() => {
-    const fetchImage = async () => {
+    const fetchEventsWithPictures = async () => {
       try {
+        // First fetch past events
         const response = await axios.get('https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/programs/past-events/6789ed54a5e1c0261cefac4f');
+        
         if (response.status === 200) {
           setPastEvents(response.data);
-        } else {
-          console.error('Failed to fetch past events: ', response.data.error);
+          
+          // Then fetch details for each event
+          const eventPromises = response.data.pastEvents.map(eventId =>
+            axios.get(`https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/events/${eventId}`)
+          );
+          
+          const eventResults = await Promise.all(eventPromises);
+          const eventsWithDetails = eventResults.map(result => result.data);
+          setEventDetails(eventsWithDetails);
         }
       } catch (error) {
-        console.error('Error fetching past events: ', error.message);
+        console.error('Error fetching events:', error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
-      
     };
-    fetchImage();
+
+    fetchEventsWithPictures();
   }, []);
+
   // get event's pictures
 
   return (

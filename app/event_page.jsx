@@ -59,7 +59,7 @@ const EventPage = () => {
             'https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/users/', 
             {
                 userId: '678f3a6bc0368a4c717413a8',
-                eventId: 2039 // Replace with actual eventId
+                eventId: 3000 // Replace with actual eventId
             }
         );
 
