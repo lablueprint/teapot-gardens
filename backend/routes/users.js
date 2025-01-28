@@ -22,6 +22,6 @@ router.delete('/:id', deleteUser)
 
 router.patch('/:id', updateUser)
 
-router.patch('/updateEvents', updateUserEvents)
+router.patch('/', updateUserEvents)
 
 module.exports = router

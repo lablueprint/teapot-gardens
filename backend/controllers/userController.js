@@ -70,17 +70,16 @@ const updateUser = async (req, res) => {
 // update user's events
 const updateUserEvents = async (req, res) => {
     const { userId, eventId } = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(404).json({ error: "Invalid User ID" });
-    }
+    // if (!mongoose.Types.ObjectId.isValid(userId)) {
+    //     return res.status(404).json({ error: "Invalid User ID" });
+    // }
 
     try {
         console.log('hi');
         const user = await User.findByIdAndUpdate(
             userId,
             { $addToSet: { attendingEvents: eventId } }, 
-            { new: true }
+            {new: true}
         );
 
         if (!user) {

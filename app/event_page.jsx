@@ -34,35 +34,40 @@ const EventPage = () => {
   //update user events
 
   useEffect(() => {
-    getUser();
-    console.log(user);
-  }, [user])
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get('https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
+        if (response.status === 200) {
+          setUser(response.data);
+        } else {
+          console.error('Failed to fetch user: ', response.data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching user: ', error.message);
+      } finally {
+        setLoading(false);
+      }
+      
+    };
+    fetchUser();
+  }, []);
 
-  const getUser = async () => {
+  const updateUserEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/users/6789f49f8e0a009647312c7a');
-      setUser(response.data)
-    }
-    catch (error) {
-      console.log("Error getting user", error)
-    }
-  }
+        console.log('update user events')
+        const response = await axios.patch(
+            'https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/users/', 
+            {
+                userId: '678f3a6bc0368a4c717413a8',
+                eventId: 2039 // Replace with actual eventId
+            }
+        );
 
-//   const updateUserEvents = async () => {
-//     try {
-//         const response = await axios.patch(
-//             'http://localhost:4000/api/users/updateEvents', 
-//             {
-//                 userId: 1,
-//                 eventId: 1 // Replace with actual eventId
-//             }
-//         );
-
-//         console.log('Updated User:', response.data);
-//     } catch (error) {
-//         console.error('Error:', error);
-//     }
-// };
+        console.log('Updated User:', response.data);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
   
   return (
     <ScrollView style={styles.container}>
@@ -107,7 +112,7 @@ const EventPage = () => {
         </Collapsible>
       </View>
 
-      <Pressable style={styles.shareButton}>
+      <Pressable style={styles.shareButton} onPress={updateUserEvents}>
         <Text style={styles.shareButtonText}>Attending</Text>
       </Pressable>
 
