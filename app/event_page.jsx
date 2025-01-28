@@ -33,20 +33,20 @@ const EventPage = () => {
 
   //update user events
 
-  // useEffect(() => {
-  //   getUser();
-  //   console.log(user);
-  // }, [user])
+  useEffect(() => {
+    getUser();
+    console.log(user);
+  }, [user])
 
-  // const getUser = async () => {
-  //   try {
-  //     const response = await axios.get('http://localhost:4000/api/users/6789f49f8e0a009647312c7a');
-  //     setUser(response.data)
-  //   }
-  //   catch (error) {
-  //     console.log("Error getting user", error)
-  //   }
-  // }
+  const getUser = async () => {
+    try {
+      const response = await axios.get('http://localhost:4000/api/users/6789f49f8e0a009647312c7a');
+      setUser(response.data)
+    }
+    catch (error) {
+      console.log("Error getting user", error)
+    }
+  }
 
 //   const updateUserEvents = async () => {
 //     try {
