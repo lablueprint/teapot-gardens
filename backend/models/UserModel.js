@@ -46,13 +46,13 @@ const userSchema = new Schema({
         type: Number
     },
     followedPrograms: {
-        type: [Number]
+        type: [String]
     },
     attendedEvents: {
-        type: [Number]
+        type: [String]
     },
     attendingEvents: {
-        type: [Number]
+        type: [String]
     }
 
 }, { timestamps: true })

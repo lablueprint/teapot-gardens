@@ -16,7 +16,7 @@ export default function App() {
       <Link href="/login" style={{ color: "blue" }}>
         Go to Login
       </Link>
-      <Link href="/profile" style={{ color: "blue" }}>
+      <Link href="/profile/profile_page" style={{ color: "blue" }}>
         Go to Profile
       </Link>
       <Link href="/program_page" style={{ color: "blue" }}>
