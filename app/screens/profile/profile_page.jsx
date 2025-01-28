@@ -2,8 +2,8 @@ import { StyleSheet, Text, View, FlatList, Switch, Image, ScrollView, Pressable 
 import React, { useState, useEffect } from "react";
 import { Link } from "expo-router";
 import axios from 'axios';
-import styles from './profile_styles.jsx';
-
+import styles from '@screens/profile/profile_styles';
+import grapes from '@assets/grapes.jpg';
 
 userBadges = [{
     name: "Fish",
@@ -36,7 +36,7 @@ const Profile = () => {
 
   const getUser = async () => {
     try {
-      const response = await axios.get(`https://27a7-2607-f010-2e9-3-c53c-8053-786e-2104.ngrok-free.app/api/users/${tempUserId}`)
+      const response = await axios.get(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/users/${tempUserId}`)
       setUser(response.data)
     }
     catch (error) {
@@ -50,7 +50,7 @@ const Profile = () => {
     for (const id of pastEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://27a7-2607-f010-2e9-3-c53c-8053-786e-2104.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -67,7 +67,7 @@ const Profile = () => {
     for (const id of upcomingEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://27a7-2607-f010-2e9-3-c53c-8053-786e-2104.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -83,7 +83,7 @@ const Profile = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Profile Page</Text>
         <Image 
-            source={require('../../assets/grapes.jpg')} // Replace with your image path
+            source={grapes} // Replace with your image path
             style={styles.image}
         />
         <Text style={styles.name}>Name: {user.name} </Text>
@@ -92,7 +92,7 @@ const Profile = () => {
 
         <View style={styles.buttonContainer}>
           <View style={styles.button}>
-          <Link href="/profile/edit_profile" style={{ color: "white" }}> Edit Profile </Link>
+          <Link href="screens/profile/edit_profile" style={{ color: "white" }}> Edit Profile </Link>
           </View>
         </View>
 
