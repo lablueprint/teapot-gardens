@@ -35,11 +35,11 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   circle: {
-    width: 450, // Adjust size of the circle
-    height: 450,
-    borderRadius: 250, // Makes it a perfect circle
-    backgroundColor: '#E9E9E9', // Circle background color
-    justifyContent: 'center', // Center the image inside the circle
+    width: 500, 
+    height: 500,
+    borderRadius: 250, 
+    backgroundColor: '#EFEFEF', 
+    justifyContent: 'center', 
     alignItems: 'center',
   },
 });
