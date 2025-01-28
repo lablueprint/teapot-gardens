@@ -1,5 +1,6 @@
 const Program = require('../models/ProgramModel')
 const mongoose = require('mongoose')
+const { getEvent } = require('./eventController')
 
 // get all programs
 const getPrograms = async (req, res) => {
@@ -19,6 +20,37 @@ const getProgram = async(req, res) => {
         return res.status(404).json({error: "Program not found"})
     }
     res.status(200).json(program)
+}
+
+// get program's past events
+const getPastEvents = async(req, res) => {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({error: "Program not found"})
+    }
+    const program = await Program.findById(id)
+    if (!program) {
+        return res.status(404).json({error: "Program not found"})
+    }
+
+    const pastEvents = program.pastEvents;
+    res.status(200).json(pastEvents)
+}
+
+const getEvent = async(req, res) => {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({error: "Program not found"})
+    }
+    const program = await Program.findById(id)
+    if (!program) {
+        return res.status(404).json({error: "Program not found"})
+    }
+
+    const pastEvents = program.pastEvents;
+    res.status(200).json(pastEvents)
 }
 
 // create a new program
@@ -71,6 +103,8 @@ const updateProgram = async (req, res) => {
 module.exports = {
     getPrograms,
     getProgram,
+    getPastEvents,
+    getEvent,
     createProgram,
     deleteProgram,
     updateProgram

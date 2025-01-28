@@ -27,7 +27,7 @@ const ProgramPage = () => {
   const activities = ['grow strawberries', 'plant trees']
   const [isCollapsedGoals, setIsCollapsedGoals] = useState(true);
   const [isCollapsedActivities, setIsCollapsedActivities] = useState(true);
-
+  const [pastEvents, setPastEvents] = useState();
   const toggleCollapsedGoals = () => {
     setIsCollapsedGoals((prevState) => !prevState);
   }
@@ -36,6 +36,24 @@ const ProgramPage = () => {
   }
   
   // get program's pastEvent array
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await axios.get('https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/programs/past-events/6789ed54a5e1c0261cefac4f');
+        if (response.status === 200) {
+          setPastEvents(response.data);
+        } else {
+          console.error('Failed to fetch past events: ', response.data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching past events: ', error.message);
+      } finally {
+        setLoading(false);
+      }
+      
+    };
+    fetchImage();
+  }, []);
   // get event's pictures
 
   return (
@@ -60,6 +78,7 @@ const ProgramPage = () => {
           {eventData.events.map((event, index) => (
               <Event {...event} key={index}/>
             ))}
+
           </View>
         </View>
 
@@ -80,9 +99,14 @@ const ProgramPage = () => {
             source = { notAIGarden }
           />
         </View>
+       {pastEvents && pastEvents.map((event, index) => (
+          <Text key={index}>{event}</Text>
+        ))}
+
+        
       {/* </ScrollView> */}
 
-      {/* <View style={ styles.collapsible }>
+      <View style={ styles.collapsible }>
           <Pressable onPress={ toggleCollapsedGoals } >
             <Text style={ styles.header }>Goals</Text>
           </Pressable>
@@ -97,7 +121,7 @@ const ProgramPage = () => {
         <Collapsible collapsed={ isCollapsedActivities } >
           <BulletPoints items={ activities } ></BulletPoints>
         </Collapsible>
-      </View> */}
+      </View>
       </View>
     </ScrollView>
   );
