@@ -1,24 +1,24 @@
 const express = require('express')
 const {
-    getEvents,
-    getEvent,
-    createEvent,
-    deleteEvent,
-    updateEvent
-} = require('../controllers/eventController')
+    getUsers,
+    getUser,
+    createUser,
+    deleteUser,
+    updateUser
+} = require('../controllers/userController')
 
-const Event = require('../models/EventModel')
+const Event = require('../models/UserModel')
 
 const router = express.Router()
 
-router.get('/', getEvents)
+router.get('/', getUsers)
 
-router.get('/:id', getEvent)
+router.get('/:id', getUser)
 
-router.post('/', createEvent)
+router.post('/', createUser)
 
-router.delete('/:id', deleteEvent)
+router.delete('/:id', deleteUser)
 
-router.patch('/:id', updateEvent)
+router.patch('/:id', updateUser)
 
 module.exports = router
