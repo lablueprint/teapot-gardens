@@ -7,7 +7,7 @@ const {
     updateUser
 } = require('../controllers/userController')
 
-const Event = require('../models/UserModel')
+const User = require('../models/UserModel')
 
 const router = express.Router()
 
