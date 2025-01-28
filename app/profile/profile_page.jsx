@@ -4,6 +4,7 @@ import { Link } from "expo-router";
 import axios from 'axios';
 import styles from './profile_styles.jsx';
 
+
 userBadges = [{
     name: "Fish",
     description: "bought a fish"
@@ -35,7 +36,7 @@ const Profile = () => {
 
   const getUser = async () => {
     try {
-      const response = await axios.get(`https://ef6f-2607-f010-2e9-16-ecc1-734c-79ed-ced.ngrok-free.app/api/users/${tempUserId}`)
+      const response = await axios.get(`https://27a7-2607-f010-2e9-3-c53c-8053-786e-2104.ngrok-free.app/api/users/${tempUserId}`)
       setUser(response.data)
     }
     catch (error) {
@@ -49,7 +50,7 @@ const Profile = () => {
     for (const id of pastEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://ef6f-2607-f010-2e9-16-ecc1-734c-79ed-ced.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://27a7-2607-f010-2e9-3-c53c-8053-786e-2104.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -66,7 +67,7 @@ const Profile = () => {
     for (const id of upcomingEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://ef6f-2607-f010-2e9-16-ecc1-734c-79ed-ced.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://27a7-2607-f010-2e9-3-c53c-8053-786e-2104.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -78,6 +79,7 @@ const Profile = () => {
 
   return (
     <ScrollView>
+
       <View style={styles.container}>
         <Text style={styles.title}>Profile Page</Text>
         <Image 
@@ -89,10 +91,9 @@ const Profile = () => {
         <Text style={styles.info}>Bio: I like grapes </Text>
 
         <View style={styles.buttonContainer}>
-        <Link href="/edit_profile" style={{ color : "white" }}>Edit Profile
-          <Pressable style={styles.button}>
-          </Pressable>
-        </Link>
+          <View style={styles.button}>
+          <Link href="/profile/edit_profile" style={{ color: "white" }}> Edit Profile </Link>
+          </View>
         </View>
 
         <Text style={styles.subtitle}>My badges </Text>
