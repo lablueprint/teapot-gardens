@@ -14,7 +14,7 @@ const programSchema = new Schema({
         type: [Number]
     },
     pastEvents: {
-        type: [Number]
+        type: [Schema.Types.ObjectId]
     },
     followList: {
         type: [Number]
