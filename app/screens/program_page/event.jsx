@@ -1,14 +1,14 @@
 import { Text, View, Image } from "react-native";
 import { Link } from "expo-router"; 
 import styles from "./event_style";
-import garden from '@/assets/garden.jpg';
+import garden from '@assets/garden.jpg';
 
 const Event = (props) => {
   return (
     <View style={styles.eventContainer}>
       <Link
         href={{
-          pathname: "/event_page",
+          pathname: "screens/program_page/event_page",
           params: {
             title: props.title,
             date: props.date,
