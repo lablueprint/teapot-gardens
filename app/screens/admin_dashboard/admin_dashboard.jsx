@@ -3,7 +3,7 @@ import { AutoGrowingTextInput } from 'react-native-autogrow-textinput';
 import { Link } from "expo-router"; 
 import React, {useState} from "react";
 import styles from "./admin_dashboard_style";
-import eventData from "./eventData.json";
+import eventData from "@screens/program_page/eventData.json";
 import DropDownPicker from 'react-native-dropdown-picker';
 
 const AdminDashboard = () => {

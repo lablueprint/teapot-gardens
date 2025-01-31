@@ -2,9 +2,11 @@ import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image } fro
 import React, { useState } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
-import planticon from '../assets/planticon.png';
+// import planticon from '../../assets/planticon.png';
 
-const Login = () => {
+const EditProfile = () => {
+  const tempUserId = '6789f49f8e0a009647312c7a'
+
   // Define state for each input field
   const [name, setName] = useState("");
   // const [lastName, setLastName] = useState("");
@@ -28,22 +30,21 @@ const Login = () => {
 
   
   const handleSubmit = async () => {
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !birthday ||
-      !username
-    ) {
-      Alert.alert("Error", "Please fill out all the fields.");
-    } else {
+    if (!name && !email && !password && !birthday && !username) {
+      Alert.alert("Error", "Please fill out at least one field.");
+    }
+    else {
       Alert.alert("Success", "Form submitted successfully!");
 
-      const user = {name: name, email: email, password: password, dob: birthday, username: username}
+      const user = {};
+      if (name) user.name = name;
+      if (email) user.email = email;
+      if (password) user.password = password;
+      if (birthday) user.dob = birthday;  // Use 'dob' key for birthday
+      if (username) user.username = username;
       
-      console.log(user)
       try {
-        const response = await axios.post('https://2906-2607-f010-2a7-103f-599a-5e21-16b1-1c05.ngrok-free.app/api/users/', user);
+        const response = await axios.patch(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/users/${tempUserId}`, user);
         console.log(response.data)
       }
       catch (error) {
@@ -56,8 +57,8 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Create an Account</Text>
-        <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } />
+        <Text style={styles.title}>Edit Your Profile</Text>
+        {/* <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } /> */}
       </View>
 
       <Text>Name</Text>
@@ -151,7 +152,7 @@ const Login = () => {
 
       <View style={styles.buttonContainer} >
         <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-          <Text style={{ fontSize: 18,}} >Sign Up</Text>
+          <Text style={{ fontSize: 18,}} >Update</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -159,7 +160,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default EditProfile;
 
 const styles = StyleSheet.create({
   container: {
@@ -214,4 +215,3 @@ const styles = StyleSheet.create({
   },
 
 });
-

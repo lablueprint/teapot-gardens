@@ -7,26 +7,26 @@ export default function App() {
     <View style={styles.container}>
       <Text>Welcome to the Garden Gangggggggg</Text>
       <StatusBar style="auto" />
-      <Link href="/page1" style={{ color: "blue" }}>
+      <Link href="/screens/page1/page1" style={{ color: "blue" }}>
         Go to Page1
       </Link>
-      <Link href="/homepage" style={{ color: "blue" }}>
+      <Link href="/screens/homepage/homepage" style={{ color: "blue" }}>
         Go to Homepage
       </Link>
-      <Link href="/login" style={{ color: "blue" }}>
+      <Link href="/screens/login/login" style={{ color: "blue" }}>
         Go to Login
       </Link>
-      <Link href="/profile" style={{ color: "blue" }}>
+      <Link href="/screens/profile/profile_page" style={{ color: "blue" }}>
         Go to Profile
       </Link>
-      <Link href="/program_page" style={{ color: "blue" }}>
+      <Link href="/screens/program_page/program_page" style={{ color: "blue" }}>
         Go to Program Page
       </Link>
-      <Link href="/discover/discover_page" style={{ color: "blue" }}>
-        Go to Discover Page
-      </Link>
-      <Link href="/admin_dashboard" style={{ color: "blue" }}>
+      <Link href="/screens/admin_dashboard/admin_dashboard" style={{ color: "blue" }}>
         Go to Admin Dashboard
+      </Link>
+      <Link href="/screens/discover/discover" style={{ color: "blue" }}>
+        Go to Discover
       </Link>
     </View>
   );

@@ -2,7 +2,7 @@ import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image } fro
 import React, { useState } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
-import planticon from '../assets/planticon.png';
+import planticon from '@assets/planticon.png';
 
 const Login = () => {
   // Define state for each input field
@@ -214,4 +214,3 @@ const styles = StyleSheet.create({
   },
 
 });
-
