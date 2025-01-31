@@ -35,7 +35,7 @@ const Profile = () => {
 
   const getUser = async () => {
     try {
-      const response = await axios.get(`https://ef6f-2607-f010-2e9-16-ecc1-734c-79ed-ced.ngrok-free.app/api/users/${tempUserId}`)
+      const response = await axios.get(`https://4ea4-131-179-94-50.ngrok-free.app/api/users/${tempUserId}`)
       setUser(response.data)
     }
     catch (error) {
@@ -49,7 +49,7 @@ const Profile = () => {
     for (const id of pastEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://ef6f-2607-f010-2e9-16-ecc1-734c-79ed-ced.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://4ea4-131-179-94-50.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -66,7 +66,7 @@ const Profile = () => {
     for (const id of upcomingEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://ef6f-2607-f010-2e9-16-ecc1-734c-79ed-ced.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://4ea4-131-179-94-50.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -89,9 +89,9 @@ const Profile = () => {
         <Text style={styles.info}>Bio: I like grapes </Text>
 
         <View style={styles.buttonContainer}>
-        <Link href="/edit_profile" style={{ color : "white" }}>Edit Profile
-          <Pressable style={styles.button}>
-          </Pressable>
+        <Link href="/profile/edit_profile" style={{ color : "#008c8c" }}>Edit Profile
+          {/* <Pressable style={styles.button}>
+          </Pressable> */}
         </Link>
         </View>
 
