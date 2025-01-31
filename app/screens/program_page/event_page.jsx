@@ -7,6 +7,8 @@ import garden from '@assets/garden.jpg';
 import grapes from '@assets/grapes.jpg';
 import AdminDashboard from '@screens/admin_dashboard/admin_dashboard.jsx';
 import { useLocalSearchParams, useGlobalSearchParams } from "expo-router";
+import { Link } from "expo-router"; 
+
 
 const EventPage = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -68,6 +70,24 @@ const EventPage = () => {
       {/* Share Button */}
       <Pressable style={styles.shareButton}>
         <Text style={styles.shareButtonText}>Share</Text>
+      </Pressable>
+
+      <Pressable style={styles.shareButton}>
+        <Link
+          href={{
+            pathname: "screens/program_page/registration_page",
+            params: {
+              title,
+              date,
+              location,
+              time,
+              details
+            },
+          }}
+          style={styles.link}
+        >
+        <Text style={styles.shareButtonText}>Register</Text>
+        </Link>
       </Pressable>
     </View>
   );
