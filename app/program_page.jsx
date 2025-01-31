@@ -28,6 +28,7 @@ const ProgramPage = () => {
   const [isCollapsedGoals, setIsCollapsedGoals] = useState(true);
   const [isCollapsedActivities, setIsCollapsedActivities] = useState(true);
   const [pastEvents, setPastEvents] = useState();
+  const [pastPictures, setPastPictures] = useState([]); 
   const toggleCollapsedGoals = () => {
     setIsCollapsedGoals((prevState) => !prevState);
   }
@@ -40,25 +41,34 @@ const ProgramPage = () => {
     const fetchEventsWithPictures = async () => {
       try {
         // First fetch past events
-        const response = await axios.get('https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/programs/past-events/6789ed54a5e1c0261cefac4f');
+        const response = await axios.get('https://20e5-2607-f010-2a7-2025-119a-bef3-e08a-7d30.ngrok-free.app/api/programs/past-events/6789ed54a5e1c0261cefac4f');
         
         if (response.status === 200) {
-          setPastEvents(response.data);
-          
-          // Then fetch details for each event
-          const eventPromises = response.data.pastEvents.map(eventId =>
-            axios.get(`https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/events/${eventId}`)
-          );
-          
-          const eventResults = await Promise.all(eventPromises);
-          const eventsWithDetails = eventResults.map(result => result.data);
-          setEventDetails(eventsWithDetails);
+          const eventIds = response.data;
+          setPastEvents(eventIds);
+          try{
+            const pictureResponses = await Promise.all(eventIds.map(id =>
+              axios.get(`https://20e5-2607-f010-2a7-2025-119a-bef3-e08a-7d30.ngrok-free.app/api/events/${id}`)
+            ));
+            
+            setPastPictures(prevPictures => {
+              const updatedPictures = {...prevPictures};
+              pictureResponses.forEach((response, index) => {
+                const eventId = eventIds[index];
+                const pictures = response.data.pictures; 
+                updatedPictures[eventId] = [
+                  ...(updatedPictures[eventId] || []), 
+                  ...pictures
+                ];
+              });
+              return updatedPictures;
+            });
+          } catch(error){
+          console.error(error);
         }
+        } 
       } catch (error) {
         console.error('Error fetching events:', error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -97,25 +107,22 @@ const ProgramPage = () => {
       <Text style={ styles.header }>Past Events</Text>
       {/* <ScrollView horizontal={ true } style={ styles.carouselContainer }> */}
         <View style={ styles.carouselContainer }>
-          <Image 
-            style = { styles.image }
-            source = { garden }
-          />
-          <Image 
-            style = { styles.image }
-            source = { garden2 }
-          />
-          <Image 
-            style = { styles.image }
-            source = { notAIGarden }
-          />
+          {pastEvents?.map((eventId, index) => (
+              <View key={index}>
+                {pastPictures[eventId] === "garden" ? (
+                  <Image
+                    style = {styles.image}
+                    source={garden}
+                    />
+                ): (
+                  <Image 
+                  style={styles.image}
+                  source={garden2} />
+                )}
+              </View>
+              ))}
         </View>
-       {pastEvents && pastEvents.map((event, index) => (
-          <Text key={index}>{event}</Text>
-        ))}
-
-        
-      {/* </ScrollView> */}
+ {/* </ScrollView> */}
 
       <View style={ styles.collapsible }>
           <Pressable onPress={ toggleCollapsedGoals } >

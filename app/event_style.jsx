@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     },
     eventDate: {
         fontSize: 14,
-    }
+    }, 
 })
 
 export default styles;

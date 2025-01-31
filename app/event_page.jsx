@@ -36,7 +36,7 @@ const EventPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
+        const response = await axios.get('https://20e5-2607-f010-2a7-2025-119a-bef3-e08a-7d30.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
         if (response.status === 200) {
           setUser(response.data);
         } else {
@@ -56,7 +56,7 @@ const EventPage = () => {
     try {
         console.log('update user events')
         const response = await axios.patch(
-            'https://c33e-2607-f010-2e9-8-1467-3c9d-9f4e-33a1.ngrok-free.app/api/users/', 
+            'https://20e5-2607-f010-2a7-2025-119a-bef3-e08a-7d30.ngrok-free.app/api/users/', 
             {
                 userId: '678f3a6bc0368a4c717413a8',
                 eventId: 3000 // Replace with actual eventId
@@ -75,6 +75,7 @@ const EventPage = () => {
         style={styles.image}
         source = {garden}
       />
+      <UserCard name="Bob" profilePicture={garden} style={styles.hostCard} />
 
       <Text style={styles.eventHeader}>{title}</Text>
 
@@ -83,13 +84,11 @@ const EventPage = () => {
       <Text>{location}</Text>
 
       <Text style={styles.details}>About Event</Text>
-      <Text>{details}</Text>
+      <Text style={styles.detailParagraph}>{details}</Text>
 
 
       {/* Attendees Section */}
-      <Text style={styles.sectionHeader}>Host:</Text>
-      <UserCard name="Bob" profilePicture={garden} style={styles.hostCard} />
-      
+
       <View>
         <Pressable onPress={toggleCollapsed} style={styles.attendeesButton}>
           <Text style={styles.attendeesButtonText}>Attendees</Text>
@@ -139,6 +138,7 @@ const styles = StyleSheet.create({
   },
   details: {
     fontSize: 16,
+    marginTop: 16,
     marginBottom: 16,
     fontStyle: "italic",
   },
@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 12,
+    marginTop: 10,
   },
   hostCard: {
     fontSize: 12,  
@@ -185,6 +186,9 @@ const styles = StyleSheet.create({
   }, 
   subtext: {
     fontStyle: 'bold',
+  }, 
+  detailParagraph: {
+    marginBottom: 20,
   }
 });
 

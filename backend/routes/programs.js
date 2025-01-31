@@ -3,7 +3,6 @@ const {
     getPrograms,
     getProgram,
     getPastEvents,
-    getEvent,
     createProgram,
     deleteProgram,
     updateProgram
@@ -18,8 +17,6 @@ router.get('/', getPrograms)
 router.get('/:id', getProgram)
 
 router.get('/past-events/:id', getPastEvents)
-
-router.get('/getEvent/:id')
 
 router.post('/', createProgram)
 
