@@ -36,7 +36,7 @@ const EventPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('https://20e5-2607-f010-2a7-2025-119a-bef3-e08a-7d30.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
+        const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8');
         if (response.status === 200) {
           setUser(response.data);
         } else {
@@ -56,7 +56,7 @@ const EventPage = () => {
     try {
         console.log('update user events')
         const response = await axios.patch(
-            'https://20e5-2607-f010-2a7-2025-119a-bef3-e08a-7d30.ngrok-free.app/api/users/', 
+            'http://localhost:4000/api/users/', 
             {
                 userId: '678f3a6bc0368a4c717413a8',
                 eventId: 3000 // Replace with actual eventId
