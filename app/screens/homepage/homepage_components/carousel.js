@@ -4,7 +4,7 @@ import { View, ScrollView, Image, Text, StyleSheet, Dimensions } from 'react-nat
 const { width } = Dimensions.get('window');
 import Event from './event';
 
-export default function CustomCarousel({ data }) {
+export default function Carousel({ data }) {
   return (
     <View style={styles.carouselContainer}>
       <ScrollView
@@ -15,7 +15,6 @@ export default function CustomCarousel({ data }) {
       >
       {data.map((item, index) => (
         <Event index = {index} title = {item.title} time = {item.time} details={item.details}/>))}
-
       </ScrollView>
     </View>
   );

@@ -21,9 +21,6 @@ const userSchema = new Schema({
     admin: {
         type: Boolean
     },
-    userId: {
-        type: Number
-    },
     name: {
         type: String
     },
@@ -48,13 +45,13 @@ const userSchema = new Schema({
         type: Number
     },
     followedPrograms: {
-        type: [Number]
+        type: [String]
     },
     attendedEvents: {
-        type: [Number]
+        type: [String]
     },
     attendingEvents: {
-        type: [Number]
+        type: [String]
     }
 
 }, { timestamps: true })
