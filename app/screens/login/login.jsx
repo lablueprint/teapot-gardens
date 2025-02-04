@@ -30,20 +30,20 @@ const Login = () => {
 
   const [showOnboarding, setShowOnboarding] = useState(true);
 
-  useEffect(() => {
-    checkIfFirstTime();
-  }, []);
+  // useEffect(() => {
+  //   checkIfFirstTime();
+  // }, []);
 
-  const checkIfFirstTime = async () => {
-    try {
-      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-      if (hasSeenOnboarding != null) {
-        setShowOnboarding(false);
-      }
-    } catch (error) {
-      console.log('Error checkign first time status:', error);
-    }
-  };
+  // const checkIfFirstTime = async () => {
+  //   try {
+  //     const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+  //     if (hasSeenOnboarding != null) {
+  //       setShowOnboarding(false);
+  //     }
+  //   } catch (error) {
+  //     console.log('Error checkign first time status:', error);
+  //   }
+  // };
 
   const handleOnboardingComplete = async () => {
     try{

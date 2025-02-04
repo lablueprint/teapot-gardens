@@ -33,7 +33,7 @@ const OnboardingCarousel = ({ onComplete }) => {
         },
         {
             id: 4,
-            title: 'Slide 4',
+            title: 'Thanks for joining',
             image: notAIGarden
         }
     ];
@@ -97,7 +97,7 @@ const OnboardingCarousel = ({ onComplete }) => {
             resizeMode="contain"
             onError={(e) => console.log('image error:', NativeEventEmitter.error)}
           />
-          <View style={styles.buttonContainer}>
+          {currentSlide != slides.length -1 && <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.skipButton}
               onPress={handleSkip}
@@ -110,7 +110,7 @@ const OnboardingCarousel = ({ onComplete }) => {
                 >
                   <Text style={styles.continueButtonText}>Continue</Text>
                 </TouchableOpacity>
-             </View>
+             </View>}
            {currentSlide === slides.length -1 && ( 
             <View style={styles.getStartedContainer}>
             <TouchableOpacity onPress={handleFinish}
@@ -226,19 +226,21 @@ continueButtonText: {
   color: '#FFF',     
 },
 getStartedContainer: {
-    position: 'absolute',
     bottom: 20,
-    left: 0,
-    right: 0,
+    width: '100%',
+    marginTop: 'auto',
+    marginBottom: '50',
     alignItems: 'center',
 },
 getStartedButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
+    width: '100%',
     borderRadius: 25,
     borderWidth: 1,
     borderColor: '#000',
     backgroundColor: '#FFF',
+    alignItems: 'center',
 },
 getStartedText: {
     fontSize: 16,
