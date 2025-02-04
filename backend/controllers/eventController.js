@@ -88,7 +88,7 @@ const updateEventUsers = async (req, res) => {
     }
 }
 
-const getAttendeeCount = async (req, res) => {
+const getAttendees = async (req, res) => {
     const { id } = req.params
 
     try {
@@ -97,12 +97,14 @@ const getAttendeeCount = async (req, res) => {
             return res.status(404).json({ error: "Event not found" });
         }
 
-        const count = event.attendeeList.length;
-        res.status(200).json({ count });
+        const count = event.attendeeList;
+        res.status(200).json(count);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
+
+
 
 module.exports = {
     getEvents,
@@ -111,5 +113,5 @@ module.exports = {
     deleteEvent,
     updateEvent,
     updateEventUsers,
-    getAttendeeCount
+    getAttendees
 }
