@@ -76,7 +76,6 @@ const updateUserEvents = async (req, res) => {
     // }
 
     try {
-        console.log('hi');
         const user = await User.findByIdAndUpdate(
             userId,
             { $addToSet: { attendingEvents: eventId } }, 

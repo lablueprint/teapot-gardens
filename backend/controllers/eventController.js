@@ -68,10 +68,48 @@ const updateEvent = async (req, res) => {
     res.status(200).json(event)
 }
 
+const updateEventUsers = async (req, res) => {
+    const { eventId, userId } = req.body;
+    console.log(eventId, userId);
+    try {
+        console.log('updating events')
+        const event = await Event.findByIdAndUpdate(
+            eventId,
+            { $addToSet: { attendeeList: userId } },
+            { new: true }
+        )
+
+        if (!event) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.status(200).json(event)
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
+const getAttendeeCount = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const event = await Event.findById(id);
+        if (!event) {
+            return res.status(404).json({ error: "Event not found" });
+        }
+
+        const count = event.attendeeList.length;
+        res.status(200).json({ count });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getEvents,
     getEvent,
     createEvent,
     deleteEvent,
-    updateEvent
+    updateEvent,
+    updateEventUsers,
+    getAttendeeCount
 }
