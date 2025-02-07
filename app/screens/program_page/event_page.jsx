@@ -11,8 +11,12 @@ import axios from 'axios';
 
 
 const EventPage = () => {
+  const tempEventId = '67932a72413f4d68be84e592' //valentines picnic woohoo
+  const tempUserId = '678f3a6bc0368a4c717413a8' //testingggg
+
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [user, setUser] = useState(null); 
+  const [attendingEvents, setAttendingEvents] = useState([]);
   const [event] = useState(null);
 
   const toggleCollapsed = () => {
@@ -31,14 +35,13 @@ const EventPage = () => {
   
   const { title, date, location, time, details} = useLocalSearchParams();
 
-  //update user events
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('https://20e5-2607-f010-2a7-2025-119a-bef3-e08a-7d30.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
+        const response = await axios.get('https://0dd7-172-91-75-11.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
         if (response.status === 200) {
           setUser(response.data);
+          setAttendingEvents(response.data.attendingEvents);
         } else {
           console.error('Failed to fetch user: ', response.data.error);
         }
@@ -52,23 +55,87 @@ const EventPage = () => {
     fetchUser();
   }, []);
 
-  const updateUserEvents = async () => {
+  //buttons for registration/cancel registration/view ticket
+  const [showDynamicButtons, setShowDynamicButtons] = useState(true);
+  const Buttons = ({ attending }) => {
+    return (
+      <View>
+        {showDynamicButtons && <DynamicButtons attending={attending}/>}
+        {!showDynamicButtons && <RegisterButtons />}
+      </View>
+    );
+  };
+  const DynamicButtons = ({ attending }) => {
+    let content
+    if (!attending) {
+      content = 
+      <Pressable style={styles.shareButton} onPress={() => setShowDynamicButtons(false)}>
+      <Text style={styles.shareButtonText}>Register</Text>
+      </Pressable>
+    } else {
+      content = (
+        <View>
+          <Pressable style={styles.shareButton}>
+          <Text style={styles.shareButtonText}>View Ticket</Text>
+          </Pressable>
+          <Pressable style={styles.shareButton} onPress={deleteUserEvent}>
+          <Text style={styles.shareButtonText}>Cancel Registration</Text>
+          </Pressable>
+        </View>
+      )
+    }
+    return <View style={{ padding: 24 }}>{content}</View>
+  }
+  const RegisterButtons = () => {
+    return (
+      <View style={{alignItems: 'center'}}>
+        <Text style={{paddingTop: 10}}>Will you be coming as...</Text>
+
+        <Pressable style={styles.registerButtons} onPress={addUserEvent}>
+        <Text style={styles.shareButtonText}>volunteer</Text>
+        </Pressable>
+        
+        <Pressable style={styles.registerButtons} onPress={addUserEvent}>
+        <Text style={styles.shareButtonText}>attendee</Text>
+        </Pressable>
+
+        <Pressable style={styles.xButton} onPress={() => setShowDynamicButtons(true)}>
+        <Text style={styles.shareButtonText}>X</Text>
+        </Pressable>
+      </View>
+    )
+  }
+    
+  //add user event
+  const addUserEvent = async () => {
     try {
-        console.log('update user events')
+        console.log('add to user events')
         const response = await axios.patch(
-            'https://20e5-2607-f010-2a7-2025-119a-bef3-e08a-7d30.ngrok-free.app/api/users/', 
+            'https://0dd7-172-91-75-11.ngrok-free.app/api/users/', 
             {
-                userId: '678f3a6bc0368a4c717413a8',
-                eventId: 3000 // Replace with actual eventId
+                userId: tempUserId,
+                eventId: tempEventId // Replace with actual eventId
             }
         );
-
-        console.log('Updated User:', response.data);
     } catch (error) {
         console.error('Error:', error);
     }
-};
-  
+  };
+
+  //delete user event
+  const deleteUserEvent = async () => {
+    //gets rid of event from attendingEvents array
+    const updatedEvents = attendingEvents.filter((item) => item !== tempEventId);
+    try {
+      const response = await axios.patch(`https://0dd7-172-91-75-11.ngrok-free.app/api/users/${tempUserId}`, { attendingEvents: updatedEvents } );
+      console.log(response.data)
+    }
+    catch (error) {
+      console.log("error", error)
+    }
+    
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Image 
@@ -111,14 +178,8 @@ const EventPage = () => {
         </Collapsible>
       </View>
 
-      <Pressable style={styles.shareButton} onPress={updateUserEvents}>
-        <Text style={styles.shareButtonText}>Attending</Text>
-      </Pressable>
+      <Buttons attending={attendingEvents.includes(tempEventId)}/>
 
-      {/* Share Button */}
-      <Pressable style={styles.shareButton}>
-        <Text style={styles.shareButtonText}>Share</Text>
-      </Pressable>
     </ScrollView>
   );
 };
@@ -167,11 +228,37 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontSize: 10,  
   },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 999,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   shareButton: {
     marginTop: 16,
     padding: 12,
     backgroundColor: "gray",
-    borderRadius: 8,
+    borderRadius: 20,
+  },
+  registerButtons: {
+    marginTop: 16,
+    padding: 12,
+    width: 150,
+    backgroundColor: "gray",
+    borderRadius: 20,
+  },
+  xButton: {
+    marginTop: 16,
+    padding: 12,
+    width: 40,
+    backgroundColor: "black",
+    borderRadius: 20,
   },
   shareButtonText: {
     textAlign: "center",

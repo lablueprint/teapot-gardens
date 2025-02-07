@@ -44,7 +44,7 @@ const EditProfile = () => {
       if (username) user.username = username;
       
       try {
-        const response = await axios.patch(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/users/${tempUserId}`, user);
+        const response = await axios.patch(`https://0dd7-172-91-75-11.ngrok-free.app/api/users/${tempUserId}`, user);
         console.log(response.data)
       }
       catch (error) {
