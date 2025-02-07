@@ -68,10 +68,36 @@ const updateUser = async (req, res) => {
     res.status(200).json(user)
 }
 
+// update user's events
+const updateUserEvents = async (req, res) => {
+    const { userId, eventId } = req.body;
+    // if (!mongoose.Types.ObjectId.isValid(userId)) {
+    //     return res.status(404).json({ error: "Invalid User ID" });
+    // }
+
+    try {
+        console.log('hi');
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { attendingEvents: eventId } }, 
+            {new: true}
+        );
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getUsers,
     getUser,
     createUser,
     deleteUser,
-    updateUser
+    updateUser, 
+    updateUserEvents
 }
