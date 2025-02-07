@@ -43,6 +43,7 @@ export default function Homepage() {
         setLoading(false);
       }
     };
+    
     fetchUserData();
   }, []);
   

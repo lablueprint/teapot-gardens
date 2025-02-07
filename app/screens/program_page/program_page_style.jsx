@@ -2,30 +2,39 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     outerContainer: {
-        alignItems: 'center',
-        paddingBottom: 10
+        alignItems: 'left',
+    },
+    banner: {
+        height: '200', 
     },
     contentContainer: {
-        alignItems: 'center',
+        alignItems: 'left',
         padding: 20,
+    },
+    programTitle: {
+        fontSize: 25,
+        fontWeight: 'bold',
+    },
+    description: {
+        fontsize: 20,
+        marginTop: 20, 
+        marginBottom: 20
+    },
+    button: {
+        backgroundColor: 'black',
+        color: 'white',
+        padding: 15, 
+        borderRadius: 20, 
+        textAlign: 'center'
+    },
+    header: {
+        fontSize: 20,
+        marginTop: 30,
+        fontWeight: 'bold'
     },
     carouselContainer: {
         flexDirection: 'row',
         align: 'center',
-        padding: 10
-    },
-    programTitle: {
-        fontSize: 50,
-        textAlign: 'center'
-    },
-    header: {
-        fontSize: 25,
-        textAlign: 'center'
-    },
-    content: {
-        fontsize: 20,
-        textAlign: 'center',
-        paddingBottom: 20
     },
     bulletContainer: {
         fontSize: 20,
