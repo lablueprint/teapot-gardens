@@ -1,11 +1,10 @@
 import React, { useState, useEffect} from "react";
 import { Text, View, Pressable, StyleSheet } from "react-native";
-import UserCard from './user_card.jsx';
+import UserCard from '../program_page/user_card.jsx';
 import Collapsible from 'react-native-collapsible';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import garden from '@assets/garden.jpg';
 import grapes from '@assets/grapes.jpg';
-import AdminDashboard from '@screens/admin_dashboard/admin_dashboard.jsx';
 import { useLocalSearchParams, useGlobalSearchParams } from "expo-router";
 import { Link } from "expo-router"; 
 
@@ -27,7 +26,7 @@ const EventPage = () => {
     }
   ]
   
-  const { title, date, location, time, details} = useLocalSearchParams();
+  const { title, date, location, time, details } = useLocalSearchParams();
   
   return (
     <View style={styles.container}>
@@ -68,14 +67,14 @@ const EventPage = () => {
       </View>
 
       {/* Share Button */}
-      <Pressable style={styles.shareButton}>
+      {/* <Pressable style={styles.shareButton}>
         <Text style={styles.shareButtonText}>Share</Text>
-      </Pressable>
+      </Pressable> */}
 
-      <Pressable style={styles.shareButton}>
+      <Pressable style={styles.button}>
         <Link
           href={{
-            pathname: "screens/program_page/registration_page",
+            pathname: "screens/event/registration_page",
             params: {
               title,
               date,
@@ -86,7 +85,25 @@ const EventPage = () => {
           }}
           style={styles.link}
         >
-        <Text style={styles.shareButtonText}>Register</Text>
+        <Text style={styles.buttonText}>Register</Text>
+        </Link>
+      </Pressable>
+
+      <Pressable style={styles.button}>
+        <Link
+          href={{
+            pathname: "screens/event/admin_scanner",
+            params: {
+              title,
+              date,
+              location,
+              time,
+              details
+            },
+          }}
+          style={styles.link}
+        >
+        <Text style={styles.buttonText}>Admin QR Scanner</Text>
         </Link>
       </Pressable>
     </View>
@@ -136,13 +153,13 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontSize: 10,  
   },
-  shareButton: {
+  button: {
     marginTop: 16,
     padding: 12,
     backgroundColor: "gray",
     borderRadius: 8,
   },
-  shareButtonText: {
+  buttonText: {
     textAlign: "center",
     color: "white",
     fontWeight: "bold",

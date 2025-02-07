@@ -8,7 +8,6 @@ import QRCode from "react-native-qrcode-svg";
 const RegistrationPage = () => {
     const tempUserId = '6789f49f8e0a009647312c7a'
     const [user, setUser] = useState({});
-    const [isCollapsed, setIsCollapsed] = useState(true);
 
     useEffect(() => {
         getUser();
@@ -16,17 +15,15 @@ const RegistrationPage = () => {
 
     const getUser = async () => {
         try {
-        const response = await axios.get(`https://27ab-38-15-215-20.ngrok-free.app/api/users/${tempUserId}`)
+        const response = await axios.get(`https://f7f6-38-15-215-20.ngrok-free.app/api/users/${tempUserId}`)
         setUser(response.data)
+        console.log(response.data)
         }
         catch (error) {
         console.log("Error getting user", error)
         }
     }
 
-    const toggleCollapsed = () => {
-        setIsCollapsed((prevState) => !prevState);
-    };
   
     const { title, date, location, time, details} = useLocalSearchParams();
   
@@ -46,11 +43,8 @@ const RegistrationPage = () => {
                 <Text style={styles.subtext}>Name: {user.name}</Text>
                 <Text style={styles.subtext}>Email: {user.email}</Text>
                 <View style={{margin: 10}}>
-                <QRCode style={styles.qr} value={user.id} size={170} />
+                <QRCode style={styles.qr} value={user._id} size={170} />
                 </View>
-
-                
-            
         </View>
         </View>
     );

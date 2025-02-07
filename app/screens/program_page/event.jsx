@@ -7,7 +7,7 @@ const Event = (props) => {
     <View style={styles.eventContainer}>
       <Link
         href={{
-          pathname: "screens/program_page/event_page",
+          pathname: "screens/event/event_page",
           params: {
             title: props.title,
             date: props.date,
