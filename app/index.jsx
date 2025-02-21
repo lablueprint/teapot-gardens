@@ -30,6 +30,8 @@ export default function App() {
       </Link>
       <Link href="/screens/plant/plant" style={{ color: "blue" }}>
         Go to Plants
+      <Link href="/screens/events" style={{ color: "blue" }}>
+        Go to Events Page
       </Link>
     </View>
   );

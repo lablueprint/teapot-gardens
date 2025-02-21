@@ -1,12 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
-import { Slot, Stack } from "expo-router";
+import { Drawer } from "expo-router/drawer";
+import { Ionicons } from "@expo/vector-icons";
+import HamburgerMenu from "./src/components/hamburgermenu";
 
-const RootLayout = () => {
+export default function Layout() {
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-    </Stack>
+    <HamburgerMenu />
   );
-};
-
-export default RootLayout;
+}
