@@ -18,6 +18,9 @@ const EventPage = () => {
   const [user, setUser] = useState(null); 
   const [attendingEvents, setAttendingEvents] = useState([]);
   const [event] = useState(null);
+  const [event, setEvent] = useState(null);
+  const [attendeeCount, setAttendeeCount] = useState(null);
+  const [newAttendeeCount, setNewAttendeeCount] = useState(null);
 
   const toggleCollapsed = () => {
     setIsCollapsed((prevState) => !prevState);
@@ -52,7 +55,25 @@ const EventPage = () => {
       }
       
     };
+    const fetchEvent = async () => {
+      try {
+        const response = await axios.get('https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/678f315b8d423da67c615e95');
+        if (response.status === 200) {
+          setEvent(response.data);
+        } else {
+          console.error('Failed to fetch user: ', response.data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching user: ', error.message);
+      } finally {
+        setLoading(false);
+      }
+      
+      };
     fetchUser();
+    fetchEvent();
+    getAttendeeCount();
+    getNewAttendeeCount();
   }, []);
 
   //buttons for registration/cancel registration/view ticket
@@ -135,7 +156,53 @@ const EventPage = () => {
     }
     
   }
+  }
 
+  const updateEventUsers = async () => {
+    try {
+      console.log('update events')
+      const response = await axios.patch(
+        'https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/', 
+        {
+          // Replace with actual eventId and userId
+          eventId: '678f315b8d423da67c615e95',
+          userId: '678f3a6bc0368a4c717413a8'
+        }
+      );
+
+      console.log('Updated Event:', response.data);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+  }
+
+  const getAttendeeCount = async () => {
+    try {
+      const response = await axios.get(
+        `https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`);
+      setAttendeeCount(response.data.length);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+  }
+
+  const getNewAttendeeCount = async () => {
+    try {
+      const response = await axios.get(
+        `https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`
+      );
+      const attendeeIds = response.data;
+      const userRequests = attendeeIds.map(attendeeId =>
+          axios.get(`https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/users/${attendeeId}`)
+      );
+      const users = await Promise.all(userRequests);
+      let count = users.filter(user => user.data.attendedEvents.length === 0).length;
+      setNewAttendeeCount(count); 
+    } catch (error) {
+      console.error('Error fetching new attendees:', error);
+    }
+  }
+  
   return (
     <ScrollView style={styles.container}>
       <Image 
@@ -149,6 +216,10 @@ const EventPage = () => {
       <Text style={styles.subtext}>{date}, {time}</Text>
       <Text style={styles.subtext}>Location </Text>
       <Text>{location}</Text>
+
+      <Text style={styles.subtext}>Attendees</Text>
+      <Text>{newAttendeeCount !== null ? `${newAttendeeCount}+ new Teapost goers are attending!` : ""}</Text>
+      <Text>{attendeeCount !== null ? attendeeCount : "No attendees yet!"}</Text>
 
       <Text style={styles.details}>About Event</Text>
       <Text style={styles.detailParagraph}>{details}</Text>
@@ -178,7 +249,15 @@ const EventPage = () => {
         </Collapsible>
       </View>
 
+
       <Buttons attending={attendingEvents.includes(tempEventId)}/>
+      <Pressable style={styles.shareButton} onPress={() => 
+        {
+        updateUserEvents(); 
+        updateEventUsers();
+        }}>
+        <Text style={styles.shareButtonText}>Attending</Text>
+      </Pressable>
 
     </ScrollView>
   );

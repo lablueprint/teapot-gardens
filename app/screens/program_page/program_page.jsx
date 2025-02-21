@@ -48,6 +48,7 @@ const ProgramPage = () => {
           try{
             const pictureResponses = await Promise.all(eventIds.map(id =>
               axios.get(`https://0dd7-172-91-75-11.ngrok-free.app/api/events/${id}`)
+
             ));
             
             setPastPictures(prevPictures => {
