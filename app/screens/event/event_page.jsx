@@ -1,12 +1,13 @@
 import AdminDashboard from '@screens/admin_dashboard/admin_dashboard.jsx';
 import React, { useState, useEffect} from "react";
 import { Text, ScrollView, View, Pressable, StyleSheet, Image } from "react-native";
-import UserCard from './user_card.jsx';
+import UserCard from '@screens/program_page/user_card.jsx';
 import Collapsible from 'react-native-collapsible';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import garden from '@assets/garden.jpg';
 import grapes from '@assets/grapes.jpg';
 import { useLocalSearchParams } from "expo-router";
+import { Link } from "expo-router"; 
 import axios from 'axios';
 
 
@@ -259,6 +260,49 @@ const EventPage = () => {
         <Text style={styles.shareButtonText}>Attending</Text>
       </Pressable>
 
+<<<<<<< HEAD:app/screens/event/event_page.jsx
+      {/* Share Button */}
+      {/* <Pressable style={styles.shareButton}>
+        <Text style={styles.shareButtonText}>Share</Text>
+      </Pressable> */}
+
+      <Pressable style={styles.button}>
+        <Link
+          href={{
+            pathname: "screens/event/registration_page",
+            params: {
+              title,
+              date,
+              location,
+              time,
+              details
+            },
+          }}
+          style={styles.link}
+        >
+        <Text style={styles.buttonText}>Register</Text>
+        </Link>
+      </Pressable>
+
+      <Pressable style={styles.button}>
+        <Link
+          href={{
+            pathname: "screens/event/admin_scanner",
+            params: {
+              title,
+              date,
+              location,
+              time,
+              details
+            },
+          }}
+          style={styles.link}
+        >
+        <Text style={styles.buttonText}>Admin QR Scanner</Text>
+        </Link>
+      </Pressable>
+=======
+>>>>>>> main:app/screens/program_page/event_page.jsx
     </ScrollView>
   );
 };
@@ -307,6 +351,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontSize: 10,  
   },
+<<<<<<< HEAD:app/screens/event/event_page.jsx
+  button: {
+=======
   overlay: {
     position: 'absolute',
     top: 0,
@@ -320,6 +367,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   shareButton: {
+>>>>>>> main:app/screens/program_page/event_page.jsx
     marginTop: 16,
     padding: 12,
     backgroundColor: "gray",
@@ -339,7 +387,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     borderRadius: 20,
   },
-  shareButtonText: {
+  buttonText: {
     textAlign: "center",
     color: "white",
     fontWeight: "bold",
