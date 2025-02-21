@@ -2,7 +2,7 @@ import React from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import PlantSelector from './PlantSelector_comp.js';
 
-const plant = () => {
+const Plant = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="dark-content" />
@@ -11,4 +11,4 @@ const plant = () => {
   );
 };
 
-export default plant;
+export default Plant;
