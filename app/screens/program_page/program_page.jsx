@@ -26,6 +26,7 @@ const ProgramPage = () => {
   const activities = ['grow strawberries', 'plant trees']
   const [isCollapsedGoals, setIsCollapsedGoals] = useState(true);
   const [isCollapsedActivities, setIsCollapsedActivities] = useState(true);
+  const [user, setUser] = useState(null); 
   const [pastEvents, setPastEvents] = useState();
   const [pastPictures, setPastPictures] = useState([]); 
   const toggleCollapsedGoals = () => {
@@ -34,20 +35,39 @@ const ProgramPage = () => {
   const toggleCollapsedActivities = () => {
     setIsCollapsedActivities((prevState) => !prevState);
   }
+
+  const handleCreateEvent = () => {
+    console.log('hi');
+  }
   
   // get program's pastEvent array
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8');
+        if (response.status === 200) {
+          setUser(response.data);
+        } else {
+          console.error('Failed to fetch user: ', response.data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching user: ', error.message);
+      } finally {
+        setLoading(false);
+      }
+      
+    };
     const fetchEventsWithPictures = async () => {
       try {
         // First fetch past events
-        const response = await axios.get('https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/programs/past-events/6789ed54a5e1c0261cefac4f');
+        const response = await axios.get('http://localhost:4000/api/programs/past-events/6789ed54a5e1c0261cefac4f');
         
         if (response.status === 200) {
           const eventIds = response.data;
           setPastEvents(eventIds);
           try{
             const pictureResponses = await Promise.all(eventIds.map(id =>
-              axios.get(`https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/${id}`)
+              axios.get(`http://localhost:4000/api/events/${id}`)
             ));
             
             setPastPictures(prevPictures => {
@@ -70,7 +90,7 @@ const ProgramPage = () => {
         console.error('Error fetching events:', error);
       }
     };
-
+    fetchUser();
     fetchEventsWithPictures();
   }, []);
 
@@ -98,9 +118,21 @@ const ProgramPage = () => {
           {eventData.events.map((event, index) => (
               <Event {...event} key={index}/>
             ))}
-
+          </View>
+          {/* create new event if admin */}
+          <View style={styles.createEventContainer}>
+            {
+              user?.admin && (
+                <Link 
+                  href={{pathname: "screens/program_page/create_event"}}
+                  style={styles.createEventButton}>
+                  <Text style={styles.plusButton}>+</Text>
+                </Link>
+              )
+            }
           </View>
         </View>
+        
 
       {/*  Past Events Carousel  */}
       <Text style={ styles.header }>Past Events</Text>
