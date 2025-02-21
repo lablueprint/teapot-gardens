@@ -82,7 +82,7 @@ export default function DiscoverPage () {
                         <Pressable 
                             key={index} 
                             style={styles.eventBox}
-                            onPress={() => navigation.navigate('screens/program_page/event_page', 
+                            onPress={() => navigation.navigate('EventPage', 
                                 { 
                                     title: event.name, 
                                     date: event.date,
@@ -115,7 +115,7 @@ export default function DiscoverPage () {
                     <Pressable 
                         style={styles.programContainer} 
                         key={index}
-                        onPress={() => navigation.navigate('screens/program_page/program_page')}
+                        onPress={() => navigation.navigate('ProgramPage')}
                         >
                         <Image source={defaultPic} style={styles.programImage}/>
                         <Text>{program.description}</Text>

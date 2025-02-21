@@ -3,8 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import Homepage from "@screens/homepage/homepage";
 import DiscoverPage from "@screens/discover/discover";
-import Profile from "@screens/profile/profile";
+import Profile from "@screens/profile/profile_page";
+import Plant from "@screens/plant/plant";
 import Index from "@app/index";
+
+import EventPage from "@screens/event/event_page";
+import ProgramPage from "@screens/program_page/program_page";
+
 import notificationIcon from "@assets/notifications.png";
 import menuIcon from "@assets/menu.png";
 import tempIcon from "@assets/tempicon.png";
@@ -24,7 +29,7 @@ const CustomDrawerContent = (props) => {
 
             <View style={styles.drawerItemsContainer}>
                 {["Home", "View Plant", "My Events", "Discover"].map((screen, index) => {
-                        const routeName = (screen === "View Plant" || screen === "My Events") ? "Temp" : screen;
+                        const routeName = (screen === "My Events") ? "Temp" : screen;
                     const isActive = props.state.routes[props.state.index].name === routeName;
 
                     return (
@@ -87,7 +92,10 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="Home" component={Homepage} />
             <Drawer.Screen name="Discover" component={DiscoverPage} />
             <Drawer.Screen name="Profile" component={Profile} />
+            <Drawer.Screen name="View Plant" component={Plant} />
             <Drawer.Screen name="Temp" component={Index} />
+            <Drawer.Screen name="EventPage" component={EventPage} />
+            <Drawer.Screen name="ProgramPage" component={ProgramPage} />
         </Drawer.Navigator>
     );
 };
