@@ -18,7 +18,6 @@ const EventPage = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [user, setUser] = useState(null); 
   const [attendingEvents, setAttendingEvents] = useState([]);
-  const [event] = useState(null);
   const [event, setEvent] = useState(null);
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
@@ -157,7 +156,6 @@ const EventPage = () => {
     }
     
   }
-  }
 
   const updateEventUsers = async () => {
     try {
@@ -260,11 +258,10 @@ const EventPage = () => {
         <Text style={styles.shareButtonText}>Attending</Text>
       </Pressable>
 
-<<<<<<< HEAD:app/screens/event/event_page.jsx
       {/* Share Button */}
-      {/* <Pressable style={styles.shareButton}>
+      <Pressable style={styles.shareButton}>
         <Text style={styles.shareButtonText}>Share</Text>
-      </Pressable> */}
+      </Pressable>
 
       <Pressable style={styles.button}>
         <Link
@@ -301,8 +298,6 @@ const EventPage = () => {
         <Text style={styles.buttonText}>Admin QR Scanner</Text>
         </Link>
       </Pressable>
-=======
->>>>>>> main:app/screens/program_page/event_page.jsx
     </ScrollView>
   );
 };
@@ -319,6 +314,7 @@ const styles = StyleSheet.create({
   subtext: {
     fontSize: 16,
     marginBottom: 4,
+    fontStyle: 'bold',
   },
   details: {
     fontSize: 16,
@@ -351,9 +347,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontSize: 10,  
   },
-<<<<<<< HEAD:app/screens/event/event_page.jsx
-  button: {
-=======
   overlay: {
     position: 'absolute',
     top: 0,
@@ -367,7 +360,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   shareButton: {
->>>>>>> main:app/screens/program_page/event_page.jsx
     marginTop: 16,
     padding: 12,
     backgroundColor: "gray",
@@ -397,9 +389,6 @@ const styles = StyleSheet.create({
     height: '200',
     borderRadius: 10,
     marginBottom: 10,
-  }, 
-  subtext: {
-    fontStyle: 'bold',
   }, 
   detailParagraph: {
     marginBottom: 20,
