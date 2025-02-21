@@ -40,14 +40,15 @@ const ProgramPage = () => {
     const fetchEventsWithPictures = async () => {
       try {
         // First fetch past events
-        const response = await axios.get('https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/programs/past-events/6789ed54a5e1c0261cefac4f');
+        const response = await axios.get('https://0dd7-172-91-75-11.ngrok-free.app/api/programs/past-events/6789ed54a5e1c0261cefac4f');
         
         if (response.status === 200) {
           const eventIds = response.data;
           setPastEvents(eventIds);
           try{
             const pictureResponses = await Promise.all(eventIds.map(id =>
-              axios.get(`https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/${id}`)
+              axios.get(`https://0dd7-172-91-75-11.ngrok-free.app/api/events/${id}`)
+
             ));
             
             setPastPictures(prevPictures => {
