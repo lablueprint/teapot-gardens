@@ -1,8 +1,10 @@
 import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 import planticon from '@assets/planticon.png';
+import OnboardingCarousel from "./OnboardingCarouselComp";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
   // Define state for each input field
@@ -26,6 +28,31 @@ const Login = () => {
   //     { label: 'Prefer not to say', value: 'prefnot' },
   // ]);
 
+  const [showOnboarding, setShowOnboarding] = useState(true);
+
+  useEffect(() => {
+    checkIfFirstTime();
+  }, []);
+
+  const checkIfFirstTime = async () => {
+    try {
+      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+      if (hasSeenOnboarding != null) {
+        setShowOnboarding(false);
+      }
+    } catch (error) {
+      console.log('Error checkign first time status:', error);
+    }
+  };
+
+  const handleOnboardingComplete = async () => {
+    try{
+      await AsyncStorage.setItem('hasSeenOnboarding', 'true');
+      setShowOnboarding(false);
+    } catch (error) {
+      console.log('Error saving onboarding status:', error);
+    }
+  };
   
   const handleSubmit = async () => {
     if (
@@ -43,7 +70,7 @@ const Login = () => {
       
       console.log(user)
       try {
-        const response = await axios.post('https://2906-2607-f010-2a7-103f-599a-5e21-16b1-1c05.ngrok-free.app/api/users/', user);
+        const response = await axios.post('https://0dd7-172-91-75-11.ngrok-free.app/api/users/', user);
         console.log(response.data)
       }
       catch (error) {
@@ -54,8 +81,13 @@ const Login = () => {
   };
 
   return (
+  
     <View style={styles.container}>
-      <View style={styles.header}>
+      {showOnboarding ? (
+        <OnboardingCarousel onComplete={handleOnboardingComplete}/>
+      ) : (
+        <View>
+        <View style={styles.header}>
         <Text style={styles.title}>Create an Account</Text>
         <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } />
       </View>
@@ -154,8 +186,9 @@ const Login = () => {
           <Text style={{ fontSize: 18,}} >Sign Up</Text>
         </TouchableOpacity>
       </View>
+      </View>
+      )}
     </View>
-
   );
 };
 
@@ -163,6 +196,7 @@ export default Login;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
   },
   input: {
