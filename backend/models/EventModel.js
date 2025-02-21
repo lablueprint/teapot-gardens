@@ -10,8 +10,8 @@ description(string)
 */
 
 const eventSchema = new Schema({
-    eventID: {
-        type: Number
+    name: {
+        type: String
     },
     time: {
         type: String

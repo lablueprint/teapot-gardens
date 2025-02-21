@@ -3,14 +3,12 @@ const mongoose = require('mongoose')
 
 // get all users
 const getUsers = async (req, res) => {
-    console.log("get users")
     const users = await User.find({}).sort({createdAt: -1})
     res.status(200).json(users)
 }
 
 // get a single user
 const getUser = async(req, res) => {
-    console.log("get single user")
     const { id } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(id)){
@@ -25,6 +23,7 @@ const getUser = async(req, res) => {
 
 // create a new user
 const createUser = async (req, res) => {
+    console.log("create a user")
     // add doc to db
     try{
         const user = await User.create(req.body)
@@ -53,6 +52,7 @@ const deleteUser = async (req, res) => {
 
 // update a user
 const updateUser = async (req, res) => {
+    console.log("update user")
     const { id } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(id)){
@@ -68,10 +68,35 @@ const updateUser = async (req, res) => {
     res.status(200).json(user)
 }
 
+// update user's events
+const updateUserEvents = async (req, res) => {
+    const { userId, eventId } = req.body;
+    // if (!mongoose.Types.ObjectId.isValid(userId)) {
+    //     return res.status(404).json({ error: "Invalid User ID" });
+    // }
+
+    try {
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { attendingEvents: eventId } }, 
+            {new: true}
+        );
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getUsers,
     getUser,
     createUser,
     deleteUser,
-    updateUser
+    updateUser, 
+    updateUserEvents
 }

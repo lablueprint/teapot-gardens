@@ -2,6 +2,7 @@ const express = require('express')
 const {
     getPrograms,
     getProgram,
+    getPastEvents,
     createProgram,
     deleteProgram,
     updateProgram
@@ -14,6 +15,8 @@ const router = express.Router()
 router.get('/', getPrograms)
 
 router.get('/:id', getProgram)
+
+router.get('/past-events/:id', getPastEvents)
 
 router.post('/', createProgram)
 

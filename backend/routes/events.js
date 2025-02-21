@@ -4,7 +4,9 @@ const {
     getEvent,
     createEvent,
     deleteEvent,
-    updateEvent
+    updateEvent,
+    updateEventUsers,
+    getAttendees
 } = require('../controllers/eventController')
 
 const Event = require('../models/EventModel')
@@ -20,5 +22,9 @@ router.post('/', createEvent)
 router.delete('/:id', deleteEvent)
 
 router.patch('/:id', updateEvent)
+
+router.patch('/', updateEventUsers)
+
+router.get('/attendees/:id', getAttendees)
 
 module.exports = router

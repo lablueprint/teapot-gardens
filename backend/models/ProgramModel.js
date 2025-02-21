@@ -11,13 +11,13 @@ description(string)
 
 const programSchema = new Schema({
     upcomingEvents: {
-        type: [Number]
+        type: [String]
     },
     pastEvents: {
-        type: [Number]
+        type: [String]
     },
     followList: {
-        type: [Number]
+        type: [String]
     },
     description: {
         type: String
