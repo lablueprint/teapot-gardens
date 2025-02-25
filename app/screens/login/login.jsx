@@ -1,4 +1,4 @@
-import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image } from "react-native";
+import { KeyboardAvoidingView, Platform, TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
@@ -16,8 +16,11 @@ const Login = () => {
   // const [race, setRace] = useState("");
   const [birthday, setBirthday] = useState("");
   const [username, setUsername] = useState("");
-  // const [income, setIncome] = useState("");
-  // const [gender, setGender] = useState('female')
+  const [race, setRace] = useState("");
+  const [income, setIncome] = useState("");
+  const [age, setAge] = useState(0);
+  const [gender, setGender] = useState("");
+
 
   // const [open, setOpen] = useState(false); // Controls dropdown visibility
   // const [value, setValue] = useState(null); // Selected value
@@ -46,32 +49,36 @@ const Login = () => {
   };
 
   const handleOnboardingComplete = async () => {
-    try{
+    try {
       await AsyncStorage.setItem('hasSeenOnboarding', 'true');
       setShowOnboarding(false);
     } catch (error) {
       console.log('Error saving onboarding status:', error);
     }
   };
-  
+
   const handleSubmit = async () => {
     if (
       !name ||
       !email ||
       !password ||
       !birthday ||
-      !username
+      !username ||
+      !race ||
+      !income ||
+      !age ||
+      !gender
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
     } else {
-      Alert.alert("Success", "Form submitted successfully!");
 
-      const user = {name: name, email: email, password: password, dob: birthday, username: username}
-      
+      const user = { name: name, email: email, password: password, dob: birthday, username: username, race: race, incomeLevel: income, age: age, genderIdentification: gender }
+
       console.log(user)
       try {
-        const response = await axios.post('https://2906-2607-f010-2a7-103f-599a-5e21-16b1-1c05.ngrok-free.app/api/users/', user);
+        const response = await axios.post('https://7400-2607-f010-2a7-1030-d801-4047-937c-adbe.ngrok-free.app/api/users/', user);
         console.log(response.data)
+        Alert.alert("Success", "Form submitted successfully!");
       }
       catch (error) {
         console.log("error", error)
@@ -81,41 +88,76 @@ const Login = () => {
   };
 
   return (
-  
-    <View style={styles.container}>
-      {showOnboarding ? (
-        <OnboardingCarousel onComplete={handleOnboardingComplete}/>
-      ) : (
-        <View>
-        <View style={styles.header}>
-        <Text style={styles.title}>Create an Account</Text>
-        <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } />
-      </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 10 }}
+    >
+      <ScrollView>
+        <View style={styles.container}>
+          {showOnboarding ? (
+            <OnboardingCarousel onComplete={handleOnboardingComplete} />
+          ) : (
+            <View>
+              <View style={styles.header}>
+                <Text style={styles.title}>Create an Account</Text>
+                <Image style={{ marginTop: 3, marginLeft: 10, }} source={planticon} />
+              </View>
 
-      <Text>Name</Text>
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={(text) => setName(text)}
-        placeholder="Enter your name"
-      />
+              <Text>Name</Text>
+              <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={(text) => setName(text)}
+                placeholder="Enter your name"
+              />
 
-      {/* <Text>Last Name</Text>
+              <Text>Race</Text>
+              <TextInput
+                style={styles.input}
+                value={race}
+                onChangeText={(text) => setRace(text)}
+                placeholder="Enter your race"
+              />
+
+              <Text>Income Level</Text>
+              <TextInput
+                style={styles.input}
+                value={income}
+                onChangeText={(text) => setIncome(text)}
+                placeholder="Enter your income level"
+              />
+
+              <Text>Age</Text>
+              <TextInput
+                style={styles.input}
+                value={age}
+                onChangeText={(text) => setAge(text)}
+                placeholder="Enter your age"
+              />
+              <Text>Gender identification</Text>
+              <TextInput
+                style={styles.input}
+                value={gender}
+                onChangeText={(text) => setGender(text)}
+                placeholder="Enter your gender identifcation"
+              />
+
+              {/* <Text>Last Name</Text>
       <TextInput
         style={styles.input}
         value={lastName}
         onChangeText={(text) => setLastName(text)}
       /> */}
 
-      <Text>Email</Text>
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        placeholder="Enter your email"
-      />
+              <Text>Email</Text>
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+                placeholder="Enter your email"
+              />
 
-      {/* <Text>Gender</Text>
+              {/* <Text>Gender</Text>
       <DropDownPicker
                 open={open}
                 value={value}
@@ -129,66 +171,69 @@ const Login = () => {
             />
 
       <Text>Race</Text> */}
-      {/* <TextInput
+              {/* <TextInput
         style={styles.input}
         value={race}
         onChangeText={(text) => setRace(text)}
       /> */}
 
-      {/* <Text>Zipcode</Text>
+              {/* <Text>Zipcode</Text>
       <TextInput
         style={styles.input}
         value={zipcode}
         onChangeText={(text) => setZipcode(text)}
       /> */}
 
-      <Text>Birthday</Text>
-      <TextInput
-        style={styles.input}
-        value={birthday}
-        onChangeText={(text) => setBirthday(text)}
-        placeholder="MM/DD/YYYY"
-      />
+              <Text>Birthday</Text>
+              <TextInput
+                style={styles.input}
+                value={birthday}
+                onChangeText={(text) => setBirthday(text)}
+                placeholder="MM/DD/YYYY"
+              />
 
-      <Text>Username</Text>
-        <TextInput
-          style={styles.input}
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-          placeholder="Create a username"
-        />
+              <Text>Username</Text>
+              <TextInput
+                style={styles.input}
+                value={username}
+                onChangeText={(text) => setUsername(text)}
+                placeholder="Create a username"
+              />
 
-      <Text>Password</Text>
-        <TextInput
-          style={styles.input}
-          value={password}
-          secureTextEntry
-          onChangeText={(text) => setPassword(text)}
-          placeholder="Create a password"
-        />
+              <Text>Password</Text>
+              <TextInput
+                style={styles.input}
+                value={password}
+                secureTextEntry
+                onChangeText={(text) => setPassword(text)}
+                placeholder="Create a password"
+              />
 
-      {/* <Text>Income Level (optional)</Text>
+              {/* <Text>Income Level (optional)</Text>
       <TextInput
         style={styles.input}
         value={income}
         onChangeText={(text) => setIncome(text)}
       /> */}
 
-      {/* <View style={styles.lineContainer}>
+              {/* <View style={styles.lineContainer}>
         <View style={styles.line} />
         <Text style={styles.text}>Or</Text>
         <View style={styles.line} />
       </View>
     */}
 
-      <View style={styles.buttonContainer} >
-        <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-          <Text style={{ fontSize: 18,}} >Sign Up</Text>
-        </TouchableOpacity>
-      </View>
-      </View>
-      )}
-    </View>
+              <View style={styles.buttonContainer} >
+                <TouchableOpacity style={styles.button} onPress={handleSubmit} >
+                  <Text style={{ fontSize: 18, }} >Sign Up</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </View>
+        <View style={{ margin: 50 }}></View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -208,29 +253,28 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   title: {
-    fontSize: 30, 
+    fontSize: 30,
     fontWeight: 'bold',
-  }, 
+  },
   header: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     fontSize: 40,
     marginTop: 90,
     marginBottom: 40,
   },
   button: {
-    padding: 10,
+    padding: 1,
     justifyContent: "center",
-    alignItems: "center", 
+    alignItems: "center",
     borderRadius: 30,
     width: '50%',
     borderColor: 'black',
     borderWidth: 1,
-    height: '27%',
+    height: '40',
   },
   buttonContainer: {
     alignItems: "center",
-    justifyContent: 'flex-end',
-    height: '30%',
+    marginTop: 20,
   },
   lineContainer: {
     flexDirection: 'row',

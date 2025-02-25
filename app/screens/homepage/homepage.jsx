@@ -22,8 +22,8 @@ export default function Homepage() {
     const fetchUserData = async () => {
       try {
         // fetching user data here
-        const userResponse = await axios.get('http://localhost:4000/api/users/6789f49f8e0a009647312c7a');
-        const testResponse = await axios.get('http://localhost:4000/api/events/678f315b8d423da67c615e95');
+        const userResponse = await axios.get('https://4289-131-179-95-17.ngrok-free.app/api/users/6789f49f8e0a009647312c7a');
+        const testResponse = await axios.get('https://4289-131-179-95-17.ngrok-free.app/api/events/678f315b8d423da67c615e95');
         setTestEvent(testResponse)
         if (userResponse.status === 200) {
           setUserData(userResponse.data);
