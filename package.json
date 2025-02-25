@@ -20,6 +20,7 @@
     "expo-status-bar": "~2.0.1",
     "express": "^4.21.2",
     "i": "^0.3.7",
+    "nodemon": "^3.1.9",
     "react": "18.3.1",
     "react-native": "0.76.6",
     "react-native-autogrow-textinput": "^5.4.0",

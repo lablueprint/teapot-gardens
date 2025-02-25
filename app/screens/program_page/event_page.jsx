@@ -1,6 +1,6 @@
 import AdminDashboard from '@screens/admin_dashboard/admin_dashboard.jsx';
 import React, { useState, useEffect} from "react";
-import { Text, ScrollView, View, Pressable, StyleSheet, Image } from "react-native";
+import { Text, ScrollView, View, Pressable, StyleSheet, Image, FlatList } from "react-native";
 import UserCard from './user_card.jsx';
 import Collapsible from 'react-native-collapsible';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -14,33 +14,34 @@ const EventPage = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [user, setUser] = useState(null); 
   const [event, setEvent] = useState(null);
+  const [attendeeIds, setAttendeeIds] = useState(null);
+  const [attendeeNames, setAttendeeNames] = useState(null);
+  const [attendeeUsernames, setAttendeeUsernames] = useState(null);
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
 
   const toggleCollapsed = () => {
     setIsCollapsed((prevState) => !prevState);
   };
-  const attendees = [
-    { 
-      "name": "Victoria", 
-      "profilePicture": grapes 
-    },
-    { 
-      "name": "Angela", 
-      "profilePicture": grapes
-    }
-  ]
+  // const attendees = [
+  //   { 
+  //     "name": "Victoria", 
+  //     "profilePicture": grapes 
+  //   },
+  //   { 
+  //     "name": "Angela", 
+  //     "profilePicture": grapes
+  //   }
+  // ]
   
   const { title, date, location, time, details} = useLocalSearchParams();
-
-  
 
   //update user events
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
+        const response = await axios.get('https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
         if (response.status === 200) {
           setUser(response.data);
         } else {
@@ -50,26 +51,63 @@ const EventPage = () => {
         console.error('Error fetching user: ', error.message);
       } finally {
         setLoading(false);
-      }
-      
+      } 
     };
-    const fetchEvent = async () => {
+
+    const fetchEventData = async () => {
       try {
-        const response = await axios.get('https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/678f315b8d423da67c615e95');
+        const response = await axios.get(
+          "https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/events/678f315b8d423da67c615e95"
+        );
+    
         if (response.status === 200) {
-          setEvent(response.data);
+          const eventData = response.data;
+          setEvent(eventData);
+          
+          if (!eventData.attendeeList || eventData.attendeeList.length === 0) {
+            console.log("No attendees found.");
+            setLoading(false);
+            return;
+          }
+    
+          // Fetch attendee details in parallel
+          const attendeeRequests = eventData.attendeeList.map((id) =>
+            axios.get(`https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/users/${id}`)
+          );
+    
+          const attendeeResponses = await Promise.allSettled(attendeeRequests);
+    
+          const tempAttendeeNames = [];
+          const tempAttendeeUsernames = [];
+    
+          attendeeResponses.forEach((res, index) => {
+            if (res.status === "fulfilled") {
+              tempAttendeeNames.push(res.value.data.name);
+              tempAttendeeUsernames.push(res.value.data.username);
+            } else {
+              console.error(`Error fetching attendee ${eventData.attendeeList[index]}:`, res.reason);
+            }
+          });
+    
+          console.log("Attendee Names:", tempAttendeeNames);
+          console.log("Attendee Usernames:", tempAttendeeUsernames);
+    
+          // Now update state
+          setAttendeeNames(tempAttendeeNames);
+          setAttendeeUsernames(tempAttendeeUsernames);
+          setAttendeeIds(eventData.attendeeList);
         } else {
-          console.error('Failed to fetch user: ', response.data.error);
+          console.error("Failed to fetch event:", response.data.error);
         }
       } catch (error) {
-        console.error('Error fetching user: ', error.message);
+        console.error("Error fetching event:", error.message);
       } finally {
         setLoading(false);
       }
-      
-      };
+    };
+    
     fetchUser();
-    fetchEvent();
+    fetchEventData();
     getAttendeeCount();
     getNewAttendeeCount();
   }, []);
@@ -78,28 +116,28 @@ const EventPage = () => {
     try {
         console.log('update user events')
         const response = await axios.patch(
-          'https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/users/', 
+          'https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/users/', 
           {
-            userId: '678f3a6bc0368a4c717413a8',
-            eventId: 3000 // Replace with actual eventId
+            userId: user,
+            eventId: event // Replace with actual eventId
           }
         );
 
         console.log('Updated User:', response.data);
-    } catch (error) {
-        console.error('Error:', error);
-    }
+        } catch (error) {
+            console.error('Error:', error);
+        }
   }
 
   const updateEventUsers = async () => {
     try {
       console.log('update events')
       const response = await axios.patch(
-        'https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/', 
+        'https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/events/', 
         {
           // Replace with actual eventId and userId
-          eventId: '678f315b8d423da67c615e95',
-          userId: '678f3a6bc0368a4c717413a8'
+          eventId: event,
+          userId: user
         }
       );
 
@@ -109,10 +147,11 @@ const EventPage = () => {
     }
   }
 
+
   const getAttendeeCount = async () => {
     try {
       const response = await axios.get(
-        `https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`);
+        `https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`);
       setAttendeeCount(response.data.length);
     } catch (error) {
         console.error('Error:', error);
@@ -122,11 +161,11 @@ const EventPage = () => {
   const getNewAttendeeCount = async () => {
     try {
       const response = await axios.get(
-        `https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`
+        `https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`
       );
       const attendeeIds = response.data;
       const userRequests = attendeeIds.map(attendeeId =>
-          axios.get(`https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/users/${attendeeId}`)
+          axios.get(`https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/users/${attendeeId}`)
       );
       const users = await Promise.all(userRequests);
       let count = users.filter(user => user.data.attendedEvents.length === 0).length;
@@ -142,7 +181,7 @@ const EventPage = () => {
         style={styles.image}
         source = {garden}
       />
-      <UserCard name="Bob" profilePicture={garden} style={styles.hostCard} />
+      <UserCard name="Bob" style={styles.hostCard} />
 
       <Text style={styles.eventHeader}>{title}</Text>
 
@@ -160,7 +199,7 @@ const EventPage = () => {
 
       {/* Attendees Section */}
 
-      <View>
+      <View style={styles.attendeesList}>
         <Pressable onPress={toggleCollapsed} style={styles.attendeesButton}>
           <Text style={styles.attendeesButtonText}>Attendees</Text>
           <AntDesign
@@ -171,14 +210,15 @@ const EventPage = () => {
           />
         </Pressable>
         <Collapsible collapsed={isCollapsed}>
-          {attendees?.map((attendees, index) => (
+          {attendeeNames?.map((attendeeName, index) => (
             <UserCard
               key={index}
-              name={attendees.name}
-              profilePicture={attendees.profilePicture}
+              name={attendeeName}
+              username={attendeeUsernames?.[index]}
               style={styles.attendeeCard}
             />
-          ))}
+          ))
+          }
         </Collapsible>
       </View>
 
@@ -233,6 +273,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  attendeesList: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
   },
   attendeesButtonText: {
     textAlign: "center",

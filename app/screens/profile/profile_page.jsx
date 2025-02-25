@@ -36,7 +36,7 @@ const Profile = () => {
 
   const getUser = async () => {
     try {
-      const response = await axios.get(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/users/${tempUserId}`)
+      const response = await axios.get(`https://3b87-131-179-94-37.ngrok-free.app/api/users/${tempUserId}`)
       setUser(response.data)
     }
     catch (error) {
@@ -50,7 +50,7 @@ const Profile = () => {
     for (const id of pastEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://3b87-131-179-94-37.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -67,7 +67,7 @@ const Profile = () => {
     for (const id of upcomingEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://3b87-131-179-94-37.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
