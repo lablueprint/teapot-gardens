@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 const CreateEvent = () => {
-    const [title, setTitle] = useState("");
+    const [name, setName] = useState("");
     const [date, setDate] = useState("");
     const [location, setLocation] = useState("");
     const [time, setTime] = useState("");
@@ -31,12 +31,17 @@ const CreateEvent = () => {
     }
 
     const handleSubmit = async() => {
-        if (!title || !date || !location || !time || !details || !image){
+        if (!name || !date || !location || !time || !details){
             alert("Error please fill out all the fields"); 
         } else {
-            alert ("Success form submitted successfully"); 
-            const event = {title: title, date: date, location: location, time: time, details: details, image: ""}
+            const event = {name: name, time: time, date: date, location: location, attendeeList: [], eventDescription: details, hostDescription: 'Lorem Ipsum', XP: 0, pictures: [], admin: 0}
             console.log(event);
+            try {
+              const response = await axios.post('http://localhost:4000/api/events/', event);
+              console.log(response.data);
+            } catch (error) {
+              console.log("error oops", error.response.data)
+            }
         }
     }
     
@@ -44,11 +49,11 @@ const CreateEvent = () => {
     return (
     <ScrollView style={styles.container}>
         <Text style={styles.title}>Create Event</Text>
-        <Text>Title</Text>
+        <Text>Name</Text>
         <TextInput 
             style={styles.input}
-            value={title}
-            onChangeText={(text) => setTitle(text)}
+            value={name}
+            onChangeText={(text) => setName(text)}
             placeholder="Title"
         />
         <Text>Date</Text>
