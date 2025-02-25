@@ -1,5 +1,6 @@
 import { Text, View, Image, ScrollView, Pressable, ViewComponent } from "react-native";
 import { Link } from "expo-router";
+import { useNavigation } from "expo-router";
 import React, { useState, useEffect } from "react";
 import Event from './event';
 import styles from './program_page_style';
@@ -22,6 +23,7 @@ const BulletPoints = (props) => {
 };
 
 const ProgramPage = () => {
+  const navigation = useNavigation();
   const goals = ['make garden', 'grow tomatoes']
   const activities = ['grow strawberries', 'plant trees']
   const [isCollapsedGoals, setIsCollapsedGoals] = useState(true);
@@ -123,11 +125,12 @@ const ProgramPage = () => {
           <View style={styles.createEventContainer}>
             {
               user?.admin && (
-                <Link 
-                  href={{pathname: "screens/program_page/create_event"}}
-                  style={styles.createEventButton}>
+                <Pressable 
+                  style={styles.createEventButton}
+                  onPress={() => navigation.navigate('CreateEvent')}
+                  >
                   <Text style={styles.plusButton}>+</Text>
-                </Link>
+                </Pressable>
               )
             }
           </View>
