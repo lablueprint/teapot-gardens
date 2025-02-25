@@ -52,6 +52,18 @@ const userSchema = new Schema({
     },
     attendingEvents: {
         type: [String]
+    },
+    race: {
+        type: String
+    },
+    incomeLevel: {
+        type: Number
+    },
+    age: {
+        type: Number
+    },
+    genderIdentification: {
+        type: String
     }
 
 }, { timestamps: true })

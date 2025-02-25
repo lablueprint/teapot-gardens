@@ -6,13 +6,13 @@ import styles from '@screens/profile/profile_styles';
 import grapes from '@assets/grapes.jpg';
 
 userBadges = [{
-    name: "Fish",
-    description: "bought a fish"
+  name: "Fish",
+  description: "bought a fish"
 }]
 
 const Profile = () => {
   // Define state for each input field
-  const [isPrivate, setIsPrivate] = useState(false); 
+  const [isPrivate, setIsPrivate] = useState(false);
   const [user, setUser] = useState({});
   const toggleSwitch = () => setIsPrivate(previousState => !previousState);
   const [pastEvents, setPastEvents] = useState([]);
@@ -36,7 +36,7 @@ const Profile = () => {
 
   const getUser = async () => {
     try {
-      const response = await axios.get(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/users/${tempUserId}`)
+      const response = await axios.get(`https://6efd-2607-f010-2a7-1030-d801-4047-937c-adbe.ngrok-free.app/api/users/${tempUserId}`)
       setUser(response.data)
     }
     catch (error) {
@@ -50,7 +50,7 @@ const Profile = () => {
     for (const id of pastEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://6efd-2607-f010-2a7-1030-d801-4047-937c-adbe.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -67,7 +67,7 @@ const Profile = () => {
     for (const id of upcomingEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://3401-2603-8001-d3f0-da0-5c04-cb42-f4e4-3161.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`https://6efd-2607-f010-2a7-1030-d801-4047-937c-adbe.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -82,9 +82,9 @@ const Profile = () => {
 
       <View style={styles.container}>
         <Text style={styles.title}>Profile Page</Text>
-        <Image 
-            source={grapes} // Replace with your image path
-            style={styles.image}
+        <Image
+          source={grapes} // Replace with your image path
+          style={styles.image}
         />
         <Text style={styles.name}>Name: {user.name} </Text>
         <Text style={styles.handle}>{user.username} </Text>
@@ -92,7 +92,7 @@ const Profile = () => {
 
         <View style={styles.buttonContainer}>
           <View style={styles.button}>
-          <Link href="screens/profile/edit_profile" style={{ color: "white" }}> Edit Profile </Link>
+            <Link href="screens/profile/edit_profile" style={{ color: "white" }}> Edit Profile </Link>
           </View>
         </View>
 
@@ -148,11 +148,11 @@ const Profile = () => {
         <View style={styles.privacy}>
           <Text> Privacy Settings</Text>
           <Switch
-              trackColor={{false: '#767577', true: '#81b0ff'}}
-              onValueChange={toggleSwitch}
-              value={isPrivate}
-            />
-            {isPrivate ? (
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+            onValueChange={toggleSwitch}
+            value={isPrivate}
+          />
+          {isPrivate ? (
             <Text style={styles.message}>Your data is now private.</Text>
           ) : (
             <Text style={styles.message}>Your data is visible to others.</Text>
