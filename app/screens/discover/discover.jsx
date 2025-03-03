@@ -12,11 +12,12 @@ export default function DiscoverPage () {
     const [events, setEvents] = useState([]);
     const [programs, setPrograms] = useState([]);
     const [search, setSearch] = useState('');
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         const fetchEvents = async () => {
           try {
-            const response = await axios.get('http://localhost:4000/api/events/');
+            const response = await axios.get('https://4f98-2607-f010-2e9-14-69f5-60e8-58ad-c808.ngrok-free.app/api/events/');
             if (response.status === 200) {
               setEvents(response.data);
             } else {
@@ -32,7 +33,7 @@ export default function DiscoverPage () {
 
         const fetchPrograms = async () => {
             try {
-              const response = await axios.get('http://localhost:4000/api/programs/');
+              const response = await axios.get('https://4f98-2607-f010-2e9-14-69f5-60e8-58ad-c808.ngrok-free.app/api/programs/');
               if (response.status === 200) {
                 setPrograms(response.data);
               } else {
@@ -43,10 +44,25 @@ export default function DiscoverPage () {
             } finally {
               setLoading(false);
             }
-            
           };
+
+          const fetchUser = async () => {
+            try {
+                const response = await axios.get('https://4f98-2607-f010-2e9-14-69f5-60e8-58ad-c808.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8')
+                if (response.status == 200) {
+                    setUser(response.data);
+                } else {
+                    console.error('Failed to fetch user', response.data.error);
+                }
+            } catch (error) {
+                console.error('failed to fetch user', error.message);
+            } finally {
+                setLoading(false);
+            }
+          }
         fetchEvents();
         fetchPrograms();
+        fetchUser();
       }, []);
 
     const options = [
@@ -123,6 +139,19 @@ export default function DiscoverPage () {
                     </Pressable>
                 ))}
                 </ScrollView>
+                {/* create new program if admin*/}
+                <View style={styles.createEventContainer}>
+                {
+                user?.admin && (
+                    <Pressable 
+                    style={styles.createEventButton}
+                    onPress={() => navigation.navigate('CreateProgram')}
+                    >
+                    <Text style={styles.plusButton}>+</Text>
+                    </Pressable>
+                )
+                }
+                </View>
             </View>
             </View>
         </ScrollView>
@@ -227,5 +256,20 @@ const styles = StyleSheet.create({
     arrow: {
         position: 'absolute', 
         right: 40,
-    }
+    },
+    createEventButton: {
+        borderWidth: 1, 
+        borderRadius: 100, 
+        backgroundColor: 'black', 
+        position: 'absolute', 
+        paddingHorizontal: 10, 
+        paddingVertical: 6,
+        right: 0,
+        justifyContent: 'center', 
+        alignItems: 'center',
+    },
+    plusButton: {
+        color: 'white', 
+        fontWeight: 'bold',         
+    },
 });
