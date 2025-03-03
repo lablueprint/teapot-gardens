@@ -140,11 +140,11 @@ export default function DiscoverPage () {
                 ))}
                 </ScrollView>
                 {/* create new program if admin*/}
-                <View style={styles.createEventContainer}>
+                <View style={styles.createProgramContainer}>
                 {
                 user?.admin && (
                     <Pressable 
-                    style={styles.createEventButton}
+                    style={styles.createProgramButton}
                     onPress={() => navigation.navigate('CreateProgram')}
                     >
                     <Text style={styles.plusButton}>+</Text>
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
         position: 'absolute', 
         right: 40,
     },
-    createEventButton: {
+    createProgramButton: {
         borderWidth: 1, 
         borderRadius: 100, 
         backgroundColor: 'black', 
@@ -271,5 +271,10 @@ const styles = StyleSheet.create({
     plusButton: {
         color: 'white', 
         fontWeight: 'bold',         
+    },
+    createProgramContainer: {
+        padding: 10,
+        marginTop: 10,
+        height: 50,
     },
 });
