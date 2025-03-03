@@ -17,7 +17,7 @@ export default function DiscoverPage () {
     useEffect(() => {
         const fetchEvents = async () => {
           try {
-            const response = await axios.get('https://4f98-2607-f010-2e9-14-69f5-60e8-58ad-c808.ngrok-free.app/api/events/');
+            const response = await axios.get('http://localhost:4000/api/events/');
             if (response.status === 200) {
               setEvents(response.data);
             } else {
@@ -33,7 +33,7 @@ export default function DiscoverPage () {
 
         const fetchPrograms = async () => {
             try {
-              const response = await axios.get('https://4f98-2607-f010-2e9-14-69f5-60e8-58ad-c808.ngrok-free.app/api/programs/');
+              const response = await axios.get('http://localhost:4000/api/programs/');
               if (response.status === 200) {
                 setPrograms(response.data);
               } else {
@@ -48,7 +48,7 @@ export default function DiscoverPage () {
 
           const fetchUser = async () => {
             try {
-                const response = await axios.get('https://4f98-2607-f010-2e9-14-69f5-60e8-58ad-c808.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8')
+                const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8')
                 if (response.status == 200) {
                     setUser(response.data);
                 } else {

@@ -13,7 +13,7 @@ const CreateProgram = () => {
             const program = ({upcomingEvents: [], pastEvents: [], followList: [], description: description})
             console.log(program);
             try {
-              const response = await axios.post('https://4f98-2607-f010-2e9-14-69f5-60e8-58ad-c808.ngrok-free.app/api/programs/', program);
+              const response = await axios.post('http://localhost:4000/api/programs/', program);
               console.log(response.data);
             } catch (error) {
               console.log("error", error.response.data)
