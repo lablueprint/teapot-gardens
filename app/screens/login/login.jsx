@@ -70,7 +70,7 @@ const Login = () => {
       
       console.log(user)
       try {
-        const response = await axios.post('https://0dd7-172-91-75-11.ngrok-free.app/api/users/', user);
+        const response = await axios.post('http://localhost:4000/api/users/', user);
         console.log(response.data)
       }
       catch (error) {
@@ -166,6 +166,11 @@ const Login = () => {
           onChangeText={(text) => setPassword(text)}
           placeholder="Create a password"
         />
+        <View style={styles.buttonContainer} >
+          <TouchableOpacity style={styles.button} onPress={handleSubmit} >
+            <Text style={{ fontSize: 18,}} >Sign Up</Text>
+          </TouchableOpacity>
+        </View>
 
       {/* <Text>Income Level (optional)</Text>
       <TextInput
@@ -181,11 +186,6 @@ const Login = () => {
       </View>
     */}
 
-      <View style={styles.buttonContainer} >
-        <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-          <Text style={{ fontSize: 18,}} >Sign Up</Text>
-        </TouchableOpacity>
-      </View>
       </View>
       )}
     </View>
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: "center",
     justifyContent: 'flex-end',
-    height: '30%',
+    height: 30,
   },
   lineContainer: {
     flexDirection: 'row',

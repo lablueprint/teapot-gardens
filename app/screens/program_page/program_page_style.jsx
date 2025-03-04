@@ -25,7 +25,26 @@ const styles = StyleSheet.create({
         color: 'white',
         padding: 15, 
         borderRadius: 20, 
-        textAlign: 'center'
+        textAlign: 'center', 
+    },
+    createEventContainer: {
+        padding: 10,
+        marginTop: 10,
+    },
+    createEventButton: {
+        borderWidth: 1, 
+        borderRadius: 100, 
+        backgroundColor: 'black', 
+        position: 'absolute', 
+        paddingHorizontal: 10, 
+        paddingVertical: 6,
+        right: 0,
+        justifyContent: 'center', 
+        alignItems: 'center',
+    },
+    plusButton: {
+        color: 'white', 
+        fontWeight: 'bold',         
     },
     header: {
         fontSize: 20,

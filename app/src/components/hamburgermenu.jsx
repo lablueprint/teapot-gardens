@@ -12,6 +12,7 @@ import Index from "@app/index";
 
 import EventPage from "@screens/event/event_page";
 import ProgramPage from "@screens/program_page/program_page";
+import CreateEvent from "@screens/program_page/create_event";
 import CreateProgram from "@screens/discover/create_program"
 
 import notificationIcon from "@assets/notifications.png";
@@ -102,6 +103,7 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="Temp" component={Index} />
             <Drawer.Screen name="EventPage" component={EventPage} />
             <Drawer.Screen name="ProgramPage" component={ProgramPage} />
+            <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
         </Drawer.Navigator>
     );

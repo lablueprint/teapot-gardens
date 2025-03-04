@@ -41,7 +41,7 @@ const EventPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('https://0dd7-172-91-75-11.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
+        const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8');
         if (response.status === 200) {
           setUser(response.data);
           setAttendingEvents(response.data.attendingEvents);
@@ -57,7 +57,7 @@ const EventPage = () => {
     };
     const fetchEvent = async () => {
       try {
-        const response = await axios.get('https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/678f315b8d423da67c615e95');
+        const response = await axios.get('http://localhost:4000/api/events/678f315b8d423da67c615e95');
         if (response.status === 200) {
           setEvent(response.data);
         } else {
@@ -161,7 +161,7 @@ const EventPage = () => {
     try {
       console.log('update events')
       const response = await axios.patch(
-        'https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/', 
+        'http://localhost:4000/api/events/', 
         {
           // Replace with actual eventId and userId
           eventId: '678f315b8d423da67c615e95',
@@ -178,7 +178,7 @@ const EventPage = () => {
   const getAttendeeCount = async () => {
     try {
       const response = await axios.get(
-        `https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`);
+        `http://localhost:4000/api/events/attendees/678f315b8d423da67c615e95/`);
       setAttendeeCount(response.data.length);
     } catch (error) {
         console.error('Error:', error);
@@ -188,11 +188,11 @@ const EventPage = () => {
   const getNewAttendeeCount = async () => {
     try {
       const response = await axios.get(
-        `https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`
+        `http://localhost:4000/api/events/attendees/678f315b8d423da67c615e95/`
       );
       const attendeeIds = response.data;
       const userRequests = attendeeIds.map(attendeeId =>
-          axios.get(`https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/users/${attendeeId}`)
+          axios.get(`http://localhost:4000/api/users/${attendeeId}`)
       );
       const users = await Promise.all(userRequests);
       let count = users.filter(user => user.data.attendedEvents.length === 0).length;
@@ -208,7 +208,7 @@ const EventPage = () => {
         style={styles.image}
         source = {garden}
       />
-      <UserCard name="Bob" profilePicture={garden} style={styles.hostCard} />
+      <UserCard name={user?.name} profilePicture={garden} style={styles.hostCard} />
 
       <Text style={styles.eventHeader}>{title}</Text>
 
