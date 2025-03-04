@@ -19,9 +19,9 @@ const Profile = () => {
   const [pastEvents, setPastEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const navigation = useNavigation();
-  const API_KEY = 'https://localhost:4000';
+  const API_KEY = 'http://localhost:4000';
 
-  const tempUserId = '6789f49f8e0a009647312c7a'
+  const tempUserId = '6789f49f8e0a009647312c7a';
 
   useEffect(() => {
     getUser();

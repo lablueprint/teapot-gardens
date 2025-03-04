@@ -1,14 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import Homepage from "@screens/homepage/homepage";
+import AdminDashboard from "@screens/admin_dashboard/admin_dashboard";
 import DiscoverPage from "@screens/discover/discover";
-import Profile from "@screens/profile/profile_page";
-import Plant from "@screens/plant/plant";
-import Index from "@app/index";
-import EditProfile from "@app/profile/edit_profile";
-
+import AdminScanner from "@screens/event/admin_scanner";
 import EventPage from "@screens/event/event_page";
+import RegistrationPage from "@screens/event/registration_page";
+import Homepage from "@screens/homepage/homepage";
+import Login from "@screens/login/login";
+import Plant from "@screens/plant/plant";
+import EditProfile from "@screens/profile/edit_profile";
+import Profile from "@screens/profile/profile_page";
+import Index from "@app/index";
+
+
 import ProgramPage from "@screens/program_page/program_page";
 
 import notificationIcon from "@assets/notifications.png";
@@ -98,6 +103,10 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="EventPage" component={EventPage} />
             <Drawer.Screen name="ProgramPage" component={ProgramPage} />
             <Drawer.Screen name="EditProfile" component={EditProfile} />
+            <Drawer.Screen name="Login" component={Login} />
+            <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
+            <Drawer.Screen name="AdminScanner" component={AdminScanner} />
+            <Drawer.Screen name="RegistrationPage" component={RegistrationPage} />
         </Drawer.Navigator>
     );
 };
