@@ -4,6 +4,7 @@ import { Text, ScrollView, View, Pressable, StyleSheet, Image } from "react-nati
 import UserCard from '@screens/program_page/user_card.jsx';
 import Collapsible from 'react-native-collapsible';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import garden from '@assets/garden.jpg';
 import grapes from '@assets/grapes.jpg';
 import { useLocalSearchParams } from "expo-router";
@@ -12,8 +13,9 @@ import axios from 'axios';
 
 
 const EventPage = () => {
-  const tempEventId = '67932a72413f4d68be84e592' //valentines picnic woohoo
-  const tempUserId = '678f3a6bc0368a4c717413a8' //testingggg
+  const tempEventId = '67932a72413f4d68be84e592'; //valentines picnic woohoo
+  const tempUserId = '678f3a6bc0368a4c717413a8'; //testingggg
+  const API_KEY = 'http://localhost:4000';
 
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [user, setUser] = useState(null); 
@@ -21,6 +23,10 @@ const EventPage = () => {
   const [event, setEvent] = useState(null);
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
 
   const toggleCollapsed = () => {
     setIsCollapsed((prevState) => !prevState);
@@ -40,8 +46,8 @@ const EventPage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      try {
-        const response = await axios.get('https://0dd7-172-91-75-11.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
+      try { 
+        const response = await axios.get(`${API_KEY}/api/users/678f3a6bc0368a4c717413a8`);
         if (response.status === 200) {
           setUser(response.data);
           setAttendingEvents(response.data.attendingEvents);
@@ -56,20 +62,22 @@ const EventPage = () => {
       
     };
     const fetchEvent = async () => {
-      try {
-        const response = await axios.get('https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/678f315b8d423da67c615e95');
-        if (response.status === 200) {
-          setEvent(response.data);
-        } else {
-          console.error('Failed to fetch user: ', response.data.error);
-        }
+      try { 
+          const response = await axios.get(`${API_KEY}/api/events/${tempEventId}`);
+          if (response.status === 200) {
+              setEvent(response.data);
+              setLikeCount(response.data.likes || 0);
+              setLiked(response.data.likedBy.includes(tempUserId)); // Check if user already liked
+          } else {
+              console.error('Failed to fetch event: ', response.data.error);
+          }
       } catch (error) {
-        console.error('Error fetching user: ', error.message);
+          console.error('Error fetching event: ', error.message);
       } finally {
-        setLoading(false);
+          setLoading(false);
       }
-      
-      };
+  };
+
     fetchUser();
     fetchEvent();
     getAttendeeCount();
@@ -131,8 +139,8 @@ const EventPage = () => {
   const addUserEvent = async () => {
     try {
         console.log('add to user events')
-        const response = await axios.patch(
-            'https://0dd7-172-91-75-11.ngrok-free.app/api/users/', 
+        const response = await axios.patch( 
+            `${API_KEY}/api/users/`, 
             {
                 userId: tempUserId,
                 eventId: tempEventId // Replace with actual eventId
@@ -147,8 +155,8 @@ const EventPage = () => {
   const deleteUserEvent = async () => {
     //gets rid of event from attendingEvents array
     const updatedEvents = attendingEvents.filter((item) => item !== tempEventId);
-    try {
-      const response = await axios.patch(`https://0dd7-172-91-75-11.ngrok-free.app/api/users/${tempUserId}`, { attendingEvents: updatedEvents } );
+    try { 
+      const response = await axios.patch(`${API_KEY}/api/users/${tempUserId}`, { attendingEvents: updatedEvents } );
       console.log(response.data)
     }
     catch (error) {
@@ -161,7 +169,7 @@ const EventPage = () => {
     try {
       console.log('update events')
       const response = await axios.patch(
-        'https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/', 
+        `${API_KEY}/api/events/`, 
         {
           // Replace with actual eventId and userId
           eventId: '678f315b8d423da67c615e95',
@@ -178,7 +186,7 @@ const EventPage = () => {
   const getAttendeeCount = async () => {
     try {
       const response = await axios.get(
-        `https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`);
+        `${API_KEY}/api/events/attendees/678f315b8d423da67c615e95`);
       setAttendeeCount(response.data.length);
     } catch (error) {
         console.error('Error:', error);
@@ -187,12 +195,12 @@ const EventPage = () => {
 
   const getNewAttendeeCount = async () => {
     try {
-      const response = await axios.get(
-        `https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`
+      const response = await axios.get(  
+        `${API_KEY}/api/events/attendees/67932a72413f4d68be84e592`
       );
       const attendeeIds = response.data;
-      const userRequests = attendeeIds.map(attendeeId =>
-          axios.get(`https://f3b2-2607-f010-2a7-103f-6cdb-df3a-7b4-c986.ngrok-free.app/api/users/${attendeeId}`)
+      const userRequests = attendeeIds.map(attendeeId => 
+          axios.get(`${API_KEY}/api/users/${attendeeId}`)
       );
       const users = await Promise.all(userRequests);
       let count = users.filter(user => user.data.attendedEvents.length === 0).length;
@@ -201,13 +209,45 @@ const EventPage = () => {
       console.error('Error fetching new attendees:', error);
     }
   }
+
+  const handleLikeToggle = async () => {
+    try {
+        console.log("Sending like request...");
+        const response = await axios.patch(
+            `${API_KEY}/api/events/like/${tempEventId}`,
+            { userId: tempUserId }
+        );
+
+        console.log("Response:", response.data);
+
+        if (response.status === 200) {
+            setLiked(response.data.likedBy.includes(tempUserId));
+            setLikeCount(response.data.likes);
+        }
+    } catch (error) {
+        console.error("Error updating like count:", error.response?.data || error.message);
+    }
+};
+
   
   return (
     <ScrollView style={styles.container}>
-      <Image 
-        style={styles.image}
-        source = {garden}
-      />
+      <View style={styles.imageContainer}>
+        <Image 
+          style={styles.image}
+          source={garden}
+        />
+        <View style={styles.likeContainer}>
+          <Ionicons 
+            name={liked ? 'heart' : 'heart-outline'} 
+            size={24} 
+            color={liked ? 'red' : 'gray'} 
+            onPress={handleLikeToggle}
+          />
+          <Text style={styles.likeCount}>{likeCount}</Text>
+        </View>
+      </View>
+
       <UserCard name="Bob" profilePicture={garden} style={styles.hostCard} />
 
       <Text style={styles.eventHeader}>{title}</Text>
@@ -305,6 +345,30 @@ const EventPage = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+  },
+  imageContainer: {
+    position: 'relative',
+  },
+  image: {
+    width: '340',
+    height: '200',
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  likeContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    padding: 4,
+    borderRadius: 12,
+  },
+  likeCount: {
+    marginLeft: 4,
+    fontSize: 16,
+    color: 'black',
   },
   eventHeader: {
     fontSize: 24,

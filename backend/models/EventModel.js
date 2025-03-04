@@ -37,11 +37,17 @@ const eventSchema = new Schema({
     pictures: {
         type: []
     },
+    likes: { 
+        type: Number,
+        default: 0
+    },
+    likedBy: {
+       type: [String],
+       default: []
+    },
     admin: {
         type: Number
     }
 }, { timestamps: true })
 
 module.exports = mongoose.model('Event', eventSchema)
-
-// call the model like Program.find()

@@ -6,7 +6,8 @@ const {
     deleteEvent,
     updateEvent,
     updateEventUsers,
-    getAttendees
+    getAttendees,
+    likeEvent
 } = require('../controllers/eventController')
 
 const Event = require('../models/EventModel')
@@ -26,5 +27,7 @@ router.patch('/:id', updateEvent)
 router.patch('/', updateEventUsers)
 
 router.get('/attendees/:id', getAttendees)
+
+router.patch('/like/:id', likeEvent)
 
 module.exports = router

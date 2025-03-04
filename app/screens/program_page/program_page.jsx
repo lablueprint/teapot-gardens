@@ -40,14 +40,14 @@ const ProgramPage = () => {
     const fetchEventsWithPictures = async () => {
       try {
         // First fetch past events
-        const response = await axios.get('https://0dd7-172-91-75-11.ngrok-free.app/api/programs/past-events/6789ed54a5e1c0261cefac4f');
+        const response = await axios.get('http://localhost:4000/api/programs/past-events/6789ed54a5e1c0261cefac4f');
         
         if (response.status === 200) {
           const eventIds = response.data;
           setPastEvents(eventIds);
           try{
             const pictureResponses = await Promise.all(eventIds.map(id =>
-              axios.get(`https://0dd7-172-91-75-11.ngrok-free.app/api/events/${id}`)
+              axios.get(`http://localhost:4000/api/events/${id}`)
 
             ));
             
@@ -90,7 +90,7 @@ const ProgramPage = () => {
         </Text>
         <Pressable onPress={ toggleCollapsedActivities } >
             <Text style={styles.button}>Follow Program</Text>
-          </Pressable>
+        </Pressable>
 
       {/*  Upcoming Events Carousel  */}
       <Text style={ styles.header }>Upcoming Events</Text>
