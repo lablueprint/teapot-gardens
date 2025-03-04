@@ -6,6 +6,8 @@ import planticon from '@assets/planticon.png';
 import OnboardingCarousel from "./OnboardingCarouselComp";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const BACKEND = "https://ee6e-38-73-241-58.ngrok-free.app";
+
 const Login = () => {
   // Define state for each input field
   const [name, setName] = useState("");
@@ -76,7 +78,7 @@ const Login = () => {
 
       console.log(user)
       try {
-        const response = await axios.post('https://7400-2607-f010-2a7-1030-d801-4047-937c-adbe.ngrok-free.app/api/users/', user);
+        const response = await axios.post('${BACKEND}/api/users/', user);
         console.log(response.data)
         Alert.alert("Success", "Form submitted successfully!");
       }
