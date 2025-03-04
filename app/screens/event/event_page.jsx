@@ -1,12 +1,7 @@
 import AdminDashboard from '@screens/admin_dashboard/admin_dashboard.jsx';
 import React, { useState, useEffect} from "react";
-<<<<<<< HEAD:app/screens/program_page/event_page.jsx
-import { Text, ScrollView, View, Pressable, StyleSheet, Image, FlatList } from "react-native";
-import UserCard from './user_card.jsx';
-=======
 import { Text, ScrollView, View, Pressable, StyleSheet, Image } from "react-native";
 import UserCard from '@screens/program_page/user_card.jsx';
->>>>>>> main:app/screens/event/event_page.jsx
 import Collapsible from 'react-native-collapsible';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import garden from '@assets/garden.jpg';
@@ -46,19 +41,10 @@ const EventPage = () => {
   
   const { title, date, location, time, details} = useLocalSearchParams();
 
-<<<<<<< HEAD:app/screens/program_page/event_page.jsx
-  //update user events
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get('https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/users/678f3a6bc0368a4c717413a8');
-=======
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8');
->>>>>>> main:app/screens/event/event_page.jsx
         if (response.status === 200) {
           setUser(response.data);
           setAttendingEvents(response.data.attendingEvents);
@@ -74,14 +60,7 @@ const EventPage = () => {
 
     const fetchEventData = async () => {
       try {
-<<<<<<< HEAD:app/screens/program_page/event_page.jsx
-        const response = await axios.get(
-          "https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/events/678f315b8d423da67c615e95"
-        );
-    
-=======
         const response = await axios.get('http://localhost:4000/api/events/678f315b8d423da67c615e95');
->>>>>>> main:app/screens/event/event_page.jsx
         if (response.status === 200) {
           const eventData = response.data;
           setEvent(eventData);
@@ -190,19 +169,6 @@ const EventPage = () => {
     try {
         console.log('add to user events')
         const response = await axios.patch(
-<<<<<<< HEAD:app/screens/program_page/event_page.jsx
-          'https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/users/', 
-          {
-            userId: user,
-            eventId: event // Replace with actual eventId
-          }
-        );
-
-        console.log('Updated User:', response.data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-=======
             'https://0dd7-172-91-75-11.ngrok-free.app/api/users/', 
             {
                 userId: tempUserId,
@@ -226,18 +192,13 @@ const EventPage = () => {
       console.log("error", error)
     }
     
->>>>>>> main:app/screens/event/event_page.jsx
   }
 
   const updateEventUsers = async () => {
     try {
       console.log('update events')
       const response = await axios.patch(
-<<<<<<< HEAD:app/screens/program_page/event_page.jsx
-        'https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/events/', 
-=======
         'http://localhost:4000/api/events/', 
->>>>>>> main:app/screens/event/event_page.jsx
         {
           // Replace with actual eventId and userId
           eventId: event,
@@ -255,11 +216,7 @@ const EventPage = () => {
   const getAttendeeCount = async () => {
     try {
       const response = await axios.get(
-<<<<<<< HEAD:app/screens/program_page/event_page.jsx
-        `https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`);
-=======
         `http://localhost:4000/api/events/attendees/678f315b8d423da67c615e95/`);
->>>>>>> main:app/screens/event/event_page.jsx
       setAttendeeCount(response.data.length);
     } catch (error) {
         console.error('Error:', error);
@@ -269,19 +226,11 @@ const EventPage = () => {
   const getNewAttendeeCount = async () => {
     try {
       const response = await axios.get(
-<<<<<<< HEAD:app/screens/program_page/event_page.jsx
-        `https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/events/attendees/678f315b8d423da67c615e95/`
-      );
-      const attendeeIds = response.data;
-      const userRequests = attendeeIds.map(attendeeId =>
-          axios.get(`https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/users/${attendeeId}`)
-=======
         `http://localhost:4000/api/events/attendees/678f315b8d423da67c615e95/`
       );
       const attendeeIds = response.data;
       const userRequests = attendeeIds.map(attendeeId =>
           axios.get(`http://localhost:4000/api/users/${attendeeId}`)
->>>>>>> main:app/screens/event/event_page.jsx
       );
       const users = await Promise.all(userRequests);
       let count = users.filter(user => user.data.attendedEvents.length === 0).length;
@@ -297,11 +246,7 @@ const EventPage = () => {
         style={styles.image}
         source = {garden}
       />
-<<<<<<< HEAD:app/screens/program_page/event_page.jsx
-      <UserCard name="Bob" style={styles.hostCard} />
-=======
       <UserCard name={user?.name} profilePicture={garden} style={styles.hostCard} />
->>>>>>> main:app/screens/event/event_page.jsx
 
       <Text style={styles.eventHeader}>{title}</Text>
 
