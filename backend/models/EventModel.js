@@ -23,7 +23,7 @@ const eventSchema = new Schema({
         type: String
     },
     attendeeList: {
-        type: []
+        type: [String]
     },
     eventDescription: {
         type: String
@@ -32,13 +32,20 @@ const eventSchema = new Schema({
         type: String
     },
     XP: {
-        type: Number
+        type: Number,
     },
     pictures: {
-        type: []
+        type: [String]
     },
     admin: {
         type: Number
+    }, 
+    eventID: { 
+        type: String, 
+        unique: true,
+        default: function() {
+            return new mongoose.Types.ObjectId().toString();
+        }
     }
 }, { timestamps: true })
 

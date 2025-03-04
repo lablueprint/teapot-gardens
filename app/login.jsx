@@ -43,7 +43,7 @@ const Login = () => {
       
       console.log(user)
       try {
-        const response = await axios.post('https://2906-2607-f010-2a7-103f-599a-5e21-16b1-1c05.ngrok-free.app/api/users/', user);
+        const response = await axios.post('http://localhost:4000/api/users/', user);
         console.log(response.data)
       }
       catch (error) {
