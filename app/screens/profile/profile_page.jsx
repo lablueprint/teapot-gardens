@@ -1,9 +1,13 @@
 import { StyleSheet, Text, View, FlatList, Switch, Image, ScrollView, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Link } from "expo-router";
+import { useNavigation } from 'expo-router';
+
 import axios from 'axios';
 import styles from '@screens/profile/profile_styles';
 import grapes from '@assets/grapes.jpg';
+
+const url = 'https://c753-2607-f010-2a7-103f-d156-853f-9990-8831.ngrok-free.app'
 
 userBadges = [{
     name: "Fish",
@@ -11,6 +15,8 @@ userBadges = [{
 }]
 
 const Profile = () => {
+  const navigation = useNavigation();
+  
   // Define state for each input field
   const [isPrivate, setIsPrivate] = useState(false); 
   const [user, setUser] = useState({});
@@ -36,7 +42,7 @@ const Profile = () => {
 
   const getUser = async () => {
     try {
-      const response = await axios.get(`https://0dd7-172-91-75-11.ngrok-free.app/api/users/${tempUserId}`)
+      const response = await axios.get(`${url}/api/users/${tempUserId}`)
       setUser(response.data)
     }
     catch (error) {
@@ -50,7 +56,7 @@ const Profile = () => {
     for (const id of pastEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://0dd7-172-91-75-11.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`${url}/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -67,7 +73,7 @@ const Profile = () => {
     for (const id of upcomingEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`https://0dd7-172-91-75-11.ngrok-free.app/api/events/${id}`)
+        const response = await axios.get(`${url}/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -91,9 +97,12 @@ const Profile = () => {
         <Text style={styles.info}>Bio: I like grapes </Text>
 
         <View style={styles.buttonContainer}>
-          <View style={styles.button}>
-          <Link href="screens/profile/edit_profile" style={{ color: "white" }}> Edit Profile </Link>
-          </View>
+          <Pressable style={styles.button} onPress={() => navigation.navigate('EditProfile')}>
+            <Text style={{color: 'white'}}>Edit Profile</Text>
+          </Pressable>
+          <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileQR')}>
+            <Text style={{color: 'white'}}>User QR</Text>
+          </Pressable>
         </View>
 
         <Text style={styles.subtitle}>My badges </Text>

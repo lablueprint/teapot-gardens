@@ -4,12 +4,16 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@rea
 import Homepage from "@screens/homepage/homepage";
 import DiscoverPage from "@screens/discover/discover";
 import Profile from "@screens/profile/profile_page";
+import EditProfile from "@screens/profile/edit_profile";
+import ProfileQR from "@screens/profile/profile_qr";
+
 import Plant from "@screens/plant/plant";
 import Index from "@app/index";
 
 import EventPage from "@screens/event/event_page";
 import ProgramPage from "@screens/program_page/program_page";
 import CreateEvent from "@screens/program_page/create_event";
+import CreateProgram from "@screens/discover/create_program"
 
 import notificationIcon from "@assets/notifications.png";
 import menuIcon from "@assets/menu.png";
@@ -93,11 +97,14 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="Home" component={Homepage} />
             <Drawer.Screen name="Discover" component={DiscoverPage} />
             <Drawer.Screen name="Profile" component={Profile} />
+            <Drawer.Screen name="EditProfile" component={EditProfile} />
+            <Drawer.Screen name="ProfileQR" component={ProfileQR} />
             <Drawer.Screen name="View Plant" component={Plant} />
             <Drawer.Screen name="Temp" component={Index} />
             <Drawer.Screen name="EventPage" component={EventPage} />
             <Drawer.Screen name="ProgramPage" component={ProgramPage} />
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
+            <Drawer.Screen name="CreateProgram" component={CreateProgram} />
         </Drawer.Navigator>
     );
 };
