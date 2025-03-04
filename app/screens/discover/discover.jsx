@@ -12,6 +12,7 @@ export default function DiscoverPage () {
     const [events, setEvents] = useState([]);
     const [programs, setPrograms] = useState([]);
     const [search, setSearch] = useState('');
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -43,10 +44,25 @@ export default function DiscoverPage () {
             } finally {
               setLoading(false);
             }
-            
           };
+
+          const fetchUser = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8')
+                if (response.status == 200) {
+                    setUser(response.data);
+                } else {
+                    console.error('Failed to fetch user', response.data.error);
+                }
+            } catch (error) {
+                console.error('failed to fetch user', error.message);
+            } finally {
+                setLoading(false);
+            }
+          }
         fetchEvents();
         fetchPrograms();
+        fetchUser();
       }, []);
 
     const options = [
@@ -123,6 +139,19 @@ export default function DiscoverPage () {
                     </Pressable>
                 ))}
                 </ScrollView>
+                {/* create new program if admin*/}
+                <View style={styles.createProgramContainer}>
+                {
+                user?.admin && (
+                    <Pressable 
+                    style={styles.createProgramButton}
+                    onPress={() => navigation.navigate('CreateProgram')}
+                    >
+                    <Text style={styles.plusButton}>+</Text>
+                    </Pressable>
+                )
+                }
+                </View>
             </View>
             </View>
         </ScrollView>
@@ -227,5 +256,25 @@ const styles = StyleSheet.create({
     arrow: {
         position: 'absolute', 
         right: 40,
-    }
+    },
+    createProgramButton: {
+        borderWidth: 1, 
+        borderRadius: 100, 
+        backgroundColor: 'black', 
+        position: 'absolute', 
+        paddingHorizontal: 10, 
+        paddingVertical: 6,
+        right: 0,
+        justifyContent: 'center', 
+        alignItems: 'center',
+    },
+    plusButton: {
+        color: 'white', 
+        fontWeight: 'bold',         
+    },
+    createProgramContainer: {
+        padding: 10,
+        marginTop: 10,
+        height: 50,
+    },
 });
