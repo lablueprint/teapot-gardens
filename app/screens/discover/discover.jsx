@@ -1,9 +1,10 @@
 import {React, useState, useEffect} from 'react';
 import { useNavigation } from 'expo-router';
-import { Text, StyleSheet, ScrollView, View, Image, TextInput, Pressable } from 'react-native';
-import garden from '@assets/garden.jpg';
+import { Text, StyleSheet, ScrollView, View, Image, Pressable } from 'react-native';
 import axios from 'axios';
 import defaultPic from '@assets/default.png';
+import discover from '@assets/discover.png';
+import upcoming from '@assets/upcoming.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
@@ -13,6 +14,7 @@ export default function DiscoverPage () {
     const [programs, setPrograms] = useState([]);
     const [search, setSearch] = useState('');
     const [user, setUser] = useState(null);
+    const [grid, setGrid] = useState(false);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -65,15 +67,25 @@ export default function DiscoverPage () {
         fetchUser();
       }, []);
 
-    const options = [
-        { name: "Option"}, {name: "Option"}, {name: "Option"}, {name: "Option"}, {name: "Option"}
-    ]
+    const toggleGrid = () => {
+        setGrid((prevGrid) => {
+            return !prevGrid;
+        });
+    }
 
     return (
         <ScrollView>
             <View style={styles.pageContainer}>
+                <Pressable onPress={toggleGrid}>
+                    <Ionicons 
+                        name={grid ? "grid-outline" : "tablet-portrait-outline"}
+                        size={30} 
+                        color="gray" 
+                        style={styles.gridIcon} 
+                    />
+                </Pressable>
             <Text style={ styles.mainTitle}>Discover</Text>
-            <View>
+            {/* <View>
                 <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
                 <TextInput 
                     style={styles.searchInput}
@@ -81,61 +93,32 @@ export default function DiscoverPage () {
                     value={search}
                     onChangeText={setSearch}
                     />
-            </View>
-            <ScrollView horizontal={true}>
-                <View style={styles.optionContainer}>
-                    {options.map((opt, index) => (
-                        <Pressable key={index} style={styles.option}>
-                            <Text>{opt.name}</Text>
-                        </Pressable>
-                    ))}
-                </View>
-            </ScrollView>
-            <View>
-                <Text style={styles.subHeading}>Upcoming Events</Text>
-                <ScrollView horizontal={true} style={styles.eventContainer}>
-                    {events.map((event, index) => (
-                        <Pressable 
-                            key={index} 
-                            style={styles.eventBox}
-                            onPress={() => navigation.navigate('EventPage', 
-                                { 
-                                    title: event.name, 
-                                    date: event.date,
-                                    location: event.location, 
-                                    time: event.time, 
-                                    details: event.eventDescription 
-                                })}
-                            >
-                            {/* <View>
-                                <Text>{event.date}</Text>
-                            </View> */}
-                            <Image source={garden} style={styles.image}/>
-                            <View style={styles.eventInfoBox}>
-                                <Text style={styles.eventName}>{event.name}</Text>
-                                <Text style={styles.eventDescription}>{event.eventDescription}</Text>
-                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                    <Ionicons name="location" size={20} color="gray" />
-                                    <Text style={styles.eventLocation}>{event.location}</Text>
-                                </View>
-                                <Text style={styles.eventTag}>Program Associated</Text>
-                            </View>
-                        </Pressable>
-                    ))}
-                </ScrollView>
-            </View>
+            </View> */}
             <Text style={styles.subHeading}>Explore Program Pages</Text>
             <View>
-                <ScrollView>
+                <ScrollView horizontal={grid}>
                 {programs.map((program, index) => (
                     <Pressable 
-                        style={styles.programContainer} 
                         key={index}
+                        style={grid ? '' : styles.listProgramContainer}
                         onPress={() => navigation.navigate('ProgramPage')}
                         >
-                        <Image source={defaultPic} style={styles.programImage}/>
-                        <Text>{program.description}</Text>
-                        <Ionicons name="chevron-forward" size={20} color="gray" style={styles.arrow}/>
+                        { grid ? (
+                            <Image source={discover} style={styles.gridProgramImage} />
+                        ): (
+                            <>
+                                <Image source={defaultPic} style={styles.listProgramImage}/>
+                                <View style={styles.listText}>
+                                    <Text>{program.name}</Text>
+                                    <Text>{program.description}</Text>
+                                </View>
+                                <Pressable style={styles.followButton}>
+                                    <Text style={{color: 'darkgreen'}}>Follow</Text>
+                                </Pressable>
+                                <Ionicons name="arrow-forward-outline" size={20} color="gray" style={styles.arrow}/>
+                            </>
+                        )
+                        }
                     </Pressable>
                 ))}
                 </ScrollView>
@@ -153,6 +136,40 @@ export default function DiscoverPage () {
                 }
                 </View>
             </View>
+            <View>
+                <Text style={styles.mainTitle}>Upcoming Events</Text>
+                <Text style={styles.subHeading}>Explore upcoming events</Text>
+                <ScrollView horizontal={true} style={styles.eventContainer}>
+                    {events.map((event, index) => (
+                        <Pressable 
+                            key={index} 
+                            style={styles.eventBox}
+                            onPress={() => navigation.navigate('EventPage', 
+                                { 
+                                    title: event.name, 
+                                    date: event.date,
+                                    location: event.location, 
+                                    time: event.time, 
+                                    details: event.eventDescription 
+                                })}
+                            >
+                            {/* <View>
+                                <Text>{event.date}</Text>
+                            </View> */}
+                            <Image source={upcoming} style={styles.upcomingImage}/>
+                            {/* <View style={styles.eventInfoBox}>
+                                <Text style={styles.eventName}>{event.name}</Text>
+                                <Text style={styles.eventDescription}>{event.eventDescription}</Text>
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <Ionicons name="location" size={20} color="gray" />
+                                    <Text style={styles.eventLocation}>{event.location}</Text>
+                                </View>
+                                <Text style={styles.eventTag}>Program Associated</Text>
+                            </View> */}
+                        </Pressable>
+                    ))}
+                </ScrollView>
+            </View>
             </View>
         </ScrollView>
     );
@@ -165,7 +182,6 @@ const styles = StyleSheet.create({
     },
     mainTitle:{
         fontSize: 30, 
-        fontWeight: 'bold'
     }, 
     searchIcon: {
         position: 'absolute', 
@@ -181,8 +197,8 @@ const styles = StyleSheet.create({
         paddingLeft: 35,
     },
     subHeading: {
-        fontSize: 20, 
-        fontWeight: 'bold',
+        fontSize: 15, 
+        fontStyle: 'italic',
         marginBottom: 20,
     },
     optionContainer: {
@@ -203,8 +219,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     eventBox: {
+        marginTop: 10,
         borderWidth: 1, 
-        width: 250,
         borderRadius: 15,
         overflow: 'hidden',
         marginRight: 15
@@ -212,9 +228,9 @@ const styles = StyleSheet.create({
     eventInfoBox: {
         padding: 10,
     },
-    image: {
-        height: 150, 
-        width: 250,
+    upcomingImage: {
+        height: 200, 
+        width: 300,
     },
     eventName: {
         fontSize: 20, 
@@ -238,24 +254,35 @@ const styles = StyleSheet.create({
         width: 200,
         marginVertical: 5,
     },
-    programContainer: {
+    gridProgramImage: {
+        height: 390, 
+        width: 250,
+    },
+    listProgramContainer: {
         borderWidth: 1, 
+        borderColor: 'gray',
         borderRadius: 10,
         height: 80,
         marginBottom: 15,
-        overflow: 'hidden',
-        padding: 10,
         flexDirection: 'row',
-        gap: 10,
-        alignItems: 'center'
+        padding: 10,
+        alignItems: 'center', 
     },
-    programImage: {
+    listProgramImage: {
         height: 60, 
         width: 60,
+        marginRight: 10,
     }, 
-    arrow: {
-        position: 'absolute', 
-        right: 40,
+    listText: {
+        width: 140,
+    },
+    followButton: {
+        borderRadius: 15, 
+        borderWidth: 1,
+        paddingVertical: 4,
+        paddingHorizontal: 10,
+        borderColor: 'darkgreen',
+        marginRight: 15,
     },
     createProgramButton: {
         borderWidth: 1, 
