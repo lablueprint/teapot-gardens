@@ -30,20 +30,20 @@ const Login = () => {
 
   const [showOnboarding, setShowOnboarding] = useState(true);
 
-  useEffect(() => {
-    checkIfFirstTime();
-  }, []);
+  // useEffect(() => {
+  //   checkIfFirstTime();
+  // }, []);
 
-  const checkIfFirstTime = async () => {
-    try {
-      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-      if (hasSeenOnboarding != null) {
-        setShowOnboarding(false);
-      }
-    } catch (error) {
-      console.log('Error checkign first time status:', error);
-    }
-  };
+  // const checkIfFirstTime = async () => {
+  //   try {
+  //     const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+  //     if (hasSeenOnboarding != null) {
+  //       setShowOnboarding(false);
+  //     }
+  //   } catch (error) {
+  //     console.log('Error checkign first time status:', error);
+  //   }
+  // };
 
   const handleOnboardingComplete = async () => {
     try{
@@ -70,7 +70,7 @@ const Login = () => {
       
       console.log(user)
       try {
-        const response = await axios.post('http://localhost:4000/api/users/', user);
+        const response = await axios.post('https://ea94-38-73-241-58.ngrok-free.app/api/users/', user);
         console.log(response.data)
       }
       catch (error) {

@@ -6,6 +6,7 @@ import DiscoverPage from "@screens/discover/discover";
 import Profile from "@screens/profile/profile_page";
 import EditProfile from "@screens/profile/edit_profile";
 import ProfileQR from "@screens/profile/profile_qr";
+import Login from "@screens/login/login";
 
 import Plant from "@screens/plant/plant";
 import Index from "@app/index";
@@ -105,6 +106,8 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="ProgramPage" component={ProgramPage} />
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
+            <Drawer.Screen name="Login" component={Login} />
+
         </Drawer.Navigator>
     );
 };

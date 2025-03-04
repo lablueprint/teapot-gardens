@@ -1,8 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { Link } from "expo-router";
+import { StyleSheet, Text, View, Pressable } from "react-native";
+import { Link, useNavigation } from "expo-router";
 
 export default function App() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Text>Welcome to the Garden Gangggggggg</Text>
@@ -16,6 +17,12 @@ export default function App() {
       <Link href="/screens/login/login" style={{ color: "blue" }}>
         Go to Login
       </Link>
+      <Pressable
+        style={styles.button}
+        onPress={() => navigation.navigate('Login')}
+        >
+        <Text style={{ color: "black "}}>Login</Text>
+      </Pressable>
       <Link href="/screens/profile/profile_page" style={{ color: "blue" }}>
         Go to Profile
       </Link>
