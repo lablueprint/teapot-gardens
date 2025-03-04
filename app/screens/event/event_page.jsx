@@ -28,16 +28,6 @@ const EventPage = () => {
   const toggleCollapsed = () => {
     setIsCollapsed((prevState) => !prevState);
   };
-  // const attendees = [
-  //   { 
-  //     "name": "Victoria", 
-  //     "profilePicture": grapes 
-  //   },
-  //   { 
-  //     "name": "Angela", 
-  //     "profilePicture": grapes
-  //   }
-  // ]
   
   const { title, date, location, time, details} = useLocalSearchParams();
 

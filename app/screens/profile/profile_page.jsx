@@ -42,11 +42,7 @@ const Profile = () => {
 
   const getUser = async () => {
     try {
-<<<<<<< HEAD
-      const response = await axios.get(`https://3b87-131-179-94-37.ngrok-free.app/api/users/${tempUserId}`)
-=======
       const response = await axios.get(`${url}/api/users/${tempUserId}`)
->>>>>>> main
       setUser(response.data)
     }
     catch (error) {
@@ -60,11 +56,7 @@ const Profile = () => {
     for (const id of pastEventIds) {
       console.log(id);
       try {
-<<<<<<< HEAD
-        const response = await axios.get(`https://3b87-131-179-94-37.ngrok-free.app/api/events/${id}`)
-=======
         const response = await axios.get(`${url}/events/${id}`)
->>>>>>> main
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -81,11 +73,7 @@ const Profile = () => {
     for (const id of upcomingEventIds) {
       console.log(id);
       try {
-<<<<<<< HEAD
-        const response = await axios.get(`https://3b87-131-179-94-37.ngrok-free.app/api/events/${id}`)
-=======
         const response = await axios.get(`${url}/api/events/${id}`)
->>>>>>> main
         tempEvents.push(response.data);
       }
       catch (error) {
