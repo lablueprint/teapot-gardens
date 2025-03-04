@@ -4,6 +4,8 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 // import planticon from '../../assets/planticon.png';
 
+const url = 'https://c753-2607-f010-2a7-103f-d156-853f-9990-8831.ngrok-free.app'
+
 const EditProfile = () => {
   const tempUserId = '6789f49f8e0a009647312c7a'
 
@@ -44,7 +46,7 @@ const EditProfile = () => {
       if (username) user.username = username;
       
       try {
-        const response = await axios.patch(`https://0dd7-172-91-75-11.ngrok-free.app/api/users/${tempUserId}`, user);
+        const response = await axios.patch(`${url}/api/users/${tempUserId}`, user);
         console.log(response.data)
       }
       catch (error) {
