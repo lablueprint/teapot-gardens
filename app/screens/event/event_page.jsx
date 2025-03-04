@@ -13,14 +13,19 @@ import axios from 'axios';
 
 const EventPage = () => {
   const tempEventId = '67932a72413f4d68be84e592' //valentines picnic woohoo
-  const tempUserId = '678f3a6bc0368a4c717413a8' //testingggg
+  const tempUserId = '6789f49f8e0a009647312c7a' //test user admin id
 
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [user, setUser] = useState(null); 
   const [attendingEvents, setAttendingEvents] = useState([]);
   const [event, setEvent] = useState(null);
+
   const [attendeeCount, setAttendeeCount] = useState(null);
+  const [averageIncome, setAverageIncome] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
+  const [genderStats, setGenderStats] = useState({});
+  const [raceStats, setRaceStats] = useState({});
+
 
   const toggleCollapsed = () => {
     setIsCollapsed((prevState) => !prevState);
@@ -72,7 +77,7 @@ const EventPage = () => {
       };
     fetchUser();
     fetchEvent();
-    getAttendeeCount();
+    getAttendeeStats();
     getNewAttendeeCount();
   }, []);
 
@@ -175,15 +180,64 @@ const EventPage = () => {
     }
   }
 
-  const getAttendeeCount = async () => {
+  const getAttendeeStats = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/events/attendees/678f315b8d423da67c615e95/`);
-      setAttendeeCount(response.data.length);
+        `http://localhost:4000/api/events/attendees/${tempEventId}`
+      );
+      const attendeeIds = response.data; // Array of attendee IDs
+  
+      if (attendeeIds.length === 0) {
+        setAttendeeCount(0);
+        return;
+      }
+  
+      const userRequests = attendeeIds.map((attendeeId) =>
+        axios.get(`http://localhost:4000/api/users/${attendeeId}`)
+      );
+      const users = await Promise.all(userRequests.map((p) => p.catch((e) => null))); // Handle failed requests
+  
+      const validUsers = users.filter((user) => user && user.data);
+      const totalAttendees = validUsers.length;
+      setAttendeeCount(totalAttendees);
+  
+      // **Calculate Stats**
+      let totalIncome = 0;
+      let genderCounts = {};
+      let raceCounts = {};
+      let newAttendeeCount = 0;
+  
+      validUsers.forEach((user) => {
+        const { incomeLevel, genderIdentification, race, attendedEvents } = user.data;
+  
+        // **Average Income Calculation**
+        totalIncome += incomeLevel || 0;
+  
+        // **Gender Breakdown**
+        if (genderIdentification) {
+          genderCounts[genderIdentification] = (genderCounts[genderIdentification] || 0) + 1;
+        }
+  
+        // **Race Breakdown**
+        if (race) {
+          raceCounts[race] = (raceCounts[race] || 0) + 1;
+        }
+  
+        // **New Attendee Calculation**
+        if (attendedEvents.length === 0) {
+          newAttendeeCount++;
+        }
+      });
+  
+      setNewAttendeeCount((newAttendeeCount / totalAttendees) * 100);
+      setAverageIncome(totalIncome / totalAttendees);
+      setGenderStats(genderCounts);
+      setRaceStats(raceCounts);
     } catch (error) {
-        console.error('Error:', error);
+      console.error("Error fetching attendee stats:", error);
     }
-  }
+  };
+  
 
   const getNewAttendeeCount = async () => {
     try {
@@ -222,6 +276,29 @@ const EventPage = () => {
 
       <Text style={styles.details}>About Event</Text>
       <Text style={styles.detailParagraph}>{details}</Text>
+
+      {user?.admin && (
+        <View style={styles.adminSection}>
+          <Text style={styles.adminText}>Admin Panel</Text>
+          <View style={styles.statsContainer}>
+            <Text style={styles.sectionHeader}>Attendee Statistics</Text>
+
+            <Text>• Average Income Level: {averageIncome ? `$${averageIncome.toFixed(2)}` : "N/A"}</Text>
+
+            <Text>• Percentage of New Attendees: {newAttendeeCount ? `${newAttendeeCount.toFixed(2)}%` : "N/A"}</Text>
+
+            <Text>• Gender Breakdown:</Text>
+            {Object.entries(genderStats).map(([gender, count]) => (
+              <Text key={gender}>  • {gender}: {((count / attendeeCount) * 100).toFixed(2)}%</Text>
+            ))}
+
+            <Text>• Race/Ethnicity Breakdown:</Text>
+            {Object.entries(raceStats).map(([race, count]) => (
+              <Text key={race}>  • {race}: {((count / attendeeCount) * 100).toFixed(2)}%</Text>
+            ))}
+          </View>
+        </View>
+      )}
 
 
       {/* Attendees Section */}
@@ -392,7 +469,30 @@ const styles = StyleSheet.create({
   }, 
   detailParagraph: {
     marginBottom: 20,
-  }
+  },
+  adminSection: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#f8d7da",
+    borderRadius: 10,
+  },
+  adminText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "red",
+    marginBottom: 5,
+  },
+  statsContainer: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 8,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
 });
 
 export default EventPage;
