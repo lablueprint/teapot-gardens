@@ -24,7 +24,7 @@ const EventPage = () => {
   const route = useRoute();
   const eventData = route.params?.eventData;
 
-  // Parse eventData into an object
+  // Parse eventData string back into an object to access its data
   useEffect(() => {
     if (eventData) {
       try {
@@ -43,6 +43,7 @@ const EventPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        // ------- CHANGE THE USER ID HERE --------- -> RIGHT NOW THE ID FOR AN ADMIN USER
         const userId = "67c7a4dacd23b5ed175ac120"; // Admin user ID
         const response = await axios.get(`http://localhost:4000/api/users/${userId}`);
         if (response.status === 200) {

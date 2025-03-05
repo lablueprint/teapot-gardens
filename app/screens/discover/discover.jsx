@@ -102,7 +102,7 @@ export default function DiscoverPage () {
                                 console.log("Navigating to EventPage with eventData:", event); // Log event before navigation
                                 navigation.navigate({
                                     name: 'EventPage',
-                                    params: { eventData: JSON.stringify(event) },
+                                    params: { eventData: JSON.stringify(event) }, // converting the event object into a string json to pass it in
                                 });                                                            }}>
                             <Image source={event.image ? { uri: event.image } : garden} style={styles.image}/>
                             <View style={styles.eventInfoBox}>
