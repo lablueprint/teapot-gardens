@@ -1,4 +1,5 @@
 const Event = require('../models/EventModel')
+const User = require("../models/UserModel");
 const mongoose = require('mongoose')
 
 // get all events
@@ -109,6 +110,46 @@ const getAttendees = async (req, res) => {
   }
 }
 
+const getAttendeeStats = async (req, res) => {
+    console.log("Params received:", req.params);
+
+    const { eventId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+        return res.status(404).json({ error: "Event not found" });
+    }
+
+    try {
+        const event = await Event.findById(eventId);
+        if (!event) {
+            return res.status(404).json({ error: "Event not found" });
+        }
+
+        console.log("Raw attendeeList from database:", event.attendeeList);
+
+        if (!Array.isArray(event.attendeeList) || event.attendeeList.length === 0) {
+            return res.status(200).json({ userStatsList: [] });
+        }
+
+        // Query user data from the 'users' collection
+        const users = await User.find({ _id: { $in: event.attendeeList } });
+
+        const userStatsList = users.map(user => ({
+            incomeLevel: Number.isInteger(user.incomeLevel) ? user.incomeLevel : 0,
+            isNewAttendee: Array.isArray(user.attendedEvents) && user.attendedEvents.length === 0,
+            genderIdentification: typeof user.genderIdentification === "string" ? user.genderIdentification : "Unknown",
+            race: typeof user.race === "string" ? user.race : "Unknown",
+        }));
+
+        console.log("Final userStatsList:", userStatsList);
+        res.status(200).json({ userStatsList });
+
+    } catch (error) {
+        console.error("Error retrieving event:", error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
   getEvents,
   getEvent,
@@ -116,5 +157,6 @@ module.exports = {
   deleteEvent,
   updateEvent,
   updateEventUsers,
-  getAttendees
+  getAttendees,
+  getAttendeeStats
 }

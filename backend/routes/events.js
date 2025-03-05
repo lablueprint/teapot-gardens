@@ -6,12 +6,15 @@ const {
     deleteEvent,
     updateEvent,
     updateEventUsers,
-    getAttendees
+    getAttendees,
+    getAttendeeStats
 } = require('../controllers/eventController')
 
 const Event = require('../models/EventModel')
 
 const router = express.Router()
+
+router.get("/:eventId/attendee-stats", getAttendeeStats);
 
 router.get('/', getEvents)
 

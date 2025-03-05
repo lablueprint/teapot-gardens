@@ -18,10 +18,13 @@ const EventPage = () => {
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
   const [showDynamicButtons, setShowDynamicButtons] = useState(true);
 
+  // This holds the stats from the backend { userStatsList: [...] }
+  const [stats, setStats] = useState({ userStatsList: [] }); // Ensure stats is never null
+
   const route = useRoute();
   const eventData = route.params?.eventData;
 
-  // parse through event data and turn it into an object whenever eventData changes
+  // Parse eventData into an object
   useEffect(() => {
     if (eventData) {
       try {
@@ -36,150 +39,49 @@ const EventPage = () => {
     }
   }, [eventData]);
 
-  // fetching user data, right nows it temporary for only one user
+  // Fetch user data (temp)
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // Replace with your actual user ID -> need to replace this with the actual user of the device -> right now its routed to me Daniel 
-        const userId = "67c79ae4cd23b5ed175ac11f";
+        const userId = "67c7a4dacd23b5ed175ac120"; // Admin user ID
         const response = await axios.get(`http://localhost:4000/api/users/${userId}`);
         if (response.status === 200) {
+          console.log("Fetched user:", response.data);
           setUser(response.data);
           setAttendingEvents(response.data.attendingEvents || []);
         } else {
-          console.error("Failed to fetch user: ", response.data.error);
+          console.error("Failed to fetch user:", response.data.error);
         }
       } catch (error) {
-        console.error("Error fetching user: ", error.message);
+        console.error("Error fetching user:", error.message);
       }
     };
     fetchUser();
   }, []);
 
-  // basically this function is called whenever a user decides to register for an event or unregister for an event -> so we need to fetch this new event data
-  const fetchEventData = async (eventId) => {
-    if (!eventId) return;
-    try {
-      const response = await axios.get(`http://localhost:4000/api/events/${eventId}`);
-      setEvent(response.data);
-    } catch (error) {
-      console.error("Error fetching event:", error);
-    }
-  };
-
-  // whenever the event object changes -> the attenddees for that event need to be fetched again
+  // If admin and event ID exist, fetch stats
   useEffect(() => {
-    if (!event) {
-      setAttendeeNames([]);
-      setAttendeeCount(null);
-      setNewAttendeeCount(null);
-      return;
+    if (user?.admin && event?._id) {
+      console.log("Calling fetchAttendeeStats with eventId:", event._id);
+      fetchAttendeeStats();
+    } else {
+      console.log("Skipped fetchAttendeeStats => admin:", user?.admin, "eventId:", event?._id);
     }
+  }, [user, event]);
 
-    const fetchAttendeeNames = async () => {
-      try {
-        if (!event.attendeeList || event.attendeeList.length === 0) {
-          setAttendeeNames([]);
-          return;
-        }
-        const responses = await Promise.all(
-          event.attendeeList.map((id) => axios.get(`http://localhost:4000/api/users/${id}`))
-        );
-        const names = responses.map((res) => res.data.name);
-        setAttendeeNames(names);
-      } catch (error) {
-        console.error("Error fetching attendee names:", error);
-      }
-    };
-
-    const getAttendeeCount = async () => {
-      try {
-        const response = await axios.get(`http://localhost:4000/api/events/attendees/${event._id}`);
-        setAttendeeCount(response.data.length);
-      } catch (error) {
-        console.error("Error fetching attendee count:", error);
-      }
-    };
-
-    const getNewAttendeeCount = async () => {
-      try {
-        const response = await axios.get(`http://localhost:4000/api/events/attendees/${event._id}`);
-        const attendeeIds = response.data;
-        const userRequests = attendeeIds.map((id) => axios.get(`http://localhost:4000/api/users/${id}`));
-        const users = await Promise.all(userRequests);
-        const brandNewAttendees = users.filter((u) => u.data.attendedEvents?.length === 0);
-        setNewAttendeeCount(brandNewAttendees.length);
-      } catch (error) {
-        console.error("Error fetching new attendees:", error);
-      }
-    };
-
-    fetchAttendeeNames();
-    getAttendeeCount();
-    getNewAttendeeCount();
-  }, [event]);
-
-  // Refresh user data after changes (adding event to user)
-  const refreshUserData = async () => {
-    if (!user?._id) return;
-    try {
-      const response = await axios.get(`http://localhost:4000/api/users/${user._id}`);
-      setUser(response.data);
-      setAttendingEvents(response.data.attendingEvents || []);
-    } catch (error) {
-      console.error("Error refreshing user data:", error);
-    }
-  };
-
-  // Add event to user attending list + add user to event's attendee list
-  const addUserEvent = async () => {
-    if (!event?._id) return;
-    if (attendingEvents.includes(event._id)) {
-      Alert.alert("You are already registered for this event.");
-      return;
-    }
-    try {
-      // Update the user
-      await axios.patch(`http://localhost:4000/api/users/${user._id}`, {
-        $push: { attendingEvents: event._id },
-      });
-
-      // Update the event
-      await axios.patch(`http://localhost:4000/api/events/${event._id}`, {
-        $push: { attendeeList: user._id },
-      });
-
-      // Refresh data
-      await refreshUserData();
-      await fetchEventData(event._id);
-
-      setShowDynamicButtons(true); // go back to the main button state
-    } catch (error) {
-      console.error("Error registering for the event:", error);
-      Alert.alert("Error registering. Please try again.");
-    }
-  };
-
-  // Remove event from user attending list + remove user from event's attendee list
-  const deleteUserEvent = async () => {
+  const fetchAttendeeStats = async () => {
     if (!event?._id) return;
     try {
-      // Update the user
-      await axios.patch(`http://localhost:4000/api/users/${user._id}`, {
-        $pull: { attendingEvents: event._id },
-      });
+      const response = await axios.get(
+        `http://localhost:4000/api/events/${event._id}/attendee-stats`
+      );
+      console.log("Stats from server:", response.data);
 
-      // Update the event
-      await axios.patch(`http://localhost:4000/api/events/${event._id}`, {
-        $pull: { attendeeList: user._id },
-      });
-
-      // Refresh data
-      await refreshUserData();
-      await fetchEventData(event._id);
+      // Ensure stats is always an object with userStatsList
+      setStats(response.data || { userStatsList: [] });
     } catch (error) {
-      console.error("Error cancelling registration:", error);
-      Alert.alert("Error cancelling registration. Please try again.");
+      console.error("Error fetching stats:", error);
+      setStats({ userStatsList: [] }); // Set empty array on error
     }
   };
 
@@ -205,6 +107,7 @@ const EventPage = () => {
         <Text>No attendees yet!</Text>
       )}
 
+      {/* Attendee list with collapsible section */}
       <View style={styles.attendeesList}>
         <Pressable onPress={() => setIsCollapsed(!isCollapsed)} style={styles.attendeesButton}>
           <Text style={styles.attendeesButtonText}>Attendees</Text>
@@ -219,23 +122,19 @@ const EventPage = () => {
         </Collapsible>
       </View>
 
-      {showDynamicButtons ? (
-        <View style={{ padding: 24 }}>
-          {!attendingEvents.includes(event?._id) ? (
-            <Pressable style={styles.shareButton} onPress={() => setShowDynamicButtons(false)}>
-              <Text style={styles.shareButtonText}>Register</Text>
-            </Pressable>
-          ) : (
-            <Pressable style={styles.shareButton} onPress={deleteUserEvent}>
-              <Text style={styles.shareButtonText}>Cancel Registration</Text>
-            </Pressable>
-          )}
-        </View>
-      ) : (
-        <Pressable style={styles.shareButton} onPress={addUserEvent}>
-          <Text style={styles.shareButtonText}>Confirm Registration</Text>
-        </Pressable>
-      )}
+      {/* ADMIN PANEL */}
+      <View style={styles.adminSection}>
+        <Text style={styles.adminText}>Admin Panel</Text>
+        {stats?.userStatsList?.length > 0 ? (
+          stats.userStatsList.map((usr, i) => (
+            <Text key={i}>
+              Income: {usr.incomeLevel}, Gender: {usr.genderIdentification}, Race: {usr.race}
+            </Text>
+          ))
+        ) : (
+          <Text>No attendee stats available</Text>
+        )}
+      </View>
     </ScrollView>
   );
 };
@@ -274,7 +173,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
-  // etc...
+  adminSection: {
+    marginTop: 24,
+  },
+  adminText: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
 });
 
 export default EventPage;
