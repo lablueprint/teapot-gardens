@@ -98,23 +98,17 @@ export default function DiscoverPage () {
                         <Pressable 
                             key={index} 
                             style={styles.eventBox}
-                            onPress={() => navigation.navigate('EventPage', 
-                                { 
-                                    title: event.name, 
-                                    date: event.date,
-                                    location: event.location, 
-                                    time: event.time, 
-                                    details: event.eventDescription 
-                                })}
-                            >
-                            {/* <View>
-                                <Text>{event.date}</Text>
-                            </View> */}
-                            <Image source={garden} style={styles.image}/>
+                            onPress={() => {
+                                console.log("Navigating to EventPage with eventData:", event); // Log event before navigation
+                                navigation.navigate({
+                                    name: 'EventPage',
+                                    params: { eventData: JSON.stringify(event) },
+                                });                                                            }}>
+                            <Image source={event.image ? { uri: event.image } : garden} style={styles.image}/>
                             <View style={styles.eventInfoBox}>
                                 <Text style={styles.eventName}>{event.name}</Text>
                                 <Text style={styles.eventDescription}>{event.eventDescription}</Text>
-                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Ionicons name="location" size={20} color="gray" />
                                     <Text style={styles.eventLocation}>{event.location}</Text>
                                 </View>

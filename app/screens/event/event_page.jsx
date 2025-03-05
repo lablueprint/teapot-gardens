@@ -1,332 +1,241 @@
-import AdminDashboard from '@screens/admin_dashboard/admin_dashboard.jsx';
-import React, { useState, useEffect} from "react";
-import { Text, ScrollView, View, Pressable, StyleSheet, Image } from "react-native";
-import UserCard from '@screens/program_page/user_card.jsx';
-import Collapsible from 'react-native-collapsible';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import garden from '@assets/garden.jpg';
-import grapes from '@assets/grapes.jpg';
-import { useLocalSearchParams } from "expo-router";
-import { Link } from "expo-router"; 
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Text, ScrollView, View, Pressable, StyleSheet, Alert } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import axios from "axios";
+import Collapsible from "react-native-collapsible";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
+import UserCard from "@screens/program_page/user_card.jsx";
+import garden from "@assets/garden.jpg";
 
 const EventPage = () => {
-  const tempEventId = '67932a72413f4d68be84e592' //valentines picnic woohoo
-  const tempUserId = '678f3a6bc0368a4c717413a8' //testingggg
-
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);
   const [attendingEvents, setAttendingEvents] = useState([]);
   const [event, setEvent] = useState(null);
-  const [attendeeIds, setAttendeeIds] = useState(null);
-  const [attendeeNames, setAttendeeNames] = useState(null);
-  const [attendeeUsernames, setAttendeeUsernames] = useState(null);
+  const [attendeeNames, setAttendeeNames] = useState([]);
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
+  const [showDynamicButtons, setShowDynamicButtons] = useState(true);
 
-  const toggleCollapsed = () => {
-    setIsCollapsed((prevState) => !prevState);
-  };
-  
-  const { title, date, location, time, details} = useLocalSearchParams();
+  const route = useRoute();
+  const eventData = route.params?.eventData;
 
+  // parse through event data and turn it into an object whenever eventData changes
+  useEffect(() => {
+    if (eventData) {
+      try {
+        const parsed = JSON.parse(eventData);
+        setEvent(parsed);
+      } catch (err) {
+        console.error("Error parsing eventData:", err);
+        setEvent(null);
+      }
+    } else {
+      setEvent(null);
+    }
+  }, [eventData]);
+
+  // fetching user data, right nows it temporary for only one user
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8');
+        // Replace with your actual user ID -> need to replace this with the actual user of the device -> right now its routed to me Daniel 
+        const userId = "67c79ae4cd23b5ed175ac11f";
+        const response = await axios.get(`http://localhost:4000/api/users/${userId}`);
         if (response.status === 200) {
           setUser(response.data);
-          setAttendingEvents(response.data.attendingEvents);
+          setAttendingEvents(response.data.attendingEvents || []);
         } else {
-          console.error('Failed to fetch user: ', response.data.error);
+          console.error("Failed to fetch user: ", response.data.error);
         }
       } catch (error) {
-        console.error('Error fetching user: ', error.message);
-      } finally {
-        setLoading(false);
-      } 
-    };
-
-    const fetchEventData = async () => {
-      try {
-        const response = await axios.get('http://localhost:4000/api/events/678f315b8d423da67c615e95');
-        if (response.status === 200) {
-          const eventData = response.data;
-          setEvent(eventData);
-          
-          if (!eventData.attendeeList || eventData.attendeeList.length === 0) {
-            console.log("No attendees found.");
-            setLoading(false);
-            return;
-          }
-    
-          // Fetch attendee details in parallel
-          const attendeeRequests = eventData.attendeeList.map((id) =>
-            axios.get(`https://145c-2607-f010-2a7-1021-65cf-d688-4fd5-ee06.ngrok-free.app/api/users/${id}`)
-          );
-    
-          const attendeeResponses = await Promise.allSettled(attendeeRequests);
-    
-          const tempAttendeeNames = [];
-          const tempAttendeeUsernames = [];
-    
-          attendeeResponses.forEach((res, index) => {
-            if (res.status === "fulfilled") {
-              tempAttendeeNames.push(res.value.data.name);
-              tempAttendeeUsernames.push(res.value.data.username);
-            } else {
-              console.error(`Error fetching attendee ${eventData.attendeeList[index]}:`, res.reason);
-            }
-          });
-    
-          console.log("Attendee Names:", tempAttendeeNames);
-          console.log("Attendee Usernames:", tempAttendeeUsernames);
-    
-          // Now update state
-          setAttendeeNames(tempAttendeeNames);
-          setAttendeeUsernames(tempAttendeeUsernames);
-          setAttendeeIds(eventData.attendeeList);
-        } else {
-          console.error("Failed to fetch event:", response.data.error);
-        }
-      } catch (error) {
-        console.error("Error fetching event:", error.message);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching user: ", error.message);
       }
     };
-    
     fetchUser();
-    fetchEventData();
-    getAttendeeCount();
-    getNewAttendeeCount();
   }, []);
 
-  //buttons for registration/cancel registration/view ticket
-  const [showDynamicButtons, setShowDynamicButtons] = useState(true);
-  const Buttons = ({ attending }) => {
-    return (
-      <View>
-        {showDynamicButtons && <DynamicButtons attending={attending}/>}
-        {!showDynamicButtons && <RegisterButtons />}
-      </View>
-    );
-  };
-  const DynamicButtons = ({ attending }) => {
-    let content
-    if (!attending) {
-      content = 
-      <Pressable style={styles.shareButton} onPress={() => setShowDynamicButtons(false)}>
-      <Text style={styles.shareButtonText}>Register</Text>
-      </Pressable>
-    } else {
-      content = (
-        <View>
-          <Pressable style={styles.shareButton}>
-          <Text style={styles.shareButtonText}>View Ticket</Text>
-          </Pressable>
-          <Pressable style={styles.shareButton} onPress={deleteUserEvent}>
-          <Text style={styles.shareButtonText}>Cancel Registration</Text>
-          </Pressable>
-        </View>
-      )
-    }
-    return <View style={{ padding: 24 }}>{content}</View>
-  }
-  const RegisterButtons = () => {
-    return (
-      <View style={{alignItems: 'center'}}>
-        <Text style={{paddingTop: 10}}>Will you be coming as...</Text>
-
-        <Pressable style={styles.registerButtons} onPress={addUserEvent}>
-        <Text style={styles.shareButtonText}>volunteer</Text>
-        </Pressable>
-        
-        <Pressable style={styles.registerButtons} onPress={addUserEvent}>
-        <Text style={styles.shareButtonText}>attendee</Text>
-        </Pressable>
-
-        <Pressable style={styles.xButton} onPress={() => setShowDynamicButtons(true)}>
-        <Text style={styles.shareButtonText}>X</Text>
-        </Pressable>
-      </View>
-    )
-  }
-    
-  //add user event
-  const addUserEvent = async () => {
+  // basically this function is called whenever a user decides to register for an event or unregister for an event -> so we need to fetch this new event data
+  const fetchEventData = async (eventId) => {
+    if (!eventId) return;
     try {
-        console.log('add to user events')
-        const response = await axios.patch(
-            'https://0dd7-172-91-75-11.ngrok-free.app/api/users/', 
-            {
-                userId: tempUserId,
-                eventId: tempEventId // Replace with actual eventId
-            }
-        );
+      const response = await axios.get(`http://localhost:4000/api/events/${eventId}`);
+      setEvent(response.data);
     } catch (error) {
-        console.error('Error:', error);
+      console.error("Error fetching event:", error);
     }
   };
 
-  //delete user event
-  const deleteUserEvent = async () => {
-    //gets rid of event from attendingEvents array
-    const updatedEvents = attendingEvents.filter((item) => item !== tempEventId);
-    try {
-      const response = await axios.patch(`https://0dd7-172-91-75-11.ngrok-free.app/api/users/${tempUserId}`, { attendingEvents: updatedEvents } );
-      console.log(response.data)
+  // whenever the event object changes -> the attenddees for that event need to be fetched again
+  useEffect(() => {
+    if (!event) {
+      setAttendeeNames([]);
+      setAttendeeCount(null);
+      setNewAttendeeCount(null);
+      return;
     }
-    catch (error) {
-      console.log("error", error)
-    }
-    
-  }
 
-  const updateEventUsers = async () => {
-    try {
-      console.log('update events')
-      const response = await axios.patch(
-        'http://localhost:4000/api/events/', 
-        {
-          // Replace with actual eventId and userId
-          eventId: event,
-          userId: user
+    const fetchAttendeeNames = async () => {
+      try {
+        if (!event.attendeeList || event.attendeeList.length === 0) {
+          setAttendeeNames([]);
+          return;
         }
-      );
+        const responses = await Promise.all(
+          event.attendeeList.map((id) => axios.get(`http://localhost:4000/api/users/${id}`))
+        );
+        const names = responses.map((res) => res.data.name);
+        setAttendeeNames(names);
+      } catch (error) {
+        console.error("Error fetching attendee names:", error);
+      }
+    };
 
-      console.log('Updated Event:', response.data);
-    } catch (error) {
-        console.error('Error:', error);
-    }
-  }
+    const getAttendeeCount = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/events/attendees/${event._id}`);
+        setAttendeeCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching attendee count:", error);
+      }
+    };
 
+    const getNewAttendeeCount = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/events/attendees/${event._id}`);
+        const attendeeIds = response.data;
+        const userRequests = attendeeIds.map((id) => axios.get(`http://localhost:4000/api/users/${id}`));
+        const users = await Promise.all(userRequests);
+        const brandNewAttendees = users.filter((u) => u.data.attendedEvents?.length === 0);
+        setNewAttendeeCount(brandNewAttendees.length);
+      } catch (error) {
+        console.error("Error fetching new attendees:", error);
+      }
+    };
 
-  const getAttendeeCount = async () => {
+    fetchAttendeeNames();
+    getAttendeeCount();
+    getNewAttendeeCount();
+  }, [event]);
+
+  // Refresh user data after changes (adding event to user)
+  const refreshUserData = async () => {
+    if (!user?._id) return;
     try {
-      const response = await axios.get(
-        `http://localhost:4000/api/events/attendees/678f315b8d423da67c615e95/`);
-      setAttendeeCount(response.data.length);
+      const response = await axios.get(`http://localhost:4000/api/users/${user._id}`);
+      setUser(response.data);
+      setAttendingEvents(response.data.attendingEvents || []);
     } catch (error) {
-        console.error('Error:', error);
+      console.error("Error refreshing user data:", error);
     }
-  }
+  };
 
-  const getNewAttendeeCount = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/events/attendees/678f315b8d423da67c615e95/`
-      );
-      const attendeeIds = response.data;
-      const userRequests = attendeeIds.map(attendeeId =>
-          axios.get(`http://localhost:4000/api/users/${attendeeId}`)
-      );
-      const users = await Promise.all(userRequests);
-      let count = users.filter(user => user.data.attendedEvents.length === 0).length;
-      setNewAttendeeCount(count); 
-    } catch (error) {
-      console.error('Error fetching new attendees:', error);
+  // Add event to user attending list + add user to event's attendee list
+  const addUserEvent = async () => {
+    if (!event?._id) return;
+    if (attendingEvents.includes(event._id)) {
+      Alert.alert("You are already registered for this event.");
+      return;
     }
-  }
-  
+    try {
+      // Update the user
+      await axios.patch(`http://localhost:4000/api/users/${user._id}`, {
+        $push: { attendingEvents: event._id },
+      });
+
+      // Update the event
+      await axios.patch(`http://localhost:4000/api/events/${event._id}`, {
+        $push: { attendeeList: user._id },
+      });
+
+      // Refresh data
+      await refreshUserData();
+      await fetchEventData(event._id);
+
+      setShowDynamicButtons(true); // go back to the main button state
+    } catch (error) {
+      console.error("Error registering for the event:", error);
+      Alert.alert("Error registering. Please try again.");
+    }
+  };
+
+  // Remove event from user attending list + remove user from event's attendee list
+  const deleteUserEvent = async () => {
+    if (!event?._id) return;
+    try {
+      // Update the user
+      await axios.patch(`http://localhost:4000/api/users/${user._id}`, {
+        $pull: { attendingEvents: event._id },
+      });
+
+      // Update the event
+      await axios.patch(`http://localhost:4000/api/events/${event._id}`, {
+        $pull: { attendeeList: user._id },
+      });
+
+      // Refresh data
+      await refreshUserData();
+      await fetchEventData(event._id);
+    } catch (error) {
+      console.error("Error cancelling registration:", error);
+      Alert.alert("Error cancelling registration. Please try again.");
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <Image 
-        style={styles.image}
-        source = {garden}
-      />
       <UserCard name={user?.name} profilePicture={garden} style={styles.hostCard} />
-
-      <Text style={styles.eventHeader}>{title}</Text>
-
-      <Text style={styles.subtext}>{date}, {time}</Text>
-      <Text style={styles.subtext}>Location </Text>
-      <Text>{location}</Text>
+      <Text style={styles.eventHeader}>{event?.name}</Text>
+      <Text style={styles.subtext}>
+        {event?.date}, {event?.time}
+      </Text>
+      <Text style={styles.subtext}>Location</Text>
+      <Text>{event?.location}</Text>
 
       <Text style={styles.subtext}>Attendees</Text>
-      <Text>{newAttendeeCount !== null ? `${newAttendeeCount}+ new Teapost goers are attending!` : ""}</Text>
-      <Text>{attendeeCount !== null ? attendeeCount : "No attendees yet!"}</Text>
-
-      <Text style={styles.details}>About Event</Text>
-      <Text style={styles.detailParagraph}>{details}</Text>
-
-
-      {/* Attendees Section */}
+      {attendeeCount !== null ? (
+        <>
+          {newAttendeeCount !== null && newAttendeeCount > 0 && (
+            <Text>{newAttendeeCount}+ new attendees!</Text>
+          )}
+          <Text>{attendeeCount} total attendees</Text>
+        </>
+      ) : (
+        <Text>No attendees yet!</Text>
+      )}
 
       <View style={styles.attendeesList}>
-        <Pressable onPress={toggleCollapsed} style={styles.attendeesButton}>
+        <Pressable onPress={() => setIsCollapsed(!isCollapsed)} style={styles.attendeesButton}>
           <Text style={styles.attendeesButtonText}>Attendees</Text>
-          <AntDesign
-            color='black'
-            name={isCollapsed ? "down": "up"}
-            size={13}
-            style={{ paddingTop: 2 }}
-          />
+          <AntDesign name={isCollapsed ? "down" : "up"} size={13} />
         </Pressable>
         <Collapsible collapsed={isCollapsed}>
-          {attendeeNames?.map((attendeeName, index) => (
-            <UserCard
-              key={index}
-              name={attendeeName}
-              username={attendeeUsernames?.[index]}
-              style={styles.attendeeCard}
-            />
-          ))
-          }
+          {attendeeNames.length > 0 ? (
+            attendeeNames.map((name, index) => <UserCard key={index} name={name} />)
+          ) : (
+            <Text>No attendees yet</Text>
+          )}
         </Collapsible>
       </View>
 
-
-      <Buttons attending={attendingEvents.includes(tempEventId)}/>
-      <Pressable style={styles.shareButton} onPress={() => 
-        {
-        updateUserEvents(); 
-        updateEventUsers();
-        }}>
-        <Text style={styles.shareButtonText}>Attending</Text>
-      </Pressable>
-
-      {/* Share Button */}
-      <Pressable style={styles.shareButton}>
-        <Text style={styles.shareButtonText}>Share</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Link
-          href={{
-            pathname: "screens/event/registration_page",
-            params: {
-              title,
-              date,
-              location,
-              time,
-              details
-            },
-          }}
-          style={styles.link}
-        >
-        <Text style={styles.buttonText}>Register</Text>
-        </Link>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Link
-          href={{
-            pathname: "screens/event/admin_scanner",
-            params: {
-              title,
-              date,
-              location,
-              time,
-              details
-            },
-          }}
-          style={styles.link}
-        >
-        <Text style={styles.buttonText}>Admin QR Scanner</Text>
-        </Link>
-      </Pressable>
+      {showDynamicButtons ? (
+        <View style={{ padding: 24 }}>
+          {!attendingEvents.includes(event?._id) ? (
+            <Pressable style={styles.shareButton} onPress={() => setShowDynamicButtons(false)}>
+              <Text style={styles.shareButtonText}>Register</Text>
+            </Pressable>
+          ) : (
+            <Pressable style={styles.shareButton} onPress={deleteUserEvent}>
+              <Text style={styles.shareButtonText}>Cancel Registration</Text>
+            </Pressable>
+          )}
+        </View>
+      ) : (
+        <Pressable style={styles.shareButton} onPress={addUserEvent}>
+          <Text style={styles.shareButtonText}>Confirm Registration</Text>
+        </Pressable>
+      )}
     </ScrollView>
   );
 };
@@ -343,55 +252,17 @@ const styles = StyleSheet.create({
   subtext: {
     fontSize: 16,
     marginBottom: 4,
-    fontStyle: 'bold',
-  },
-  details: {
-    fontSize: 16,
-    marginTop: 16,
-    marginBottom: 16,
-    fontStyle: "italic",
-  },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 12,
-    marginTop: 10,
-  },
-  hostCard: {
-    fontSize: 12,  
   },
   attendeesButton: {
     padding: 8,
     backgroundColor: "lightgray",
     borderRadius: 8,
     marginBottom: 8,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  attendeesList: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center'
+    flexDirection: "row",
+    justifyContent: "center",
   },
   attendeesButtonText: {
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  attendeeCard: {
-    marginBottom: 4,
-    fontSize: 10,  
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 999,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
+    marginRight: 5,
   },
   shareButton: {
     marginTop: 16,
@@ -399,34 +270,11 @@ const styles = StyleSheet.create({
     backgroundColor: "gray",
     borderRadius: 20,
   },
-  registerButtons: {
-    marginTop: 16,
-    padding: 12,
-    width: 150,
-    backgroundColor: "gray",
-    borderRadius: 20,
-  },
-  xButton: {
-    marginTop: 16,
-    padding: 12,
-    width: 40,
-    backgroundColor: "black",
-    borderRadius: 20,
-  },
-  buttonText: {
+  shareButtonText: {
     textAlign: "center",
     color: "white",
-    fontWeight: "bold",
   },
-  image: {
-    width: '340',
-    height: '200',
-    borderRadius: 10,
-    marginBottom: 10,
-  }, 
-  detailParagraph: {
-    marginBottom: 20,
-  }
+  // etc...
 });
 
 export default EventPage;
