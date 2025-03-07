@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Text, ScrollView, View, Pressable, StyleSheet, Alert } from "react-native";
+import { Text, ScrollView, View, Pressable, StyleSheet, Alert, Modal } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import Collapsible from "react-native-collapsible";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useNavigation } from 'expo-router';
+
 
 import UserCard from "@screens/program_page/user_card.jsx";
 import garden from "@assets/garden.jpg";
 
+const url = "https://fcf2-2607-f010-2a7-1021-146c-10b3-5521-5c7f.ngrok-free.app";
+
 const EventPage = () => {
+  const navigation = useNavigation();
+
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [user, setUser] = useState(null);
   const [attendingEvents, setAttendingEvents] = useState([]);
@@ -17,6 +23,7 @@ const EventPage = () => {
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
   const [showDynamicButtons, setShowDynamicButtons] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // This holds the stats from the backend { userStatsList: [...] }
   const [stats, setStats] = useState({ userStatsList: [] }); // Ensure stats is never null
@@ -44,8 +51,8 @@ const EventPage = () => {
     const fetchUser = async () => {
       try {
         // ------- CHANGE THE USER ID HERE --------- -> RIGHT NOW THE ID FOR AN ADMIN USER
-        const userId = "67c7a4dacd23b5ed175ac120"; // Admin user ID
-        const response = await axios.get(`http://localhost:4000/api/users/${userId}`);
+        const userId = "6789f49f8e0a009647312c7a"; // Admin user ID
+        const response = await axios.get(`${url}/api/users/${userId}`);
         if (response.status === 200) {
           console.log("Fetched user:", response.data);
           setUser(response.data);
@@ -74,7 +81,7 @@ const EventPage = () => {
     if (!event?._id) return;
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/events/${event._id}/attendee-stats`
+        `${url}/api/events/${event._id}/attendee-stats`
       );
       console.log("Stats from server:", response.data);
 
@@ -90,7 +97,7 @@ const EventPage = () => {
   const fetchEventData = async (eventId) => {
     if (!eventId) return;
     try {
-      const response = await axios.get(`http://localhost:4000/api/events/${eventId}`);
+      const response = await axios.get(`${url}/api/events/${eventId}`);
       setEvent(response.data);
     } catch (error) {
       console.error("Error fetching event:", error);
@@ -113,7 +120,7 @@ useEffect(() => {
         return;
       }
       const responses = await Promise.all(
-        event.attendeeList.map((id) => axios.get(`http://localhost:4000/api/users/${id}`))
+        event.attendeeList.map((id) => axios.get(`${url}/api/users/${id}`))
       );
       const names = responses.map((res) => res.data.name);
       setAttendeeNames(names);
@@ -124,7 +131,7 @@ useEffect(() => {
 
   const getAttendeeCount = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/events/attendees/${event._id}`);
+      const response = await axios.get(`${url}/api/events/attendees/${event._id}`);
       setAttendeeCount(response.data.length);
     } catch (error) {
       console.error("Error fetching attendee count:", error);
@@ -133,9 +140,9 @@ useEffect(() => {
 
   const getNewAttendeeCount = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/events/attendees/${event._id}`);
+      const response = await axios.get(`${url}/api/events/attendees/${event._id}`);
       const attendeeIds = response.data;
-      const userRequests = attendeeIds.map((id) => axios.get(`http://localhost:4000/api/users/${id}`));
+      const userRequests = attendeeIds.map((id) => axios.get(`${url}/api/users/${id}`));
       const users = await Promise.all(userRequests);
       const brandNewAttendees = users.filter((u) => u.data.attendedEvents?.length === 0);
       setNewAttendeeCount(brandNewAttendees.length);
@@ -153,7 +160,7 @@ useEffect(() => {
 const refreshUserData = async () => {
   if (!user?._id) return;
   try {
-    const response = await axios.get(`http://localhost:4000/api/users/${user._id}`);
+    const response = await axios.get(`${url}/api/users/${user._id}`);
     setUser(response.data);
     setAttendingEvents(response.data.attendingEvents || []);
   } catch (error) {
@@ -170,12 +177,12 @@ const addUserEvent = async () => {
   }
   try {
     // Update the user
-    await axios.patch(`http://localhost:4000/api/users/${user._id}`, {
+    await axios.patch(`${url}/api/users/${user._id}`, {
       $push: { attendingEvents: event._id },
     });
 
     // Update the event
-    await axios.patch(`http://localhost:4000/api/events/${event._id}`, {
+    await axios.patch(`${url}/api/events/${event._id}`, {
       $push: { attendeeList: user._id },
     });
 
@@ -184,23 +191,27 @@ const addUserEvent = async () => {
     await fetchEventData(event._id);
 
     setShowDynamicButtons(true); // go back to the main button state
+
   } catch (error) {
     console.error("Error registering for the event:", error);
     Alert.alert("Error registering. Please try again.");
   }
+
+
 };
 
 // Remove event from user attending list + remove user from event's attendee list
 const deleteUserEvent = async () => {
+  console.log("here");
   if (!event?._id) return;
   try {
     // Update the user
-    await axios.patch(`http://localhost:4000/api/users/${user._id}`, {
+    await axios.patch(`${url}/api/users/${user._id}`, {
       $pull: { attendingEvents: event._id },
     });
 
     // Update the event
-    await axios.patch(`http://localhost:4000/api/events/${event._id}`, {
+    await axios.patch(`${url}/api/events/${event._id}`, {
       $pull: { attendeeList: user._id },
     });
 
@@ -212,6 +223,72 @@ const deleteUserEvent = async () => {
     Alert.alert("Error cancelling registration. Please try again.");
   }
 };
+
+  //buttons for registration/cancel registration/view ticket
+  // const [showDynamicButtons, setShowDynamicButtons] = useState(true);
+  const Buttons = ({ attending }) => {
+    console.log(modalVisible)
+    return (
+      <View>
+        {showDynamicButtons && <DynamicButtons attending={attending}/>}
+        {!showDynamicButtons && <RegisterModal />}
+      </View>
+    );
+  };
+  const DynamicButtons = ({ attending }) => {
+    let content
+    if (!attending) {
+      content = 
+      <Pressable style={styles.shareButton} onPress={() => {setModalVisible(true); setShowDynamicButtons(false)}}>
+      <Text style={styles.shareButtonText}>Register</Text>
+      </Pressable>
+    } else {
+      content = (
+        <View>
+          <Pressable style={styles.shareButton} onPress={() => {navigation.navigate('RegistrationPage')}}>
+          <Text style={styles.shareButtonText}>View Ticket</Text>
+          </Pressable>
+          <Pressable style={styles.shareButton} onPress={deleteUserEvent}>
+          <Text style={styles.shareButtonText}>Cancel Registration</Text>
+          </Pressable>
+        </View>
+      )
+    }
+    return <View style={{ padding: 24 }}>{content}</View>
+  }
+  const RegisterModal = () => {
+    return (
+      <Modal
+      animationType="slide"
+      visible={modalVisible}
+      transparent={true}
+      onRequestClose={() => {
+        setModalVisible(false);
+      }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={{paddingTop: 10}}>Join the event as a...</Text>
+
+            <Pressable style={styles.registerButtons} onPress={() => {setModalVisible(false); addUserEvent()}}>
+              <Text style={styles.shareButtonText}>volunteer</Text>
+              <Text style={styles.shareButtonText}>make an impact as a volunteer!</Text>
+            </Pressable>
+            
+            <Pressable style={styles.registerButtons} onPress={() => {setModalVisible(false); addUserEvent()}}>
+              <Text style={styles.shareButtonText}>attendee</Text>
+              <Text style={styles.shareButtonText}>enjoy the event and grow your plant!</Text>
+            </Pressable>
+
+            <Pressable style={styles.xButton} onPress={() => {setModalVisible(false); setShowDynamicButtons(true)}}>
+            <Text style={styles.shareButtonText}>X</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+    )
+  }
+
 
   return (
     <ScrollView style={styles.container}>
@@ -250,7 +327,7 @@ const deleteUserEvent = async () => {
         </Collapsible>
       </View>
 
-      {showDynamicButtons ? (
+      {/* {showDynamicButtons ? (
         <View style={{ padding: 24 }}>
           {!attendingEvents.includes(event?._id) ? (
             <Pressable style={styles.shareButton} onPress={() => setShowDynamicButtons(false)}>
@@ -266,7 +343,10 @@ const deleteUserEvent = async () => {
         <Pressable style={styles.shareButton} onPress={addUserEvent}>
           <Text style={styles.shareButtonText}>Confirm Registration</Text>
         </Pressable>
-      )}
+      )} */}
+      <Buttons attending={attendingEvents.includes(event?._id)}/>
+      {/* <RegisterPopup/> */}
+
 
       {/* ADMIN PANEL */}
       {user?.admin && (
@@ -329,6 +409,48 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 8,
   },
+  registerButtons: {
+    height: '20%',
+    margin: 10,
+    padding: 12,
+    width: '80%',
+    backgroundColor: "gray",
+    borderRadius: 20,
+  },
+  xButton: {
+    marginTop: 16,
+    padding: 12,
+    width: 40,
+    backgroundColor: "black",
+    borderRadius: 20,
+  },
+  centeredView: {
+    borderColor: 'red',
+    borderWidth: '1px',
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  modalView: {
+    borderColor: 'red',
+    borderWidth: '1px',
+    height: '50%',
+    width: '100%',
+    backgroundColor: '#6A7D66',
+    borderRadius: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+      bottom: 0,
+    }
+  },
+
+
 });
 
 export default EventPage;
+
+
+

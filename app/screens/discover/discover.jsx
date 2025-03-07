@@ -6,6 +6,7 @@ import axios from 'axios';
 import defaultPic from '@assets/default.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+const url = 'https://fcf2-2607-f010-2a7-1021-146c-10b3-5521-5c7f.ngrok-free.app'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();
@@ -17,7 +18,7 @@ export default function DiscoverPage () {
     useEffect(() => {
         const fetchEvents = async () => {
           try {
-            const response = await axios.get('http://localhost:4000/api/events/');
+            const response = await axios.get(`${url}/api/events/`);
             if (response.status === 200) {
               setEvents(response.data);
             } else {
@@ -33,7 +34,7 @@ export default function DiscoverPage () {
 
         const fetchPrograms = async () => {
             try {
-              const response = await axios.get('http://localhost:4000/api/programs/');
+              const response = await axios.get(`${url}/api/programs/`);
               if (response.status === 200) {
                 setPrograms(response.data);
               } else {
@@ -48,7 +49,7 @@ export default function DiscoverPage () {
 
           const fetchUser = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8')
+                const response = await axios.get(`${url}/api/users/678f3a6bc0368a4c717413a8`)
                 if (response.status == 200) {
                     setUser(response.data);
                 } else {

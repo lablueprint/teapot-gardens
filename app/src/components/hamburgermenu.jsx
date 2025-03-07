@@ -14,6 +14,7 @@ import EventPage from "@screens/event/event_page";
 import ProgramPage from "@screens/program_page/program_page";
 import CreateEvent from "@screens/program_page/create_event";
 import CreateProgram from "@screens/discover/create_program"
+import RegistrationPage from "@screens/event/registration_page";
 
 import notificationIcon from "@assets/notifications.png";
 import menuIcon from "@assets/menu.png";
@@ -105,6 +106,7 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="ProgramPage" component={ProgramPage} />
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
+            <Drawer.Screen name="RegistrationPage" component={RegistrationPage} />
         </Drawer.Navigator>
     );
 };
