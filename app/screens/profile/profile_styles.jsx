@@ -2,32 +2,34 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
-      padding: 20,
+      borderRadius: 40,
+      flex: 1,
+    },
+    main_container: {
+      backgroundColor: '#E8E1DD',
+      paddingTop: 40,
     },
     name: {
       textAlign: "center",
-      fontSize: 20,
-      textDecorationLine: "underline",
+      fontSize: 32,
       marginBottom: 10,
     },
     handle: {
       textAlign: "center",
       fontSize: 16,
-      marginBottom: 10,
-    },
-    bio: {
-      textAlign: "center",
+      marginBottom: 5,
+      marginTop: 15
     },
     button: {
       alignItems: "center",
       padding: 7,
       borderWidth: 1,
       borderColor: 'grey',
-      margin: 7,
-      width: "50%",
+      marginBottom: 50,
+      width: 98,
       borderRadius: 10,
-      backgroundColor: "#008c8c",
-    },
+      backgroundColor: "#FFFFFF",
+    }, 
     buttonContainer: {
       alignItems: "center",
     },
@@ -40,7 +42,10 @@ const styles = StyleSheet.create({
     },
     subtitle: {
       fontSize: 15,
+      color: "white",
       marginBottom: 5,
+      fontWeight: 600,
+      marginLeft: 10,
     },
     input: {
       height: 40,
@@ -68,9 +73,9 @@ const styles = StyleSheet.create({
       display: "flex"
     },
     image: {
-      width: 100,
-      height: 100,
-      borderRadius: 50, 
+      width: 155,
+      height: 155,
+      borderRadius: 80, 
       alignSelf: "center",
       justifyContent: "center",
       marginVertical: 15,
