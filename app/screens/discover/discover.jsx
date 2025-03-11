@@ -1,6 +1,7 @@
-import {React, useState, useEffect} from 'react';
+import {React, useState, useEffect, useRef} from 'react';
 import { useNavigation } from 'expo-router';
-import { Text, StyleSheet, ScrollView, View, Image, Pressable } from 'react-native';
+import { useFonts } from 'expo-font';
+import { Text, StyleSheet, ScrollView, View, Image, Pressable, Dimensions } from 'react-native';
 import axios from 'axios';
 import defaultPic from '@assets/default.png';
 import discover from '@assets/discover.png';
@@ -10,6 +11,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function DiscoverPage () {
     const navigation = useNavigation();
+    const scrollViewRef = useRef(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const windowWidth = Dimensions.get('window').width;
+    const cardWidth = windowWidth * 0.7; 
+    const cardSpacing = 10;
+
     const [events, setEvents] = useState([]);
     const [programs, setPrograms] = useState([]);
     const [search, setSearch] = useState('');
@@ -27,6 +34,7 @@ export default function DiscoverPage () {
             }
           } catch (error) {
             console.error('Error fetching events: ', error.message);
+
           } finally {
             setLoading(false);
           }
@@ -73,18 +81,43 @@ export default function DiscoverPage () {
         });
     }
 
+    const handleScroll = (event) => {
+        const contentOffsetX = event.nativeEvent.contentOffset.x;
+        const currentIndex = Math.round(contentOffsetX / (cardWidth + cardSpacing));
+        setActiveIndex(currentIndex);
+    };
+
+    const scrollToIndex = (index) => {
+        scrollViewRef.current?.scrollTo({
+            x: index * (cardWidth + cardSpacing),
+            animated: true,
+        });
+        setActiveIndex(index);
+    };
+
+    const [fontsLoaded] = useFonts({
+        'IMFell': require('../../../assets/fonts/IMFellGreatPrimer-Regular.ttf'),
+        'IMFellItalic': require('../../../assets/fonts/IMFellGreatPrimer-Italic.ttf')
+    }); 
+
+    if (!fontsLoaded) {
+        return null;
+    }
+
     return (
         <ScrollView>
             <View style={styles.pageContainer}>
-                <Pressable onPress={toggleGrid}>
-                    <Ionicons 
-                        name={grid ? "grid-outline" : "tablet-portrait-outline"}
-                        size={30} 
-                        color="gray" 
-                        style={styles.gridIcon} 
-                    />
-                </Pressable>
-            <Text style={ styles.mainTitle}>Discover</Text>
+                <View style={styles.toggleIcon}>
+                    <Pressable onPress={toggleGrid}>
+                        <Ionicons 
+                            name={grid ? "grid" : "tablet-portrait"}
+                            size={40} 
+                            color="#D2D0D0" 
+                            style={styles.gridIcon} 
+                        />
+                    </Pressable>
+                </View>
+                <Text style={ styles.mainTitle}>Discover</Text>
             {/* <View>
                 <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
                 <TextInput 
@@ -96,21 +129,32 @@ export default function DiscoverPage () {
             </View> */}
             <Text style={styles.subHeading}>Explore Program Pages</Text>
             <View>
-                <ScrollView horizontal={grid}>
+                <ScrollView 
+                    ref={scrollViewRef}
+                    horizontal={grid}
+                    showsHorizontalScrollIndicator={false}
+                    onScroll={handleScroll}
+                    scrollEventThrottle={16}
+                    decelerationRate="fast"
+                    snapToInterval={cardWidth}
+                    style={styles.eventContainer}
+                    >
                 {programs.map((program, index) => (
                     <Pressable 
                         key={index}
-                        style={grid ? '' : styles.listProgramContainer}
+                        style={[grid ? styles.gridProgramContainer : styles.listProgramContainer, grid ?  
+                            {width: cardWidth, marginLeft: cardSpacing/2, marginRight: cardSpacing/2}: {}
+                        ]}
                         onPress={() => navigation.navigate('ProgramPage')}
                         >
                         { grid ? (
                             <Image source={discover} style={styles.gridProgramImage} />
                         ): (
                             <>
-                                <Image source={defaultPic} style={styles.listProgramImage}/>
+                                <Image source={discover} style={styles.listProgramImage}/>
                                 <View style={styles.listText}>
-                                    <Text>{program.name}</Text>
-                                    <Text>{program.description}</Text>
+                                    <Text style={styles.listName}>{program.name}</Text>
+                                    <Text style={styles.listDescription}>{program.description}</Text>
                                 </View>
                                 <Pressable style={styles.followButton}>
                                     <Text style={{color: 'darkgreen'}}>Follow</Text>
@@ -122,6 +166,21 @@ export default function DiscoverPage () {
                     </Pressable>
                 ))}
                 </ScrollView>
+                { grid && (
+                    <View style={styles.indicatorContainer}>
+                        {programs.map((_, index) => (
+                        <Pressable
+                            key={index}
+                            style={[
+                            styles.indicator,
+                            index === activeIndex ? styles.activeIndicator : styles.inactiveIndicator
+                            ]}
+                            onPress={() => scrollToIndex(index)}
+                        />
+                        ))}
+                    </View>
+                    )
+                }
                 {/* create new program if admin*/}
                 <View style={styles.createProgramContainer}>
                 {
@@ -157,7 +216,7 @@ export default function DiscoverPage () {
                                 <Text>{event.date}</Text>
                             </View> */}
                             <Image source={upcoming} style={styles.upcomingImage}/>
-                            {/* <View style={styles.eventInfoBox}>
+                            <View style={styles.eventInfoBox}>
                                 <Text style={styles.eventName}>{event.name}</Text>
                                 <Text style={styles.eventDescription}>{event.eventDescription}</Text>
                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -165,7 +224,7 @@ export default function DiscoverPage () {
                                     <Text style={styles.eventLocation}>{event.location}</Text>
                                 </View>
                                 <Text style={styles.eventTag}>Program Associated</Text>
-                            </View> */}
+                            </View>
                         </Pressable>
                     ))}
                 </ScrollView>
@@ -179,10 +238,18 @@ const styles = StyleSheet.create({
     pageContainer: {
         padding: 16,
         gap: 10,
+        fontFamily: 'IMFell'
     },
     mainTitle:{
-        fontSize: 30, 
+        fontSize: 25, 
+        fontFamily: 'IMFell'
     }, 
+    toggleIcon: {
+        position: 'absolute', 
+        top: 10,
+        right: 10,
+        zIndex: 10,
+    },
     searchIcon: {
         position: 'absolute', 
         left: 12, 
@@ -198,8 +265,8 @@ const styles = StyleSheet.create({
     },
     subHeading: {
         fontSize: 15, 
-        fontStyle: 'italic',
         marginBottom: 20,
+        fontFamily: 'IMFellItalic'
     },
     optionContainer: {
         display: "flex", 
@@ -236,14 +303,17 @@ const styles = StyleSheet.create({
         fontSize: 20, 
         fontWeight: 'bold', 
         marginVertical: 3,
+        fontFamily: 'IMFell'
     }, 
     eventInformation: {
         fontSize: 15, 
         marginVertical: 5,
+        fontFamily: 'IMFell'
     }, 
     eventLocation: {
         fontSize: 14, 
         marginVertical: 5,
+        fontFamily: 'IMFell'
     },
     eventTag: {
         backgroundColor: 'lightgray', 
@@ -257,6 +327,25 @@ const styles = StyleSheet.create({
     gridProgramImage: {
         height: 390, 
         width: 250,
+    },
+    indicatorContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    indicator: {
+        height: 8,
+        borderRadius: 4,
+        marginHorizontal: 5,
+    },
+    activeIndicator: {
+        width: 24,
+        backgroundColor: '#4b4b4b', // The darker color from your screenshot
+    },
+    inactiveIndicator: {
+        width: 8,
+        backgroundColor: '#d3d3d3', // Light gray color for inactive dots
     },
     listProgramContainer: {
         borderWidth: 1, 
@@ -275,6 +364,14 @@ const styles = StyleSheet.create({
     }, 
     listText: {
         width: 140,
+    },
+    listName: {
+        fontFamily: 'IMFell', 
+        fontSize: 18,
+    },
+    listDescription: {
+        fontFamily: 'IMFell', 
+        fontSize: 13,
     },
     followButton: {
         borderRadius: 15, 
