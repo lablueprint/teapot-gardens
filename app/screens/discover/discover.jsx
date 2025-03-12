@@ -209,7 +209,7 @@ export default function DiscoverPage () {
                                     name: 'EventPage',
                                     params: { eventData: JSON.stringify(event) }, // converting the event object into a string json to pass it in
                                 });                                                            }}>
-                            <Image source={event.image ? { uri: event.image } : garden} style={styles.image}/>
+                            <Image source={event.image ? { uri: event.image } : upcoming} style={styles.image}/>
                             <View style={styles.eventInfoBox}>
                                 <Text style={styles.eventName}>{event.name}</Text>
                                 <Text style={styles.eventDescription}>{event.eventDescription}</Text>
