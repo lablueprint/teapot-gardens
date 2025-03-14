@@ -10,6 +10,9 @@ description(string)
 */
 
 const programSchema = new Schema({
+    name: {
+        type: String
+    },
     upcomingEvents: {
         type: [String]
     },
