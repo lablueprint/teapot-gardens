@@ -14,7 +14,7 @@ import secondLogin from '@assets/secondLogin.png';
 import thirdLogin from '@assets/thirdLogin.png';
 import fourthLogin from '@assets/fourthLogin.png';
 
-const OnboardingCarousel = ({ onComplete }) => {
+const OnboardingCarousel = ({onComplete = () => console.log('No onComplete handler provided') }) => {
   const [currentSlide, setCurrentSlide ] = useState(0);
 
     const handleFinish = () => {

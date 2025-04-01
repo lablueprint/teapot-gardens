@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Homepage from "@screens/homepage/homepage";
 import DiscoverPage from "@screens/discover/discover";
 import Profile from "@screens/profile/profile_page";
@@ -21,11 +22,12 @@ import menuIcon from "@assets/menu.png";
 import tempIcon from "@assets/tempicon.png";
 import closeIcon from "@assets/close.png";
 
-import IntroSlides from "@screens/login/OnboardingCarouselComp"; 
+import IntroSlides from "@screens/login/introSlides"; 
 
 const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent = (props) => {
+    // Drawer content remains the same
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContainer}>
             <View style={styles.drawerHeader}>
@@ -67,13 +69,40 @@ const CustomDrawerContent = (props) => {
 };
 
 const HamburgerMenu = () => {
+    // State to track initial route
+    const [initialRoute, setInitialRoute] = useState("IntroSlides");
+    const [isReady, setIsReady] = useState(false);
+    
+    // Check if user has seen onboarding
+    useEffect(() => {
+        const checkOnboardingStatus = async () => {
+            try {
+                const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+                if (hasSeenOnboarding === 'true') {
+                    setInitialRoute("Login");
+                }
+                setIsReady(true);
+            } catch (error) {
+                console.log('Error checking onboarding status:', error);
+                setIsReady(true);
+            }
+        };
+        
+        checkOnboardingStatus();
+    }, []);
+    
     // List of screens that should not show the header
     const noHeaderScreens = ["IntroSlides", "Onboarding", "Welcome"];
+    
+    // Wait until we've checked AsyncStorage before rendering
+    if (!isReady) {
+        return null; // Or a loading indicator
+    }
     
     return (
         <Drawer.Navigator
             drawerContent={(props) => <CustomDrawerContent {...props} />}
-            initialRouteName="IntroSlides" // Set to your intro screen
+            initialRouteName={initialRoute}
             screenOptions={({ route, navigation }) => ({
                 // Conditionally show header based on the screen name
                 headerShown: !noHeaderScreens.includes(route.name),
@@ -125,6 +154,7 @@ const HamburgerMenu = () => {
 
 export default HamburgerMenu;
 
+// Styles remain unchanged
 const styles = StyleSheet.create({
     iconButton: {
         marginHorizontal: 15,
