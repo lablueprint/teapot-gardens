@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Text, ScrollView, View, Pressable, StyleSheet, Alert, Modal } from "react-native";
+import { Text, ScrollView, View, Pressable, StyleSheet, Alert, Modal, Image } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import Collapsible from "react-native-collapsible";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from 'expo-router';
+import Paradise from "@assets/paradise.png";
+import dateIcon from "@assets/date-icon.png";
+import locationIcon from "@assets/location-icon.png";
 
 
-import UserCard from "@screens/program_page/user_card.jsx";
-import garden from "@assets/garden.jpg";
+import UserCard from "@screens/event/user_card.jsx";
+import ProgramCard from "@screens/event/program_card.jsx";
 
-const url = "https://fcf2-2607-f010-2a7-1021-146c-10b3-5521-5c7f.ngrok-free.app";
+import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
+
+const url = "https://f537-2603-8001-d3f0-da0-1f0-4030-572f-df47.ngrok-free.app";
 
 const EventPage = () => {
   const navigation = useNavigation();
@@ -291,93 +296,105 @@ const deleteUserEvent = async () => {
 
 
   return (
-    <ScrollView style={styles.container}>
-      <UserCard name={user?.name} profilePicture={garden} style={styles.hostCard} />
-      <Text style={styles.eventHeader}>{event?.name}</Text>
-      <Text style={styles.subtext}>
-        {event?.date}, {event?.time}
-      </Text>
-      <Text style={styles.subtext}>Location</Text>
-      <Text>{event?.location}</Text>
-
-      <Text style={styles.subtext}>Attendees</Text>
-      {attendeeCount !== null ? (
-        <>
-          {newAttendeeCount !== null && newAttendeeCount > 0 && (
-            <Text>{newAttendeeCount}+ new attendees!</Text>
-          )}
-          <Text>{attendeeCount} total attendees</Text>
-        </>
-      ) : (
-        <Text>No attendees yet!</Text>
-      )}
-
-      {/* Attendee list with collapsible section */}
-      <View style={styles.attendeesList}>
-        <Pressable onPress={() => setIsCollapsed(!isCollapsed)} style={styles.attendeesButton}>
-          <Text style={styles.attendeesButtonText}>Attendees</Text>
-          <AntDesign name={isCollapsed ? "down" : "up"} size={13} />
-        </Pressable>
-        <Collapsible collapsed={isCollapsed}>
-          {attendeeNames.length > 0 ? (
-            attendeeNames.map((name, index) => <UserCard key={index} name={name} />)
-          ) : (
-            <Text>No attendees yet</Text>
-          )}
-        </Collapsible>
+    <ScrollView 
+      contentContainerStyle={{ flexGrow: 1 }} 
+    >
+      <View style={{ flex: 1 }}>
+        <Image style={{ width: '100%', height: '500', resizeMode: "cover" }} source={Paradise} />
       </View>
-
-      {/* {showDynamicButtons ? (
-        <View style={{ padding: 24 }}>
-          {!attendingEvents.includes(event?._id) ? (
-            <Pressable style={styles.shareButton} onPress={() => setShowDynamicButtons(false)}>
-              <Text style={styles.shareButtonText}>Register</Text>
-            </Pressable>
-          ) : (
-            <Pressable style={styles.shareButton} onPress={deleteUserEvent}>
-              <Text style={styles.shareButtonText}>Cancel Registration</Text>
-            </Pressable>
-          )}
+      
+      <View style={{borderRadius: 10}}>
+      <View style={styles.container}>
+        <ProgramCard name={user?.name} profilePicture={garden} style={styles.hostCard} />
+        <Text style={styles.eventHeader}>{event?.name}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Image style={styles.dateIcon} source={dateIcon}/>
+          <Text style={styles.dateText}>{event?.date}, {event?.time}</Text>
         </View>
-      ) : (
-        <Pressable style={styles.shareButton} onPress={addUserEvent}>
-          <Text style={styles.shareButtonText}>Confirm Registration</Text>
-        </Pressable>
-      )} */}
-      <Buttons attending={attendingEvents.includes(event?._id)}/>
-      {/* <RegisterPopup/> */}
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Image style={styles.locationIcon} source={locationIcon}/>
+          <Text style={styles.dateText}>{event?.location}</Text>
+        </View>
+        <Text style={styles.subtext}>ABOUT EVENT</Text>
+        <Text style={styles.description}>{event?.eventDescription}</Text>
+        <View style={{margin: 10}}></View>
 
+        <Text style={styles.subtext}>HOSTED BY</Text>
+        <Text style={styles.description}>{event?.hostDescription}</Text>
+        <View style={{margin: 10}}></View>
 
-      {/* ADMIN PANEL */}
-      {user?.admin && (
-      <View style={styles.adminSection}>
-        <Text style={styles.adminText}>Admin Panel</Text>
-        {stats?.userStatsList?.length > 0 ? (
-          stats.userStatsList.map((usr, i) => (
-            <Text key={i}>
-              Income: {usr.incomeLevel}, Gender: {usr.genderIdentification}, Race: {usr.race}
-            </Text>
-          ))
+        <Text style={styles.subtext}>ATTENDEES</Text>
+        {attendeeCount !== null ? (
+          <>
+            {newAttendeeCount !== null && newAttendeeCount > 0 && (
+              <Text>{newAttendeeCount}+ new attendees!</Text>
+            )}
+            <Text>{attendeeCount} total attendees</Text>
+          </>
         ) : (
-          <Text>No attendee stats available</Text>
+          <Text>No attendees yet!</Text>
         )}
+  
+        <View style={styles.attendeesList}>
+          <Pressable onPress={() => setIsCollapsed(!isCollapsed)} style={styles.attendeesButton}>
+            <Text style={styles.attendeesButtonText}>Attendees</Text>
+            <AntDesign name={isCollapsed ? "down" : "up"} size={13} />
+          </Pressable>
+          <Collapsible collapsed={isCollapsed}>
+            {attendeeNames.length > 0 ? (
+              attendeeNames.map((name, index) => <UserCard key={index} name={name} />)
+            ) : (
+              <Text>No attendees yet</Text>
+            )}
+          </Collapsible>
+        </View>
+  
+        <Buttons attending={attendingEvents.includes(event?._id)} />
+  
+        {user?.admin && (
+          <View style={styles.adminSection}>
+            <Text style={styles.adminText}>Admin Panel</Text>
+            {stats?.userStatsList?.length > 0 ? (
+              stats.userStatsList.map((usr, i) => (
+                <Text key={i}>
+                  Income: {usr.incomeLevel}, Gender: {usr.genderIdentification}, Race: {usr.race}
+                </Text>
+              ))
+            ) : (
+              <Text>No attendee stats available</Text>
+            )}
+          </View>
+        )}
+      <View style={{ height: 50 }} />
       </View>
-    )}
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 30,
+    backgroundColor: "#E9E5DA",
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    overflow: "hidden",
+    marginTop: -30,
   },
   eventHeader: {
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 8,
   },
   subtext: {
-    fontSize: 16,
+    color: "#8B8B8B",
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  description: {
+    fontSize: 14,
     marginBottom: 4,
   },
   attendeesButton: {
@@ -396,6 +413,8 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: "gray",
     borderRadius: 20,
+    backgroundColor: "#9D4C6A"
+
   },
   shareButtonText: {
     textAlign: "center",
@@ -446,8 +465,21 @@ const styles = StyleSheet.create({
       bottom: 0,
     }
   },
-
-
+  dateIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+  },
+  locationIcon: {
+    width: 18,
+    height: 22,
+    marginRight: 8,
+  },
+  dateText: {
+    fontSize: 16,
+    marginBottom: 4,
+    color: '#7D7D7D'
+  },
 });
 
 export default EventPage;
