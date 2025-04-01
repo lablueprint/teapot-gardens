@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+//import { Image } from 'expo-image';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import pichu from '@assets/pichu.jpg';
 import pikachu from '@assets/pikachu.jpg';
@@ -8,6 +9,10 @@ import welcomepage from '@assets/welcome_page.png';
 import BackIcon from '@assets/favicon.png'
 import { executeNativeBackPress } from 'react-native-screens';
 import { Dimensions } from 'react-native';
+import firstLogin from '@assets/firstLogin.png';
+import secondLogin from '@assets/secondLogin.png';
+import thirdLogin from '@assets/thirdLogin.png';
+import fourthLogin from '@assets/fourthLogin.png';
 
 const OnboardingCarousel = ({ onComplete }) => {
   const [currentSlide, setCurrentSlide ] = useState(0);
@@ -20,22 +25,22 @@ const OnboardingCarousel = ({ onComplete }) => {
         {
             id: 1,
             title: 'Welcome to Teapot Gardens',
-            image: welcomepage
+            image: firstLogin
         },
         {
             id: 2,
             title: 'Evolve your Garden',
-            image: pikachu
+            image: secondLogin
         },
         {
             id: 3,
-            title: 'Sign up for socials',
-            image: raichu
+            title: 'Join events, volunteer, and connect',
+            image: thirdLogin
         },
         {
             id: 4,
-            title: 'Thanks for joining',
-            image: notAIGarden
+            title: 'Grow your personal plant',
+            image: fourthLogin
         }
     ];
 

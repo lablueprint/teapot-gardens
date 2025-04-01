@@ -14,12 +14,14 @@ import Index from "@app/index";
 import EventPage from "@screens/event/event_page";
 import ProgramPage from "@screens/program_page/program_page";
 import CreateEvent from "@screens/program_page/create_event";
-import CreateProgram from "@screens/discover/create_program"
+import CreateProgram from "@screens/discover/create_program";
 
 import notificationIcon from "@assets/notifications.png";
 import menuIcon from "@assets/menu.png";
 import tempIcon from "@assets/tempicon.png";
 import closeIcon from "@assets/close.png";
+
+import IntroSlides from "@screens/login/OnboardingCarouselComp"; 
 
 const Drawer = createDrawerNavigator();
 
@@ -35,7 +37,7 @@ const CustomDrawerContent = (props) => {
 
             <View style={styles.drawerItemsContainer}>
                 {["Home", "View Plant", "My Events", "Discover"].map((screen, index) => {
-                        const routeName = (screen === "My Events") ? "Temp" : screen;
+                    const routeName = (screen === "My Events") ? "Temp" : screen;
                     const isActive = props.state.routes[props.state.index].name === routeName;
 
                     return (
@@ -65,11 +67,17 @@ const CustomDrawerContent = (props) => {
 };
 
 const HamburgerMenu = () => {
+    // List of screens that should not show the header
+    const noHeaderScreens = ["IntroSlides", "Onboarding", "Welcome"];
+    
     return (
         <Drawer.Navigator
             drawerContent={(props) => <CustomDrawerContent {...props} />}
-            initialRouteName="Home"
-            screenOptions={({ navigation }) => ({
+            initialRouteName="IntroSlides" // Set to your intro screen
+            screenOptions={({ route, navigation }) => ({
+                // Conditionally show header based on the screen name
+                headerShown: !noHeaderScreens.includes(route.name),
+                // Show header components only if header is shown
                 headerLeft: () => (
                     <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconButton}>
                         <Image source={menuIcon} style={styles.icon} />
@@ -95,6 +103,10 @@ const HamburgerMenu = () => {
                 overlayColor: "transparent",
             })}
         >
+            {/* Add your intro slides screen */}
+            <Drawer.Screen name="IntroSlides" component={IntroSlides} />
+            
+            {/* Your existing screens */}
             <Drawer.Screen name="Home" component={Homepage} />
             <Drawer.Screen name="Discover" component={DiscoverPage} />
             <Drawer.Screen name="Profile" component={Profile} />
@@ -107,13 +119,11 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
             <Drawer.Screen name="Login" component={Login} />
-
         </Drawer.Navigator>
     );
 };
 
 export default HamburgerMenu;
-
 
 const styles = StyleSheet.create({
     iconButton: {
@@ -174,4 +184,3 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
     },
 });
-
