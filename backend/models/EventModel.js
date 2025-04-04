@@ -23,7 +23,7 @@ const eventSchema = new Schema({
         type: String
     },
     attendeeList: {
-        type: []
+        type: [String]
     },
     eventDescription: {
         type: String
@@ -32,16 +32,29 @@ const eventSchema = new Schema({
         type: String
     },
     XP: {
-        type: Number
+        type: Number,
     },
     pictures: {
-        type: []
+        type: [String]
+    },
+    likes: { 
+        type: Number,
+        default: 0
+    },
+    likedBy: {
+       type: [String],
+       default: []
     },
     admin: {
         type: Number
+    }, 
+    eventID: { 
+        type: String, 
+        unique: true,
+        default: function() {
+            return new mongoose.Types.ObjectId().toString();
+        }
     }
 }, { timestamps: true })
 
 module.exports = mongoose.model('Event', eventSchema)
-
-// call the model like Program.find()

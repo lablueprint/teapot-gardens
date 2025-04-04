@@ -17,6 +17,8 @@ export default function Homepage() {
 
   const [loading, setLoading] = useState(true);
   let level_img = sample_logo;
+  const tempUserId = '6789f49f8e0a009647312c7a';
+  const tempEventId = '67932a72413f4d68be84e592';
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -35,17 +37,22 @@ export default function Homepage() {
           // const events_attending = attendingEventsResponse.map((response) => response.data);
           // setUserAttendingEvents(events_attending)
         } else {
-          console.error('Failed to fetch user: ', response.data.error);
+          console.warn("No attending events found for the user");
+          setUserAttendingEvents([]);
         }
-      } catch (error) {
-        console.error('Error fetching user or events: ', error.message);
-      } finally {
-        setLoading(false);
+      } else {
+        console.error('Failed to fetch user: ', userResponse.data.error);
       }
-    };
-    
-    fetchUserData();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching user or events: ', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  fetchUserData();
+}, []);
+
   
   if (userData && userData.tamagatchiXP !== undefined) {
     if (userData.tamagatchiXP < 1000) {
@@ -60,14 +67,14 @@ export default function Homepage() {
 
   return (
     <ScrollView style={styles.main_container}>
-      {/* <Text style = {styles.title}> Your Teapot Garden </Text>
+      <Text style = {styles.title}> Your Teapot Garden </Text>
       <Placeholder imageSource={level_img} />
       <Text style = {styles.subtitle}> Upcoming Events </Text>
       <View style={styles.events_container}>
         {userAttendingEvents.map((event, index) => (
           <EventCard key={index} title={event.title} time={event.time} date={event.date} location={event.location} image={event.image} />
         ))}
-      </View> */}
+      </View>
     </ScrollView>
   );
 }

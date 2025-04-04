@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View, FlatList, Switch, Image, ScrollView, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Link } from "expo-router";
+import { useNavigation } from 'expo-router';
 import axios from 'axios';
 import styles from '@screens/profile/profile_styles';
 import grapes from '@assets/grapes.jpg';
+
+const url = 'https://c753-2607-f010-2a7-103f-d156-853f-9990-8831.ngrok-free.app'
 
 userBadges = [{
   name: "Fish",
@@ -11,15 +14,18 @@ userBadges = [{
 }]
 
 const Profile = () => {
+  const navigation = useNavigation();
+  
   // Define state for each input field
   const [isPrivate, setIsPrivate] = useState(false);
   const [user, setUser] = useState({});
   const toggleSwitch = () => setIsPrivate(previousState => !previousState);
   const [pastEvents, setPastEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const navigation = useNavigation();
+  const API_KEY = 'http://localhost:4000';
 
-
-  const tempUserId = '6789f49f8e0a009647312c7a'
+  const tempUserId = '6789f49f8e0a009647312c7a';
 
   useEffect(() => {
     getUser();

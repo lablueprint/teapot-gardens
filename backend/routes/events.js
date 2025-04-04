@@ -6,12 +6,15 @@ const {
     deleteEvent,
     updateEvent,
     updateEventUsers,
-    getAttendees
+    getAttendees,
+    likeEvent
 } = require('../controllers/eventController')
 
 const Event = require('../models/EventModel')
 
 const router = express.Router()
+
+router.get("/:eventId/attendee-stats", getAttendeeStats);
 
 router.get('/', getEvents)
 
@@ -26,5 +29,7 @@ router.patch('/:id', updateEvent)
 router.patch('/', updateEventUsers)
 
 router.get('/attendees/:id', getAttendees)
+
+router.patch('/like/:id', likeEvent)
 
 module.exports = router

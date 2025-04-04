@@ -212,6 +212,37 @@ const Login = () => {
               />
 
               {/* <Text>Income Level (optional)</Text>
+      <Text>Birthday</Text>
+      <TextInput
+        style={styles.input}
+        value={birthday}
+        onChangeText={(text) => setBirthday(text)}
+        placeholder="MM/DD/YYYY"
+      />
+
+      <Text>Username</Text>
+        <TextInput
+          style={styles.input}
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+          placeholder="Create a username"
+        />
+
+      <Text>Password</Text>
+        <TextInput
+          style={styles.input}
+          value={password}
+          secureTextEntry
+          onChangeText={(text) => setPassword(text)}
+          placeholder="Create a password"
+        />
+        <View style={styles.buttonContainer} >
+          <TouchableOpacity style={styles.button} onPress={handleSubmit} >
+            <Text style={{ fontSize: 18,}} >Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+
+      {/* <Text>Income Level (optional)</Text>
       <TextInput
         style={styles.input}
         value={income}
@@ -236,6 +267,9 @@ const Login = () => {
         <View style={{ margin: 50 }}></View>
       </ScrollView>
     </KeyboardAvoidingView>
+      </View>
+      )}
+    </View>
   );
 };
 
