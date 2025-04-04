@@ -4,7 +4,7 @@ import axios from 'axios';
 import planticon from '@assets/planticon.png';
 import { useNavigation } from 'expo-router';
 
-const Login = () => {
+const SignIn = () => {
   const navigation = useNavigation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -40,17 +40,9 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Register</Text>
+        <Text style={styles.title}>Sign In</Text>
         <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } />
       </View>
-
-      <Text>Name</Text>
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={(text) => setName(text)}
-        placeholder="Enter your name"
-      />
 
       <Text>Email</Text>
       <TextInput
@@ -59,22 +51,6 @@ const Login = () => {
         onChangeText={(text) => setEmail(text)}
         placeholder="Enter your email"
       />
-
-      {/* <Text>Birthday</Text>
-      <TextInput
-        style={styles.input}
-        value={birthday}
-        onChangeText={(text) => setBirthday(text)}
-        placeholder="MM/DD/YYYY"
-      />
-
-      <Text>Username</Text>
-        <TextInput
-          style={styles.input}
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-          placeholder="Create a username"
-        /> */}
 
       <Text>Password</Text>
         <TextInput
@@ -86,7 +62,7 @@ const Login = () => {
         />
         <View style={styles.buttonContainer} >
           <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-            <Text style={{ fontSize: 18, color: 'white'}} >Create Profile</Text>
+            <Text style={{ fontSize: 18,}} >Create Profile</Text>
           </TouchableOpacity>
         </View>
 
@@ -95,14 +71,11 @@ const Login = () => {
         </View>
 
         <View>
-          <TouchableOpacity>
           <Text>Sign in with Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
+          <Text>Sign in with Apple</Text>
           <Text>Have an account? </Text>
-          </TouchableOpacity>
           <Pressable
-            onPress={() => navigation.navigate('SignIn')}
+            onPress={() => navigation.navigate('ProgramPage')}
           >
             <Text>Sign in </Text>
           </Pressable>
@@ -111,26 +84,24 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignIn;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#AFC9C9"
   },
   input: {
-    height: 40,
+    height: 30,
     borderColor: "gray",
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 8,
-    backgroundColor: "white", 
-    opacity: 0.7,
   },
   title: {
     fontSize: 30, 
+    fontWeight: 'bold',
   }, 
   header: {
     flexDirection: 'row', 
@@ -142,10 +113,9 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
     alignItems: "center", 
-    borderRadius: 16,
-    width: '330',
-    backgroundColor: '#0D0D0D',
-    opacity: 0.5,
+    borderRadius: 30,
+    width: '300',
+    borderColor: 'black',
     borderWidth: 1,
     height: '40',
   },
@@ -153,7 +123,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: 'flex-end',
     height: 30,
-    marginTop: 20, 
   },
   lineContainer: {
     flexDirection: 'row',
