@@ -82,7 +82,7 @@ const Login = () => {
           value={password}
           secureTextEntry
           onChangeText={(text) => setPassword(text)}
-          placeholder="Create a password"
+          placeholder="Enter your password"
         />
         <View style={styles.buttonContainer} >
           <TouchableOpacity style={styles.button} onPress={handleSubmit} >
@@ -91,7 +91,9 @@ const Login = () => {
         </View>
 
         <View style={styles.orContainer}>
-          <Text>Or</Text>
+          <View style={styles.orline} />
+          <Text style={styles.orText}>Or</Text>
+          <View style={styles.orline} />
         </View>
 
         <View style={styles.customSignInContainer}>
@@ -135,6 +137,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white", 
     borderColor: "white",
     opacity: 0.7,
+    paddingVertical: 25,
+    fontSize: 10,
   },
   title: {
     fontSize: 30, 
@@ -178,9 +182,21 @@ const styles = StyleSheet.create({
   },
   orContainer: {
     marginVertical: 20,
-    backgroundColor: 'white',
     display: 'flex', 
-    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  orText: {
+    color: "#6b7280",
+    fontSize: 14,
+    backgroundColor: 'white',
+    fontSize: 10,
+    padding: 3,
+  },
+  orline: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'white',
   },
   customSignInContainer: {
     display: 'flex', 
@@ -193,5 +209,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     paddingHorizontal: 10,
     paddingVertical: 5,
+    borderRadius: 10,
   }
 });
