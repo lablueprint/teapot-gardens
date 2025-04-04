@@ -9,10 +9,10 @@ import welcomepage from '@assets/welcome_page.png';
 import BackIcon from '@assets/favicon.png'
 import { executeNativeBackPress } from 'react-native-screens';
 import { Dimensions } from 'react-native';
-import firstLogin from '@assets/firstLogin.png';
-import secondLogin from '@assets/secondLogin.png';
-import thirdLogin from '@assets/thirdLogin.png';
-import fourthLogin from '@assets/fourthLogin.png';
+import firstLogin from '@assets/Onboarding1.png';
+import secondLogin from '@assets/Onboarding2.png';
+import thirdLogin from '@assets/Onboarding3.png';
+import fourthLogin from '@assets/Onboarding4.png';
 
 const OnboardingCarousel = ({onComplete = () => console.log('No onComplete handler provided') }) => {
   const [currentSlide, setCurrentSlide ] = useState(0);
@@ -24,22 +24,18 @@ const OnboardingCarousel = ({onComplete = () => console.log('No onComplete handl
     const slides = [
         {
             id: 1,
-            title: 'Welcome to Teapot Gardens',
             image: firstLogin
         },
         {
             id: 2,
-            title: 'Evolve your Garden',
             image: secondLogin
         },
         {
             id: 3,
-            title: 'Join events, volunteer, and connect',
             image: thirdLogin
         },
         {
             id: 4,
-            title: 'Grow your personal plant',
             image: fourthLogin
         }
     ];
