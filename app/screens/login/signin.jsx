@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import axios from 'axios';
 import planticon from '@assets/planticon.png';
 import { useNavigation } from 'expo-router';
+import logo from '@assets/teapot-logo.png';
+import google from '@assets/google.png'; 
+import apple from '@assets/apple.png';
 
 const SignIn = () => {
   const navigation = useNavigation();
@@ -72,14 +75,20 @@ const SignIn = () => {
           <View style={styles.orline} />
         </View>
 
+        
+        
         <View style={styles.customSignInContainer}>
           <TouchableOpacity style={styles.customSignIn}>
-          <Text>Sign in with Google</Text>
+            <Image style={styles.goog} source={google} />
+            <Text>Sign in with Google</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.customSignIn}>
-          <Text>Sign in with Apple</Text>
+            <Image style={styles.goog} source={apple} />
+            <Text>Sign in with Apple</Text>
           </TouchableOpacity>
         </View>
+
+
         <View style={styles.lineContainer}>
           <Text>Have an account? </Text>
           <Pressable
@@ -100,6 +109,15 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#AFC9C9',
   },
+  logo: {
+    position: 'absolute',
+    right: 20, 
+    bottom: 1,
+  },
+  goog: {
+    width: 15, 
+    height: 15,
+  },
   customSignInContainer: {
     display: 'flex', 
     flexDirection: 'row', 
@@ -107,6 +125,9 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   customSignIn: {
+    display: 'flex', 
+    flexDirection: 'row',
+    gap: 5,
     borderColor: "white", 
     borderWidth: 0.5,
     paddingHorizontal: 10,
