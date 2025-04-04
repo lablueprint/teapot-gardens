@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from "react-native";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Homepage from "@screens/homepage/homepage";
@@ -23,12 +23,14 @@ import menuIcon from "@assets/menu.png";
 import tempIcon from "@assets/tempicon.png";
 import closeIcon from "@assets/close.png";
 
-import IntroSlides from "@screens/login/introSlides"; 
+import IntroSlides from "@screens/login/introSlides";
 
 const Drawer = createDrawerNavigator();
 
+// AsyncStorage key constant
+const ONBOARDING_KEY = 'hasSeenOnboardingV2';
+
 const CustomDrawerContent = (props) => {
-    // Drawer content remains the same
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContainer}>
             <View style={styles.drawerHeader}>
@@ -69,45 +71,28 @@ const CustomDrawerContent = (props) => {
     );
 };
 
-const HamburgerMenu = () => {
-    // State to track initial route
-    const [initialRoute, setInitialRoute] = useState("IntroSlides");
-    const [isReady, setIsReady] = useState(false);
-    
-    // Check if user has seen onboarding
-    useEffect(() => {
-        const checkOnboardingStatus = async () => {
-            try {
-                const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-                if (hasSeenOnboarding === 'true') {
-                    setInitialRoute("Login");
-                }
-                setIsReady(true);
-            } catch (error) {
-                console.log('Error checking onboarding status:', error);
-                setIsReady(true);
-            }
-        };
-        
-        checkOnboardingStatus();
-    }, []);
-    
-    // List of screens that should not show the header
-    const noHeaderScreens = ["IntroSlides", "Onboarding", "Welcome", "Login", "SignIn"];
-    
-    // Wait until we've checked AsyncStorage before rendering
-    if (!isReady) {
-        return null; // Or a loading indicator
-    }
+//  two separate navigators :-) one for onboarding and one for main app
+const createOnboardingNavigator = () => (
+    <Drawer.Navigator
+        screenOptions={{
+            headerShown: false,
+            drawerStyle: { width: 0 } 
+        }}
+        drawerContent={() => null}
+    >
+        <Drawer.Screen name="IntroSlides" component={IntroSlides} />
+    </Drawer.Navigator>
+);
+
+const createMainNavigator = () => {
+    const noHeaderScreens = ["IntroSlides"];
     
     return (
         <Drawer.Navigator
             drawerContent={(props) => <CustomDrawerContent {...props} />}
-            initialRouteName={initialRoute}
+            initialRouteName="Login"
             screenOptions={({ route, navigation }) => ({
-                // Conditionally show header based on the screen name
                 headerShown: !noHeaderScreens.includes(route.name),
-                // Show header components only if header is shown
                 headerLeft: () => (
                     <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconButton}>
                         <Image source={menuIcon} style={styles.icon} />
@@ -133,10 +118,7 @@ const HamburgerMenu = () => {
                 overlayColor: "transparent",
             })}
         >
-            {/* Add your intro slides screen */}
-            <Drawer.Screen name="IntroSlides" component={IntroSlides} />
-            
-            {/* Your existing screens */}
+            <Drawer.Screen name="Login" component={Login} />
             <Drawer.Screen name="Home" component={Homepage} />
             <Drawer.Screen name="Discover" component={DiscoverPage} />
             <Drawer.Screen name="Profile" component={Profile} />
@@ -154,10 +136,62 @@ const HamburgerMenu = () => {
     );
 };
 
+const HamburgerMenu = () => {
+    const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    
+    useEffect(() => {
+        const checkOnboardingStatus = async () => {
+            try {
+                console.log("Checking AsyncStorage for onboarding status...");
+                const hasSeenOnboarding = await AsyncStorage.getItem(ONBOARDING_KEY);
+                console.log("AsyncStorage status:", hasSeenOnboarding);
+                
+                if (hasSeenOnboarding === 'true') {
+                    console.log("User has completed onboarding, showing main app");
+                    setHasCompletedOnboarding(true);
+                } else {
+                    console.log("User has not completed onboarding, showing intro");
+                    setHasCompletedOnboarding(false);
+                }
+            } catch (error) {
+                console.log('Error checking onboarding status:', error);
+                setHasCompletedOnboarding(false);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
+        checkOnboardingStatus();
+    }, []);
+    
+    // Show loading indicator while checking AsyncStorage
+    if (isLoading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#000" />
+                <Text style={styles.loadingText}>Loading...</Text>
+            </View>
+        );
+    }
+    
+    // Render the appropriate navigator based on onboarding status
+    return hasCompletedOnboarding ? createMainNavigator() : createOnboardingNavigator();
+};
+
 export default HamburgerMenu;
 
-// Styles remain unchanged
 const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    loadingText: {
+        marginTop: 10,
+        fontSize: 16,
+    },
     iconButton: {
         marginHorizontal: 15,
         padding: 5,
