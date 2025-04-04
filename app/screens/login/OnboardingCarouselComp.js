@@ -10,7 +10,7 @@ import BackIcon from '@assets/favicon.png'
 import { executeNativeBackPress } from 'react-native-screens';
 import { Dimensions } from 'react-native';
 import firstLogin from '@assets/Onboarding1.png';
-import secondLogin from '@assets/Onboarding2.png';
+import secondLogin from '@assets/Onboarding2.1.png';
 import thirdLogin from '@assets/Onboarding3.png';
 import fourthLogin from '@assets/Onboarding4.png';
 
