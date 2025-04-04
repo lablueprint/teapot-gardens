@@ -85,7 +85,7 @@ const createOnboardingNavigator = () => (
 );
 
 const createMainNavigator = () => {
-    const noHeaderScreens = ["IntroSlides"];
+    const noHeaderScreens = ["IntroSlides", "Login", "SignIn"];
     
     return (
         <Drawer.Navigator
@@ -130,7 +130,6 @@ const createMainNavigator = () => {
             <Drawer.Screen name="ProgramPage" component={ProgramPage} />
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
-            <Drawer.Screen name="Login" component={Login} />
             <Drawer.Screen name="SignIn" component={SignIn} />
         </Drawer.Navigator>
     );
