@@ -1,3 +1,15 @@
+import AdminDashboard from '@screens/admin_dashboard/admin_dashboard.jsx';
+import React, { useState, useEffect} from "react";
+import { Text, ScrollView, View, Pressable, StyleSheet, Image } from "react-native";
+import UserCard from '@screens/program_page/user_card.jsx';
+import Collapsible from 'react-native-collapsible';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import garden from '@assets/garden.jpg';
+import grapes from '@assets/grapes.jpg';
+import { useLocalSearchParams } from "expo-router";
+import { Link } from "expo-router"; 
+import axios from 'axios';
 import React, { useState, useEffect } from "react";
 import { Text, ScrollView, View, Pressable, StyleSheet, Alert } from "react-native";
 import { useRoute } from "@react-navigation/native";
@@ -9,6 +21,10 @@ import UserCard from "@screens/program_page/user_card.jsx";
 import garden from "@assets/garden.jpg";
 
 const EventPage = () => {
+  const tempEventId = '67932a72413f4d68be84e592'; //valentines picnic woohoo
+  const tempUserId = '678f3a6bc0368a4c717413a8'; //testingggg
+  const API_KEY = 'http://localhost:4000';
+
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [user, setUser] = useState(null);
   const [attendingEvents, setAttendingEvents] = useState([]);
@@ -16,6 +32,9 @@ const EventPage = () => {
   const [attendeeNames, setAttendeeNames] = useState([]);
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [showDynamicButtons, setShowDynamicButtons] = useState(true);
 
   // This holds the stats from the backend { userStatsList: [...] }
@@ -42,10 +61,8 @@ const EventPage = () => {
   // Fetch user data (temp)
   useEffect(() => {
     const fetchUser = async () => {
-      try {
-        // ------- CHANGE THE USER ID HERE --------- -> RIGHT NOW THE ID FOR AN ADMIN USER
-        const userId = "67c7a4dacd23b5ed175ac120"; // Admin user ID
-        const response = await axios.get(`http://localhost:4000/api/users/${userId}`);
+      try { 
+        const response = await axios.get(`${API_KEY}/api/users/678f3a6bc0368a4c717413a8`);
         if (response.status === 200) {
           console.log("Fetched user:", response.data);
           setUser(response.data);
@@ -57,6 +74,23 @@ const EventPage = () => {
         console.error("Error fetching user:", error.message);
       }
     };
+
+    const fetchEvent = async () => {
+      try { 
+          const response = await axios.get(`${API_KEY}/api/events/${tempEventId}`);
+          if (response.status === 200) {
+              setEvent(response.data);
+              setLikeCount(response.data.likes || 0);
+              setLiked(response.data.likedBy.includes(tempUserId)); // Check if user already liked
+          } else {
+              console.error('Failed to fetch event: ', response.data.error);
+          }
+      } catch (error) {
+          console.error('Error fetching event: ', error.message);
+      } finally {
+          setLoading(false);
+      }
+  };
     fetchUser();
   }, []);
 
@@ -73,19 +107,31 @@ const EventPage = () => {
   const fetchAttendeeStats = async () => {
     if (!event?._id) return;
     try {
-      const response = await axios.get(
-        `http://localhost:4000/api/events/${event._id}/attendee-stats`
-      );
-      console.log("Stats from server:", response.data);
-
-      // Ensure stats is always an object with userStatsList
-      setStats(response.data || { userStatsList: [] });
+        console.log('add to user events')
+        const response = await axios.patch( 
+            `${API_KEY}/api/users/`, 
+            {
+                userId: tempUserId,
+                eventId: tempEventId // Replace with actual eventId
+            }
+        );
     } catch (error) {
       console.error("Error fetching stats:", error);
       setStats({ userStatsList: [] }); // Set empty array on error
     }
   };
 
+
+  //delete user event
+  const deleteUserEvent = async () => {
+    //gets rid of event from attendingEvents array
+    const updatedEvents = attendingEvents.filter((item) => item !== tempEventId);
+    try { 
+      const response = await axios.patch(`${API_KEY}/api/users/${tempUserId}`, { attendingEvents: updatedEvents } );
+      console.log(response.data)
+    }
+    catch (error) {
+      console.log("error", error)
   // basically this function is called whenever a user decides to register for an event or unregister for an event -> so we need to fetch this new event data
   const fetchEventData = async (eventId) => {
     if (!eventId) return;
@@ -108,6 +154,14 @@ useEffect(() => {
 
   const fetchAttendeeNames = async () => {
     try {
+      console.log('update events')
+      const response = await axios.patch(
+        `${API_KEY}/api/events/`, 
+        {
+          // Replace with actual eventId and userId
+          eventId: '678f315b8d423da67c615e95',
+          userId: '678f3a6bc0368a4c717413a8'
+        }
       if (!event.attendeeList || event.attendeeList.length === 0) {
         setAttendeeNames([]);
         return;
@@ -124,7 +178,8 @@ useEffect(() => {
 
   const getAttendeeCount = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/events/attendees/${event._id}`);
+      const response = await axios.get(
+        `${API_KEY}/api/events/attendees/678f315b8d423da67c615e95`);
       setAttendeeCount(response.data.length);
     } catch (error) {
       console.error("Error fetching attendee count:", error);
@@ -133,9 +188,13 @@ useEffect(() => {
 
   const getNewAttendeeCount = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/events/attendees/${event._id}`);
+      const response = await axios.get(  
+        `${API_KEY}/api/events/attendees/67932a72413f4d68be84e592`
+      );
       const attendeeIds = response.data;
-      const userRequests = attendeeIds.map((id) => axios.get(`http://localhost:4000/api/users/${id}`));
+      const userRequests = attendeeIds.map(attendeeId => 
+          axios.get(`${API_KEY}/api/users/${attendeeId}`)
+      );
       const users = await Promise.all(userRequests);
       const brandNewAttendees = users.filter((u) => u.data.attendedEvents?.length === 0);
       setNewAttendeeCount(brandNewAttendees.length);
@@ -159,6 +218,45 @@ const refreshUserData = async () => {
   } catch (error) {
     console.error("Error refreshing user data:", error);
   }
+  const handleLikeToggle = async () => {
+    try {
+        console.log("Sending like request...");
+        const response = await axios.patch(
+            `${API_KEY}/api/events/like/${tempEventId}`,
+            { userId: tempUserId }
+        );
+
+        console.log("Response:", response.data);
+
+        if (response.status === 200) {
+            setLiked(response.data.likedBy.includes(tempUserId));
+            setLikeCount(response.data.likes);
+        }
+    } catch (error) {
+        console.error("Error updating like count:", error.response?.data || error.message);
+    }
+};
+
+  
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.imageContainer}>
+        <Image 
+          style={styles.image}
+          source={garden}
+        />
+        <View style={styles.likeContainer}>
+          <Ionicons 
+            name={liked ? 'heart' : 'heart-outline'} 
+            size={24} 
+            color={liked ? 'red' : 'gray'} 
+            onPress={handleLikeToggle}
+          />
+          <Text style={styles.likeCount}>{likeCount}</Text>
+        </View>
+      </View>
+
+      <UserCard name="Bob" profilePicture={garden} style={styles.hostCard} />
 };
 
 // Add event to user attending list + add user to event's attendee list
@@ -290,6 +388,30 @@ const deleteUserEvent = async () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+  },
+  imageContainer: {
+    position: 'relative',
+  },
+  image: {
+    width: '340',
+    height: '200',
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  likeContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    padding: 4,
+    borderRadius: 12,
+  },
+  likeCount: {
+    marginLeft: 4,
+    fontSize: 16,
+    color: 'black',
   },
   eventHeader: {
     fontSize: 24,

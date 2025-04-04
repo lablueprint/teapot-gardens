@@ -111,7 +111,7 @@ const ProgramPage = () => {
         </Text>
         <Pressable onPress={ toggleCollapsedActivities } >
             <Text style={styles.button}>Follow Program</Text>
-          </Pressable>
+        </Pressable>
 
       {/*  Upcoming Events Carousel  */}
       <Text style={ styles.header }>Upcoming Events</Text>

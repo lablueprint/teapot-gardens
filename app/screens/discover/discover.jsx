@@ -20,30 +20,43 @@ export default function DiscoverPage () {
     const [events, setEvents] = useState([]);
     const [programs, setPrograms] = useState([]);
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
+    const tempUserId = '678f3a6bc0368a4c717413a8';
+    const API_KEY = 'http://localhost:4000';
     const [user, setUser] = useState(null);
     const [grid, setGrid] = useState(false);
 
     useEffect(() => {
         const fetchEvents = async () => {
-          try {
-            const response = await axios.get('http://localhost:4000/api/events/');
-            if (response.status === 200) {
-              setEvents(response.data);
-            } else {
-              console.error('Failed to fetch events: ', response.data.error);
+            try {
+                const response = await axios.get(`${API_KEY}/api/events/`);
+                if (response.status === 200) {
+                    const eventsWithLikeFlag = response.data.map(event => ({
+                        ...event,
+                        liked: event.likedBy.includes(tempUserId),
+                        likes: event.likes || 0,
+                    }));
+                    setEvents(eventsWithLikeFlag);
+                } else {
+                    console.error('Failed to fetch events: ', response.data.error);
+                }
+            } catch (error) {
+                console.error('Error fetching events: ', error.message);
+            } finally {
+                setLoading(false);
             }
+
           } catch (error) {
             console.error('Error fetching events: ', error.message);
 
           } finally {
             setLoading(false);
           }
-          
         };
 
         const fetchPrograms = async () => {
             try {
-              const response = await axios.get('http://localhost:4000/api/programs/');
+              const response = await axios.get(`${API_KEY}/api/programs/`);
               if (response.status === 200) {
                 setPrograms(response.data);
               } else {
@@ -75,6 +88,38 @@ export default function DiscoverPage () {
         fetchUser();
       }, []);
 
+      const handleLike = async (eventId, index) => {
+        try {
+            const eventToUpdate = { ...events[index] }; 
+        
+            const response = await axios.patch(
+                `${API_KEY}/api/events/like/${eventId}`,
+                { userId: tempUserId }
+            );
+    
+            if (response.status === 200) {
+                const updatedEvent = {
+                    ...eventToUpdate,
+                    liked: response.data.likedBy.includes(tempUserId),
+                    likes: response.data.likes,
+                };
+    
+                setEvents(prevEvents => {
+                    const updatedEvents = [...prevEvents];
+                    updatedEvents[index] = updatedEvent;
+                    return updatedEvents;
+                });
+            }
+        } catch (error) {
+            console.error("Error updating like:", error.response?.data || error.message);
+        }
+    };
+    
+    
+
+    const options = [
+        { name: "Option"}, {name: "Option"}, {name: "Option"}, {name: "Option"}, {name: "Option"}
+    ];
     const toggleGrid = () => {
         setGrid((prevGrid) => {
             return !prevGrid;
@@ -203,6 +248,30 @@ export default function DiscoverPage () {
                         <Pressable 
                             key={index} 
                             style={styles.eventBox}
+                            onPress={() => navigation.navigate('EventPage', 
+                                { 
+                                    title: event.name, 
+                                    date: event.date,
+                                    location: event.location, 
+                                    time: event.time, 
+                                    details: event.eventDescription 
+                                })}
+                            >
+                            {/* <View>
+                                <Text>{event.date}</Text>
+                            </View> */}
+                            <View style={styles.imageContainer}>
+                                <Image source={garden} style={styles.image} />
+                                <View style={styles.likeContainer}>
+                                    <Ionicons
+                                    name={event.liked ? 'heart' : 'heart-outline'}
+                                    size={24}
+                                    color={event.liked ? 'red' : 'gray'}
+                                    onPress={() => handleLike(event._id, index)}
+                                    />
+                                    <Text style={styles.likeCount}>{event.likes}</Text>
+                                </View>
+                            </View>
                             onPress={() => {
                                 console.log("Navigating to EventPage with eventData:", event); // Log event before navigation
                                 navigation.navigate({
@@ -289,9 +358,30 @@ const styles = StyleSheet.create({
     eventInfoBox: {
         padding: 10,
     },
+    imageContainer: {
+        position: 'relative',
+    },
+    image: {
+        height: 150,
+        width: 250,
     upcomingImage: {
         height: 200, 
         width: 300,
+    },
+    likeContainer: {
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255,255,255,0.7)',
+        padding: 4,
+        borderRadius: 12,
+    },
+    likeCount: {
+        marginLeft: 4,
+        fontSize: 16,
+        color: 'black',
     },
     eventName: {
         fontSize: 20, 

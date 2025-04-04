@@ -1,16 +1,25 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import Homepage from "@screens/homepage/homepage";
+import AdminDashboard from "@screens/admin_dashboard/admin_dashboard";
 import DiscoverPage from "@screens/discover/discover";
+
+import AdminScanner from "@screens/event/admin_scanner";
+import EventPage from "@screens/event/event_page";
+import RegistrationPage from "@screens/event/registration_page";
+import Homepage from "@screens/homepage/homepage";
+import Login from "@screens/login/login";
+
 import Profile from "@screens/profile/profile_page";
 import EditProfile from "@screens/profile/edit_profile";
 import ProfileQR from "@screens/profile/profile_qr";
 
 import Plant from "@screens/plant/plant";
+import EditProfile from "@screens/profile/edit_profile";
+import Profile from "@screens/profile/profile_page";
 import Index from "@app/index";
 
-import EventPage from "@screens/event/event_page";
+
 import ProgramPage from "@screens/program_page/program_page";
 import CreateEvent from "@screens/program_page/create_event";
 import CreateProgram from "@screens/discover/create_program"
@@ -103,6 +112,11 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="Temp" component={Index} />
             <Drawer.Screen name="EventPage" component={EventPage} />
             <Drawer.Screen name="ProgramPage" component={ProgramPage} />
+            <Drawer.Screen name="EditProfile" component={EditProfile} />
+            <Drawer.Screen name="Login" component={Login} />
+            <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
+            <Drawer.Screen name="AdminScanner" component={AdminScanner} />
+            <Drawer.Screen name="RegistrationPage" component={RegistrationPage} />
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
         </Drawer.Navigator>
