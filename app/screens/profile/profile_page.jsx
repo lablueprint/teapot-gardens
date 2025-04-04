@@ -9,15 +9,15 @@ import grapes from '@assets/grapes.jpg';
 const url = 'https://c753-2607-f010-2a7-103f-d156-853f-9990-8831.ngrok-free.app'
 
 userBadges = [{
-    name: "Fish",
-    description: "bought a fish"
+  name: "Fish",
+  description: "bought a fish"
 }]
 
 const Profile = () => {
   const navigation = useNavigation();
   
   // Define state for each input field
-  const [isPrivate, setIsPrivate] = useState(false); 
+  const [isPrivate, setIsPrivate] = useState(false);
   const [user, setUser] = useState({});
   const toggleSwitch = () => setIsPrivate(previousState => !previousState);
   const [pastEvents, setPastEvents] = useState([]);
@@ -42,7 +42,7 @@ const Profile = () => {
 
   const getUser = async () => {
     try {
-      const response = await axios.get(`${API_KEY}/api/users/${tempUserId}`)
+      const response = await axios.get(`https://4289-131-179-95-17.ngrok-free.app/api/users/${tempUserId}`)
       setUser(response.data)
     }
     catch (error) {
@@ -56,7 +56,7 @@ const Profile = () => {
     for (const id of pastEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`${API_KEY}/api/events/${id}`)
+        const response = await axios.get(`https://4289-131-179-95-17.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -73,7 +73,7 @@ const Profile = () => {
     for (const id of upcomingEventIds) {
       console.log(id);
       try {
-        const response = await axios.get(`${API_KEY}/api/events/${id}`)
+        const response = await axios.get(`https://4289-131-179-95-17.ngrok-free.app/api/events/${id}`)
         tempEvents.push(response.data);
       }
       catch (error) {
@@ -88,21 +88,18 @@ const Profile = () => {
 
       <View style={styles.container}>
         <Text style={styles.title}>Profile Page</Text>
-        <Image 
-            source={grapes} // Replace with your image path
-            style={styles.image}
+        <Image
+          source={grapes} // Replace with your image path
+          style={styles.image}
         />
         <Text style={styles.name}>Name: {user.name} </Text>
         <Text style={styles.handle}>{user.username} </Text>
         <Text style={styles.info}>Bio: I like grapes </Text>
 
         <View style={styles.buttonContainer}>
-          <Pressable 
-            style={styles.button} 
-            onPress={() => navigation.navigate('EditProfile')}
-            >
-            <Text style={{ color: "white" }}>Edit Profile</Text>
-          </Pressable>
+          <View style={styles.button}>
+            <Link href="screens/profile/edit_profile" style={{ color: "white" }}> Edit Profile </Link>
+          </View>
         </View>
 
         <Text style={styles.subtitle}>My badges </Text>
@@ -157,11 +154,11 @@ const Profile = () => {
         <View style={styles.privacy}>
           <Text> Privacy Settings</Text>
           <Switch
-              trackColor={{false: '#767577', true: '#81b0ff'}}
-              onValueChange={toggleSwitch}
-              value={isPrivate}
-            />
-            {isPrivate ? (
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+            onValueChange={toggleSwitch}
+            value={isPrivate}
+          />
+          {isPrivate ? (
             <Text style={styles.message}>Your data is now private.</Text>
           ) : (
             <Text style={styles.message}>Your data is visible to others.</Text>

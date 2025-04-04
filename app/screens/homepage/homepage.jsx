@@ -20,25 +20,22 @@ export default function Homepage() {
   const tempUserId = '6789f49f8e0a009647312c7a';
   const tempEventId = '67932a72413f4d68be84e592';
 
-useEffect(() => {
-  const fetchUserData = async () => {
-    try {
-      // fetching user data here
-      const userResponse = await axios.get(`http://localhost:4000/api/users/${tempUserId}`);
-      const testResponse = await axios.get(`http://localhost:4000/api/events/${tempEventId}`);
-      setTestEvent(testResponse.data);
-      
-      if (userResponse.status === 200) {
-        const fetchedUser = userResponse.data;
-        setUserData(fetchedUser);
-        
-        if (Array.isArray(fetchedUser.attendingEvents)) {
-          const attendingEventsRequests = fetchedUser.attendingEvents.map((eventId) =>
-            axios.get(`http://localhost:4000/api/events/${eventId}`)
-          );
-          const attendingEventsResponse = await Promise.all(attendingEventsRequests);
-          const events_attending = attendingEventsResponse.map((response) => response.data);
-          setUserAttendingEvents(events_attending);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // fetching user data here
+        const userResponse = await axios.get('https://4289-131-179-95-17.ngrok-free.app/api/users/6789f49f8e0a009647312c7a');
+        const testResponse = await axios.get('https://4289-131-179-95-17.ngrok-free.app/api/events/678f315b8d423da67c615e95');
+        setTestEvent(testResponse)
+        if (userResponse.status === 200) {
+          setUserData(userResponse.data);
+          // fetching events for the user's attendingEvents
+          setUserAttendingEvents(userResponse.data.attendingEvents)
+          console.log(userAttendingEvents)
+          // const attendingEvents = userData.attendingEvents.map((eventId) => axios.get(`http://localhost:4000/api/events/${eventId}`));
+          // const attendingEventsResponse = await Promise.all(attendingEvents)
+          // const events_attending = attendingEventsResponse.map((response) => response.data);
+          // setUserAttendingEvents(events_attending)
         } else {
           console.warn("No attending events found for the user");
           setUserAttendingEvents([]);
