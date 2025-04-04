@@ -4,8 +4,11 @@ import axios from 'axios';
 import planticon from '@assets/planticon.png';
 import { useNavigation } from 'expo-router';
 import logo from '@assets/teapot-logo.png';
-import google from '@assets/google.png'; 
 import apple from '@assets/apple.png';
+import google from '@assets/google.png';
+import { useFonts } from 'expo-font';
+
+
 
 const SignIn = () => {
   const navigation = useNavigation();
@@ -14,7 +17,9 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [birthday, setBirthday] = useState("");
   const [username, setUsername] = useState("");
-  
+  const [fontsLoaded] = useFonts({
+    'CooperLtBT': require('@assets/Cooper_BT_Font_Family/CooperLtBT-Regular.ttf'),
+  });
   const handleSubmit = async () => {
     if (
       !name ||
@@ -44,7 +49,7 @@ const SignIn = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Sign In</Text>
-        <Image style={styles.logo} source={ logo } />
+        <Image style={styles.logo }source={logo} />
       </View>
 
       <Text>Email</Text>
@@ -65,7 +70,7 @@ const SignIn = () => {
         />
         <View style={styles.buttonContainer} >
           <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-            <Text style={{ fontSize: 18,}} >Sign In</Text>
+            <Text style={{fontSize: 30, color: 'white'}} >Sign In</Text>
           </TouchableOpacity>
         </View>
 
@@ -127,7 +132,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   customSignIn: {
-    display: 'flex', 
+    display: 'flex',
     flexDirection: 'row',
     gap: 5,
     borderColor: "white", 
@@ -135,6 +140,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
+  },
+  goog: {
+    width: 15, 
+    height: 15,
   },
   input: {
     height: 40,
@@ -149,8 +158,9 @@ const styles = StyleSheet.create({
     paddingVertical: 25,
   },
   title: {
-    fontSize: 30, 
+    fontSize: 50, 
     fontWeight: 'bold',
+    fontFamily: 'CooperLtBT',
   }, 
   header: {
     flexDirection: 'row', 
@@ -162,19 +172,18 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
     alignItems: "center", 
-    borderRadius: 30,
+    borderRadius: 16,
     width: '300',
     borderColor: 'black',
     backgroundColor: "#0D0D0D80",
-    opacity : 0.5,
     borderWidth: 1,
-    height: '40',
+    height: '60',
   },
   buttonContainer: {
-    marginTop: 20,
+    marginTop: 30,
     alignItems: "center",
     justifyContent: 'flex-end',
-    height: 30,
+    height: 40,
   },
   lineContainer: {
     flexDirection: 'row',

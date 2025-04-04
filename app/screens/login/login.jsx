@@ -6,6 +6,7 @@ import { useNavigation } from 'expo-router';
 import logo from '@assets/teapot-logo.png';
 import apple from '@assets/apple.png';
 import google from '@assets/google.png'
+import { useFonts } from 'expo-font';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -14,6 +15,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [birthday, setBirthday] = useState("");
   const [username, setUsername] = useState("");
+  const [fontsLoaded] = useFonts({
+      'CooperLtBT': require('@assets/Cooper_BT_Font_Family/CooperLtBT-Regular.ttf'),
+    });
   
   const handleSubmit = async () => {
     if (
@@ -89,7 +93,7 @@ const Login = () => {
         />
         <View style={styles.buttonContainer} >
           <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-            <Text style={{ fontSize: 18, color: 'white'}} >Create Profile</Text>
+            <Text style={{ fontSize: 30, color: 'white'}} >Create Profile</Text>
           </TouchableOpacity>
         </View>
 
@@ -129,7 +133,7 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 30,
     backgroundColor: "#AFC9C9"
   },
   logo: {
@@ -155,7 +159,9 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   title: {
-    fontSize: 30, 
+    fontSize: 50, 
+    fontWeight: 'bold',
+    fontFamily: 'CooperLtBT',
   }, 
   header: {
     flexDirection: 'row', 
@@ -172,13 +178,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#0D0D0D',
     opacity: 0.5,
     borderWidth: 1,
-    height: '40',
+    height: '60',
   },
   buttonContainer: {
     alignItems: "center",
     justifyContent: 'flex-end',
-    height: 30,
-    marginTop: 20, 
+    height: 40,
+    marginTop: 30, 
   },
   lineContainer: {
     flexDirection: 'row',
