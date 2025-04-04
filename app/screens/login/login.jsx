@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import axios from 'axios';
 import planticon from '@assets/planticon.png';
 import { useNavigation } from 'expo-router';
+import logo from '@assets/teapot-logo.png';
+import apple from '@assets/apple.png';
+import google from '@assets/google.png'
 
 const Login = () => {
   const navigation = useNavigation();
@@ -41,7 +44,7 @@ const Login = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Register</Text>
-        <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } />
+        <Image style={styles.logo} source={ logo } />
       </View>
 
       <Text>Name</Text>
@@ -98,9 +101,11 @@ const Login = () => {
 
         <View style={styles.customSignInContainer}>
           <TouchableOpacity style={styles.customSignIn}>
+            <Image style={styles.goog} source={google} />
             <Text>Sign in with Google</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.customSignIn}>
+            <Image style={styles.goog} source={apple} />
             <Text>Sign in with Apple</Text>
           </TouchableOpacity>
         </View>
@@ -126,6 +131,15 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#AFC9C9"
+  },
+  logo: {
+    position: 'absolute',
+    right: 20, 
+    bottom: 1,
+  },
+  goog: {
+    width: 15, 
+    height: 15,
   },
   input: {
     height: 40,
@@ -175,7 +189,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: 'black',
+    backgroundColor: 'white',
   },
   text: {
     paddingHorizontal: 10,
@@ -197,6 +211,13 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: 'white',
+    display: 'flex', 
+    flexDirection: 'row',
+  },
+  line: {
+    flex: 1, 
+    height: 0.1, 
+    backgroundColor: 'white',
   },
   customSignInContainer: {
     display: 'flex', 
@@ -205,6 +226,9 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   customSignIn: {
+    display: 'flex', 
+    flexDirection: 'row',
+    gap: 5,
     borderColor: "white", 
     borderWidth: 0.5,
     paddingHorizontal: 10,
