@@ -6,12 +6,16 @@ import axios from 'axios';
 import styles from '@screens/profile/profile_styles';
 import grapes from '@assets/grapes.jpg';
 
+const url = 'https://c753-2607-f010-2a7-103f-d156-853f-9990-8831.ngrok-free.app'
+
 userBadges = [{
     name: "Fish",
     description: "bought a fish"
 }]
 
 const Profile = () => {
+  const navigation = useNavigation();
+  
   // Define state for each input field
   const [isPrivate, setIsPrivate] = useState(false); 
   const [user, setUser] = useState({});

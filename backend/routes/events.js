@@ -14,6 +14,8 @@ const Event = require('../models/EventModel')
 
 const router = express.Router()
 
+router.get("/:eventId/attendee-stats", getAttendeeStats);
+
 router.get('/', getEvents)
 
 router.get('/:id', getEvent)
