@@ -90,21 +90,27 @@ const Login = () => {
           </TouchableOpacity>
         </View>
 
-        <View>
+        <View style={styles.orContainer}>
           <Text>Or</Text>
         </View>
 
-        <View>
-          <TouchableOpacity>
-          <Text>Sign in with Google</Text>
+        <View style={styles.customSignInContainer}>
+          <TouchableOpacity style={styles.customSignIn}>
+            <Text>Sign in with Google</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.customSignIn}>
+            <Text>Sign in with Apple</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
           <TouchableOpacity>
-          <Text>Have an account? </Text>
+              <Text>Have an account? </Text>
           </TouchableOpacity>
           <Pressable
             onPress={() => navigation.navigate('SignIn')}
           >
-            <Text>Sign in </Text>
+            <Text style={{color: 'blue'}}>Sign in </Text>
           </Pressable>
         </View>
     </View>
@@ -121,12 +127,13 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: "gray",
     borderWidth: 1,
+    marginTop: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 8,
     backgroundColor: "white", 
+    borderColor: "white",
     opacity: 0.7,
   },
   title: {
@@ -169,4 +176,22 @@ const styles = StyleSheet.create({
   text: {
     paddingHorizontal: 10,
   },
+  orContainer: {
+    marginVertical: 20,
+    backgroundColor: 'white',
+    display: 'flex', 
+    justifyContent: 'center',
+  },
+  customSignInContainer: {
+    display: 'flex', 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginVertical: 20,
+  },
+  customSignIn: {
+    borderColor: "white", 
+    borderWidth: 0.5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  }
 });
