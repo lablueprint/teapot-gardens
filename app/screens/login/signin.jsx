@@ -44,7 +44,7 @@ const SignIn = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Sign In</Text>
-        <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } />
+        <Image style={styles.logo} source={ logo } />
       </View>
 
       <Text>Email</Text>
@@ -89,8 +89,10 @@ const SignIn = () => {
         </View>
 
 
-        <View style={styles.lineContainer}>
-          <Text>Have an account? </Text>
+       <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+          <TouchableOpacity>
+              <Text>Have an account? </Text>
+          </TouchableOpacity>
           <Pressable
             onPress={() => navigation.navigate('ProgramPage')}
           >
@@ -135,9 +137,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   input: {
-    height: 30,
-    borderColor: "gray",
+    height: 40,
+    borderColor: "white",
     borderWidth: 1,
+    marginTop: 5,
     backgroundColor: "white",
     marginBottom: 10,
     paddingHorizontal: 10,

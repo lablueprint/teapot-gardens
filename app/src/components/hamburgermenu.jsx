@@ -81,6 +81,7 @@ const createOnboardingNavigator = () => (
         drawerContent={() => null}
     >
         <Drawer.Screen name="IntroSlides" component={IntroSlides} />
+        <Drawer.Screen name="Login" component={Login} />
     </Drawer.Navigator>
 );
 

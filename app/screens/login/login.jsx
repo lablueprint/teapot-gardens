@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "white", 
     borderColor: "white",
-    opacity: 0.7,
+    opacity: 0.5,
     paddingVertical: 25,
     fontSize: 10,
   },
