@@ -23,9 +23,7 @@ const Login = () => {
     if (
       !name ||
       !email ||
-      !password ||
-      !birthday ||
-      !username
+      !password
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
     } else {
@@ -37,6 +35,7 @@ const Login = () => {
       try {
         const response = await axios.post('https://ea94-38-73-241-58.ngrok-free.app/api/users/', user);
         console.log(response.data)
+        
       }
       catch (error) {
         console.log("error", error)
@@ -92,7 +91,11 @@ const Login = () => {
           placeholder="Enter your password"
         />
         <View style={styles.buttonContainer} >
-          <TouchableOpacity style={styles.button} onPress={handleSubmit} >
+          <TouchableOpacity style={styles.button} 
+            onPress={() => {
+              handleSubmit(); // Call handleSubmit first
+              navigation.navigate('Home'); // Navigate to Home only after the form submission
+            }} >
             <Text style={{ fontSize: 30, color: 'white'}} >Create Profile</Text>
           </TouchableOpacity>
         </View>
@@ -155,7 +158,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white", 
     borderColor: "white",
     opacity: 0.5,
-    paddingVertical: 25,
     fontSize: 10,
   },
   title: {

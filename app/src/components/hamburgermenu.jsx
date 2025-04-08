@@ -82,6 +82,7 @@ const createOnboardingNavigator = () => (
     >
         <Drawer.Screen name="IntroSlides" component={IntroSlides} />
         <Drawer.Screen name="Login" component={Login} />
+        <Drawer.Screen name="Home" component={Homepage} />
     </Drawer.Navigator>
 );
 

@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 8,
     opacity: 0.5,
-    paddingVertical: 25,
   },
   title: {
     fontSize: 50, 
