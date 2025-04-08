@@ -22,11 +22,8 @@ const SignIn = () => {
   });
   const handleSubmit = async () => {
     if (
-      !name ||
       !email ||
       !password ||
-      !birthday ||
-      !username
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
     } else {
@@ -69,7 +66,7 @@ const SignIn = () => {
           placeholder="Create a password"
         />
         <View style={styles.buttonContainer} >
-          <TouchableOpacity style={styles.button} onPress={handleSubmit} >
+          <TouchableOpacity style={styles.button} onPress={() => {handleSubmit; navigation.navigate("Home");}} >
             <Text style={{fontSize: 30, color: 'white'}} >Sign In</Text>
           </TouchableOpacity>
         </View>
