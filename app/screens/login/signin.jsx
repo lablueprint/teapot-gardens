@@ -23,7 +23,7 @@ const SignIn = () => {
   const handleSubmit = async () => {
     if (
       !email ||
-      !password ||
+      !password
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
     } else {
