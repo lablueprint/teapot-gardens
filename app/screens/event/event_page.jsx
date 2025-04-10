@@ -30,7 +30,6 @@ const EventPage = () => {
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
   // const [showDynamicButtons, setShowDynamicButtons] = useState(true); //change based on if user is registered or not
-  const [roleStatus, setRoleStatus] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
   // This holds the stats from the backend { userStatsList: [...] }
@@ -261,7 +260,7 @@ const deleteUserEvent = async () => {
     return <View style={{ padding: 24 }}>{content}</View>
   }
 
-  const VolunteerButton = () => {
+  const VolunteerButton = ({ roleStatus, setRoleStatus }) => {
     // const buttonStyle = roleStatus === "v" ? styles.buttonDark : styles.roleButtons;
     return (
       <Pressable
@@ -278,7 +277,7 @@ const deleteUserEvent = async () => {
     )
   }
 
-  const AttendeeButton = () => {
+  const AttendeeButton = ({ roleStatus, setRoleStatus }) => {
     // const buttonStyle = roleStatus === "a" ? styles.buttonDark : styles.roleButtons;
     return (
       <Pressable
@@ -295,7 +294,7 @@ const deleteUserEvent = async () => {
     )
   }
 
-  const RegisterButton = () => {
+  const RegisterButton = ({ roleStatus, setRoleStatus }) => {
     let buttonText = "Register";
     let onPressHandler = () => {};
   
@@ -318,12 +317,14 @@ const deleteUserEvent = async () => {
   
     return (
       <Pressable style={buttonStyle} onPress={onPressHandler}>
-        <Text style={{ color: 'white' }}>{buttonText}</Text>
+        <Text style={{ color: 'white', fontSize: 15 }}>{buttonText}</Text>
       </Pressable>
     );
   };
 
   const RegisterModal = () => {
+    const [roleStatus, setRoleStatus] = useState("");
+
     return (
       <Modal
       animationType="slide"
@@ -336,9 +337,9 @@ const deleteUserEvent = async () => {
           <View style={styles.modalView}>
             <Text style={{marginTop: 40, color: "white", fontSize: 30,}}>Join the event as a...</Text>
 
-            <VolunteerButton/>
-            <AttendeeButton/>
-            <RegisterButton/>
+            <VolunteerButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
+            <AttendeeButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
+            <RegisterButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
 
             <Pressable style={styles.xButton} onPress={() => {setModalVisible(false); setRoleStatus("") }}>
             <Text style={styles.shareButtonText}>X</Text>
@@ -427,7 +428,7 @@ const deleteUserEvent = async () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ 
   container: {
     paddingVertical: 16,
     paddingHorizontal: 30,
@@ -483,7 +484,7 @@ const styles = StyleSheet.create({
   },
   buttonDark: {
     flexDirection: 'row',
-    height: '20%',
+    height: '124',
     margin: 10,
     padding: 12,
     width: '80%',

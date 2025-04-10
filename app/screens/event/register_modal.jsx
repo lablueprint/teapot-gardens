@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   },
   buttonDark: {
     flexDirection: 'row',
-    height: '20%',
+    height: 124,
     margin: 10,
     padding: 12,
     width: '80%',
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   },
   roleButtons: {
     flexDirection: 'row',
-    height: '20%',
+    height: 124,
     margin: 10,
     padding: 12,
     width: '80%',
