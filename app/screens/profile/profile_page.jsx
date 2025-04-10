@@ -14,8 +14,6 @@ userBadges = [{
 }]
 
 const Profile = () => {
-  const navigation = useNavigation();
-  
   // Define state for each input field
   const [isPrivate, setIsPrivate] = useState(false);
   const [user, setUser] = useState({});

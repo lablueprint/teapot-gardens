@@ -230,5 +230,6 @@ module.exports = {
     updateEvent,
     updateEventUsers,
     getAttendees,
-    likeEvent
+    likeEvent,
+    getAttendeeStats
 }

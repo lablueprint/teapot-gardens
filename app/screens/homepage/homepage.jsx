@@ -26,32 +26,25 @@ export default function Homepage() {
         // fetching user data here
         const userResponse = await axios.get('https://4289-131-179-95-17.ngrok-free.app/api/users/6789f49f8e0a009647312c7a');
         const testResponse = await axios.get('https://4289-131-179-95-17.ngrok-free.app/api/events/678f315b8d423da67c615e95');
-        setTestEvent(testResponse)
+        setTestEvent(testResponse);
+  
         if (userResponse.status === 200) {
           setUserData(userResponse.data);
-          // fetching events for the user's attendingEvents
-          setUserAttendingEvents(userResponse.data.attendingEvents)
-          console.log(userAttendingEvents)
-          // const attendingEvents = userData.attendingEvents.map((eventId) => axios.get(`http://localhost:4000/api/events/${eventId}`));
-          // const attendingEventsResponse = await Promise.all(attendingEvents)
-          // const events_attending = attendingEventsResponse.map((response) => response.data);
-          // setUserAttendingEvents(events_attending)
+          setUserAttendingEvents(userResponse.data.attendingEvents);
+          console.log(userResponse.data.attendingEvents);
         } else {
           console.warn("No attending events found for the user");
           setUserAttendingEvents([]);
         }
-      } else {
-        console.error('Failed to fetch user: ', userResponse.data.error);
+      } catch (error) {
+        console.error('Error fetching user or events: ', error.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching user or events: ', error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
   
-  fetchUserData();
-}, []);
+    fetchUserData();
+  }, []);
 
   
   if (userData && userData.tamagatchiXP !== undefined) {

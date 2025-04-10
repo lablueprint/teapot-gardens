@@ -11,12 +11,10 @@ import Homepage from "@screens/homepage/homepage";
 import Login from "@screens/login/login";
 
 import Profile from "@screens/profile/profile_page";
-import EditProfile from "@screens/profile/edit_profile";
 import ProfileQR from "@screens/profile/profile_qr";
 
 import Plant from "@screens/plant/plant";
 import EditProfile from "@screens/profile/edit_profile";
-import Profile from "@screens/profile/profile_page";
 import Index from "@app/index";
 
 
@@ -112,7 +110,6 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="Temp" component={Index} />
             <Drawer.Screen name="EventPage" component={EventPage} />
             <Drawer.Screen name="ProgramPage" component={ProgramPage} />
-            <Drawer.Screen name="EditProfile" component={EditProfile} />
             <Drawer.Screen name="Login" component={Login} />
             <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
             <Drawer.Screen name="AdminScanner" component={AdminScanner} />
