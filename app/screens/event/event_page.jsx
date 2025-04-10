@@ -8,6 +8,8 @@ import { useNavigation } from 'expo-router';
 import Paradise from "@assets/paradise.png";
 import dateIcon from "@assets/date-icon.png";
 import locationIcon from "@assets/location-icon.png";
+import volunteer from "@assets/volunteer.png";
+import attendee from "@assets/attendee.png";
 
 
 import UserCard from "@screens/event/user_card.jsx";
@@ -15,7 +17,7 @@ import ProgramCard from "@screens/event/program_card.jsx";
 
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
 
-const url = "https://f537-2603-8001-d3f0-da0-1f0-4030-572f-df47.ngrok-free.app";
+const url = "https://d7a2-2607-f010-2a7-1021-2d5f-b6e6-2282-35c9.ngrok-free.app";
 
 const EventPage = () => {
   const navigation = useNavigation();
@@ -27,7 +29,8 @@ const EventPage = () => {
   const [attendeeNames, setAttendeeNames] = useState([]);
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
-  const [showDynamicButtons, setShowDynamicButtons] = useState(true);
+  // const [showDynamicButtons, setShowDynamicButtons] = useState(true); //change based on if user is registered or not
+  const [roleStatus, setRoleStatus] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
   // This holds the stats from the backend { userStatsList: [...] }
@@ -98,7 +101,7 @@ const EventPage = () => {
     }
   };
 
-  // basically this function is called whenever a user decides to register for an event or unregister for an event -> so we need to fetch this new event data
+  // this function is called whenever a user decides to register for an event or unregister for an event -> need to fetch this new event data
   const fetchEventData = async (eventId) => {
     if (!eventId) return;
     try {
@@ -195,14 +198,12 @@ const addUserEvent = async () => {
     await refreshUserData();
     await fetchEventData(event._id);
 
-    setShowDynamicButtons(true); // go back to the main button state
+    setModalVisible(false); // go back to the main button state
 
   } catch (error) {
     console.error("Error registering for the event:", error);
     Alert.alert("Error registering. Please try again.");
   }
-
-
 };
 
 // Remove event from user attending list + remove user from event's attendee list
@@ -235,32 +236,93 @@ const deleteUserEvent = async () => {
     console.log(modalVisible)
     return (
       <View>
-        {showDynamicButtons && <DynamicButtons attending={attending}/>}
-        {!showDynamicButtons && <RegisterModal />}
+        <DynamicButtons attending={attending}/>
+        <RegisterModal />
       </View>
     );
   };
+
   const DynamicButtons = ({ attending }) => {
     let content
     if (!attending) {
       content = 
-      <Pressable style={styles.shareButton} onPress={() => {setModalVisible(true); setShowDynamicButtons(false)}}>
-      <Text style={styles.shareButtonText}>Register</Text>
+      <Pressable style={styles.shareButton} onPress={() => setModalVisible(true)}>
+        <Text style={styles.shareButtonText}>Register</Text>
       </Pressable>
     } else {
       content = (
         <View>
-          <Pressable style={styles.shareButton} onPress={() => {navigation.navigate('RegistrationPage')}}>
-          <Text style={styles.shareButtonText}>View Ticket</Text>
-          </Pressable>
           <Pressable style={styles.shareButton} onPress={deleteUserEvent}>
-          <Text style={styles.shareButtonText}>Cancel Registration</Text>
+            <Text style={styles.shareButtonText}>Cancel Registration</Text>
           </Pressable>
         </View>
       )
     }
     return <View style={{ padding: 24 }}>{content}</View>
   }
+
+  const VolunteerButton = () => {
+    // const buttonStyle = roleStatus === "v" ? styles.buttonDark : styles.roleButtons;
+    return (
+      <Pressable
+        onPress={() => setRoleStatus("v") }
+        style={roleStatus === "v" ? styles.buttonDark : styles.roleButtons}
+      >
+        <View style={{ marginRight: 0, flex: 1, padding: 10, paddingRight: 0 }}>
+          <Text style={{ textAlign: 'left', color: 'white', fontSize: '30' }}>Volunteer</Text>
+          <Text style={{ textAlign: 'left', color: 'white', fontSize: '15' }}>make an impact as a volunteer!</Text>
+        </View>
+        <Image style={styles.volunteer} source={volunteer}/>
+      </Pressable>
+
+    )
+  }
+
+  const AttendeeButton = () => {
+    // const buttonStyle = roleStatus === "a" ? styles.buttonDark : styles.roleButtons;
+    return (
+      <Pressable
+        onPress={() => setRoleStatus("a") }
+        style={ roleStatus === "a" ? styles.buttonDark : styles.roleButtons}
+      >
+        <Image style={styles.volunteer} source={attendee}/>
+        <View style={{ marginLeft: 0, flex: 1, padding: 10, paddingLeft: 0 }}>
+          <Text style={{ textAlign: 'right', color: 'white', fontSize: '30' }}>Attendee</Text>
+          <Text style={{ textAlign: 'right', color: 'white', fontSize: '15' }}>enjoy the event and grow your plant!</Text>
+        </View>
+
+      </Pressable>
+    )
+  }
+
+  const RegisterButton = () => {
+    let buttonText = "Register";
+    let onPressHandler = () => {};
+  
+    if (roleStatus === "v") {
+      buttonText = "Register as a volunteer!";
+      onPressHandler = () => {
+        setModalVisible(false);
+        // setShowDynamicButtons(true);
+        setRoleStatus("");
+      };
+    } else if (roleStatus === "a") {
+      buttonText = "Register as an attendee!";
+      onPressHandler = () => {
+        setModalVisible(false);
+        addUserEvent();
+        setRoleStatus("");
+      };
+    }
+    const buttonStyle = roleStatus === "v" || roleStatus == "a" ? styles.unclickableRegisterButton : styles.clickableRegisterButton;
+  
+    return (
+      <Pressable style={buttonStyle} onPress={onPressHandler}>
+        <Text style={{ color: 'white' }}>{buttonText}</Text>
+      </Pressable>
+    );
+  };
+
   const RegisterModal = () => {
     return (
       <Modal
@@ -272,19 +334,13 @@ const deleteUserEvent = async () => {
       }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={{paddingTop: 10}}>Join the event as a...</Text>
+            <Text style={{marginTop: 40, color: "white", fontSize: 30,}}>Join the event as a...</Text>
 
-            <Pressable style={styles.registerButtons} onPress={() => {setModalVisible(false); addUserEvent()}}>
-              <Text style={styles.shareButtonText}>volunteer</Text>
-              <Text style={styles.shareButtonText}>make an impact as a volunteer!</Text>
-            </Pressable>
-            
-            <Pressable style={styles.registerButtons} onPress={() => {setModalVisible(false); addUserEvent()}}>
-              <Text style={styles.shareButtonText}>attendee</Text>
-              <Text style={styles.shareButtonText}>enjoy the event and grow your plant!</Text>
-            </Pressable>
+            <VolunteerButton/>
+            <AttendeeButton/>
+            <RegisterButton/>
 
-            <Pressable style={styles.xButton} onPress={() => {setModalVisible(false); setShowDynamicButtons(true)}}>
+            <Pressable style={styles.xButton} onPress={() => {setModalVisible(false); setRoleStatus("") }}>
             <Text style={styles.shareButtonText}>X</Text>
             </Pressable>
           </View>
@@ -293,7 +349,6 @@ const deleteUserEvent = async () => {
 
     )
   }
-
 
   return (
     <ScrollView 
@@ -411,10 +466,8 @@ const styles = StyleSheet.create({
   shareButton: {
     marginTop: 16,
     padding: 12,
-    backgroundColor: "gray",
     borderRadius: 20,
     backgroundColor: "#9D4C6A"
-
   },
   shareButtonText: {
     textAlign: "center",
@@ -428,12 +481,52 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 8,
   },
-  registerButtons: {
+  buttonDark: {
+    flexDirection: 'row',
     height: '20%',
     margin: 10,
     padding: 12,
     width: '80%',
-    backgroundColor: "gray",
+    backgroundColor: "#rgba(30, 30, 30, 0.25)",
+    color: "white",
+    borderRadius: 20,
+    padding: 0,
+  },
+  roleButtons: {
+    flexDirection: 'row',
+    height: '124',
+    margin: 10,
+    padding: 12,
+    width: '80%',
+    backgroundColor: "#rgba(194, 194, 194, 0.25)",
+    color: "white",
+    borderRadius: 20,
+    padding: 0,
+  },
+  volunteer: {
+    // borderColor: 'red',
+    // borderStyle: 'solid',
+    // borderWidth: '1',
+    height: '124',
+    // resizeMode: 'contain',
+    borderRadius: '15%',
+  },
+  unclickableRegisterButton: {
+    alignItems: 'center',
+    height: '10%',
+    margin: 10,
+    padding: 12,
+    width: '80%',
+    backgroundColor: "#rgba(157, 76, 106, 1)",
+    borderRadius: 20,
+  },
+  clickableRegisterButton: {
+    alignItems: 'center',
+    height: '10%',
+    margin: 10,
+    padding: 12,
+    width: '80%',
+    backgroundColor: "#rgba(157, 76, 106, 0.25)",
     borderRadius: 20,
   },
   xButton: {
@@ -453,7 +546,7 @@ const styles = StyleSheet.create({
   modalView: {
     borderColor: 'red',
     borderWidth: '1px',
-    height: '50%',
+    height: '510',
     width: '100%',
     backgroundColor: '#6A7D66',
     borderRadius: 20,
