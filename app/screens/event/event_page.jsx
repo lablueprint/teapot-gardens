@@ -5,12 +5,10 @@ import axios from "axios";
 import Collapsible from "react-native-collapsible";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from 'expo-router';
+import RegisterModal from './register_modal.jsx'
 import Paradise from "@assets/paradise.png";
 import dateIcon from "@assets/date-icon.png";
 import locationIcon from "@assets/location-icon.png";
-import volunteer from "@assets/volunteer.png";
-import attendee from "@assets/attendee.png";
-
 
 import UserCard from "@screens/event/user_card.jsx";
 import ProgramCard from "@screens/event/program_card.jsx";
@@ -232,11 +230,11 @@ const deleteUserEvent = async () => {
   //buttons for registration/cancel registration/view ticket
   // const [showDynamicButtons, setShowDynamicButtons] = useState(true);
   const Buttons = ({ attending }) => {
-    console.log(modalVisible)
+    // console.log(modalVisible)
     return (
       <View>
         <DynamicButtons attending={attending}/>
-        <RegisterModal />
+        <RegisterModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
       </View>
     );
   };
@@ -258,97 +256,6 @@ const deleteUserEvent = async () => {
       )
     }
     return <View style={{ padding: 24 }}>{content}</View>
-  }
-
-  const VolunteerButton = ({ roleStatus, setRoleStatus }) => {
-    // const buttonStyle = roleStatus === "v" ? styles.buttonDark : styles.roleButtons;
-    return (
-      <Pressable
-        onPress={() => setRoleStatus("v") }
-        style={roleStatus === "v" ? styles.buttonDark : styles.roleButtons}
-      >
-        <View style={{ marginRight: 0, flex: 1, padding: 10, paddingRight: 0 }}>
-          <Text style={{ textAlign: 'left', color: 'white', fontSize: '30' }}>Volunteer</Text>
-          <Text style={{ textAlign: 'left', color: 'white', fontSize: '15' }}>make an impact as a volunteer!</Text>
-        </View>
-        <Image style={styles.volunteer} source={volunteer}/>
-      </Pressable>
-
-    )
-  }
-
-  const AttendeeButton = ({ roleStatus, setRoleStatus }) => {
-    // const buttonStyle = roleStatus === "a" ? styles.buttonDark : styles.roleButtons;
-    return (
-      <Pressable
-        onPress={() => setRoleStatus("a") }
-        style={ roleStatus === "a" ? styles.buttonDark : styles.roleButtons}
-      >
-        <Image style={styles.volunteer} source={attendee}/>
-        <View style={{ marginLeft: 0, flex: 1, padding: 10, paddingLeft: 0 }}>
-          <Text style={{ textAlign: 'right', color: 'white', fontSize: '30' }}>Attendee</Text>
-          <Text style={{ textAlign: 'right', color: 'white', fontSize: '15' }}>enjoy the event and grow your plant!</Text>
-        </View>
-
-      </Pressable>
-    )
-  }
-
-  const RegisterButton = ({ roleStatus, setRoleStatus }) => {
-    let buttonText = "Register";
-    let onPressHandler = () => {};
-  
-    if (roleStatus === "v") {
-      buttonText = "Register as a volunteer!";
-      onPressHandler = () => {
-        setModalVisible(false);
-        // setShowDynamicButtons(true);
-        setRoleStatus("");
-      };
-    } else if (roleStatus === "a") {
-      buttonText = "Register as an attendee!";
-      onPressHandler = () => {
-        setModalVisible(false);
-        addUserEvent();
-        setRoleStatus("");
-      };
-    }
-    const buttonStyle = roleStatus === "v" || roleStatus == "a" ? styles.unclickableRegisterButton : styles.clickableRegisterButton;
-  
-    return (
-      <Pressable style={buttonStyle} onPress={onPressHandler}>
-        <Text style={{ color: 'white', fontSize: 15 }}>{buttonText}</Text>
-      </Pressable>
-    );
-  };
-
-  const RegisterModal = () => {
-    const [roleStatus, setRoleStatus] = useState("");
-
-    return (
-      <Modal
-      animationType="slide"
-      visible={modalVisible}
-      transparent={true}
-      onRequestClose={() => {
-        setModalVisible(false);
-      }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={{marginTop: 40, color: "white", fontSize: 30,}}>Join the event as a...</Text>
-
-            <VolunteerButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
-            <AttendeeButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
-            <RegisterButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
-
-            <Pressable style={styles.xButton} onPress={() => {setModalVisible(false); setRoleStatus("") }}>
-            <Text style={styles.shareButtonText}>X</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-
-    )
   }
 
   return (
@@ -573,6 +480,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 4,
     color: '#7D7D7D'
+  },
+  blurContainer: {
+    flex: 1,
+    // padding: 20,
+    // margin: 16,
+    textAlign: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: "100%",
   },
 });
 

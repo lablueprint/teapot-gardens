@@ -1,26 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Text, ScrollView, View, Pressable, StyleSheet, Alert, Modal, Image } from "react-native";
-import { useRoute } from "@react-navigation/native";
-import axios from "axios";
-import Collapsible from "react-native-collapsible";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { useNavigation } from 'expo-router';
-import Paradise from "@assets/paradise.png";
-import dateIcon from "@assets/date-icon.png";
-import locationIcon from "@assets/location-icon.png";
+import React, { useState } from "react";
+import { Text, View, Pressable, StyleSheet, Modal, Image } from "react-native";
+import { BlurView } from 'expo-blur';
 import volunteer from "@assets/volunteer.png";
 import attendee from "@assets/attendee.png";
 
-const VolunteerButton = ({roleStatus, setRoleStatus}) => {
-    // const buttonStyle = roleStatus === "v" ? styles.buttonDark : styles.roleButtons;
+
+  const VolunteerButton = ({ roleStatus, setRoleStatus }) => {
     return (
       <Pressable
         onPress={() => setRoleStatus("v") }
         style={roleStatus === "v" ? styles.buttonDark : styles.roleButtons}
       >
-        <View style={{ margin: 5, marginRight: 0 }}>
+        <View style={{ marginRight: 0, flex: 1, padding: 10, paddingRight: 0 }}>
           <Text style={{ textAlign: 'left', color: 'white', fontSize: '30' }}>Volunteer</Text>
-          <Text style={{ textAlign: 'left', color: 'white', fontSize: '12' }}>make an impact as a volunteer!</Text>
+          <Text style={{ textAlign: 'left', color: 'white', fontSize: '15' }}>make an impact as a volunteer!</Text>
         </View>
         <Image style={styles.volunteer} source={volunteer}/>
       </Pressable>
@@ -28,25 +21,23 @@ const VolunteerButton = ({roleStatus, setRoleStatus}) => {
     )
   }
 
-  const AttendeeButton = ({roleStatus, setRoleStatus}) => {
-    // const buttonStyle = roleStatus === "a" ? styles.buttonDark : styles.roleButtons;
+  const AttendeeButton = ({ roleStatus, setRoleStatus }) => {
     return (
       <Pressable
         onPress={() => setRoleStatus("a") }
         style={ roleStatus === "a" ? styles.buttonDark : styles.roleButtons}
       >
         <Image style={styles.volunteer} source={attendee}/>
-        <View style={{ margin: 5, marginLeft: 0, flex: 1 }}>
+        <View style={{ marginLeft: 0, flex: 1, padding: 10, paddingLeft: 0 }}>
           <Text style={{ textAlign: 'right', color: 'white', fontSize: '30' }}>Attendee</Text>
-          <Text style={{ textAlign: 'right', color: 'white', fontSize: '12' }}>enjoy the event and grow your plant!</Text>
+          <Text style={{ textAlign: 'right', color: 'white', fontSize: '15' }}>enjoy the event and grow your plant!</Text>
         </View>
 
       </Pressable>
-
     )
   }
 
-  const RegisterButton = ({roleStatus, setRoleStatus, setModalVisible, addUserEvent}) => {
+  const RegisterButton = ({ roleStatus, setRoleStatus, setModalVisible }) => {
     let buttonText = "Register";
     let onPressHandler = () => {};
   
@@ -54,7 +45,6 @@ const VolunteerButton = ({roleStatus, setRoleStatus}) => {
       buttonText = "Register as a volunteer!";
       onPressHandler = () => {
         setModalVisible(false);
-        // setShowDynamicButtons(true);
         setRoleStatus("");
       };
     } else if (roleStatus === "a") {
@@ -69,34 +59,38 @@ const VolunteerButton = ({roleStatus, setRoleStatus}) => {
   
     return (
       <Pressable style={buttonStyle} onPress={onPressHandler}>
-        <Text style={{ color: 'white' }}>{buttonText}</Text>
+        <Text style={{ color: 'white', fontSize: 15 }}>{buttonText}</Text>
       </Pressable>
     );
   };
 
-  const RegisterModalPopup = (props) => {
-    const { modalVisible, setModalVisible, roleStatus, setRoleStatus, addUserEvent } = props;
-    console.log('in register modal', modalVisible);
-    console.log('in register modal role status', roleStatus);
-    
+  const RegisterModal = ({ modalVisible, setModalVisible }) => {
+    const [roleStatus, setRoleStatus] = useState("");
+
     return (
       <Modal
       animationType="slide"
       visible={modalVisible}
-      transparent={false}
+      transparent={true}
       onRequestClose={() => {
         setModalVisible(false);
       }}>
         <View style={styles.centeredView}>
+          {/* Background Blur */}
+          <BlurView
+            style={styles.blurContainer}
+            intensity={10}
+          />
+
           <View style={styles.modalView}>
             <Text style={{marginTop: 40, color: "white", fontSize: 30,}}>Join the event as a...</Text>
 
-            <VolunteerButton roleStatus={roleStatus} setRoleStatus={setRoleStatus}/>
-            <AttendeeButton roleStatus={roleStatus} setRoleStatus={setRoleStatus}/>
-            <RegisterButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} setModalVisible={setModalVisible} addUserEvent={addUserEvent}/>
+            <VolunteerButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
+            <AttendeeButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
+            <RegisterButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} setModalVisible={setModalVisible}/>
 
             <Pressable style={styles.xButton} onPress={() => {setModalVisible(false); setRoleStatus("") }}>
-            <Text style={styles.shareButtonText}>X</Text>
+            <Text style={{ textAlign: 'center', color: 'white' }}>X</Text>
             </Pressable>
           </View>
         </View>
@@ -106,31 +100,31 @@ const VolunteerButton = ({roleStatus, setRoleStatus}) => {
   }
 
 
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 16,
-    paddingHorizontal: 30,
-    backgroundColor: "#E9E5DA",
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    overflow: "hidden",
-    marginTop: -30,
-  },
-  eventHeader: {
-    textAlign: 'center',
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  subtext: {
-    color: "#8B8B8B",
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  description: {
-    fontSize: 14,
-    marginBottom: 4,
-  },
+const styles = StyleSheet.create({ 
+  // container: {
+  //   paddingVertical: 16,
+  //   paddingHorizontal: 30,
+  //   backgroundColor: "#E9E5DA",
+  //   borderTopLeftRadius: 32,
+  //   borderTopRightRadius: 32,
+  //   overflow: "hidden",
+  //   marginTop: -30,
+  // },
+  // eventHeader: {
+  //   textAlign: 'center',
+  //   fontSize: 24,
+  //   fontWeight: "bold",
+  //   marginBottom: 8,
+  // },
+  // subtext: {
+  //   color: "#8B8B8B",
+  //   fontSize: 12,
+  //   marginBottom: 4,
+  // },
+  // description: {
+  //   fontSize: 14,
+  //   marginBottom: 4,
+  // },
   attendeesButton: {
     padding: 8,
     backgroundColor: "lightgray",
@@ -142,27 +136,27 @@ const styles = StyleSheet.create({
   attendeesButtonText: {
     marginRight: 5,
   },
-  shareButton: {
-    marginTop: 16,
-    padding: 12,
-    borderRadius: 20,
-    backgroundColor: "#9D4C6A"
-  },
-  shareButtonText: {
-    textAlign: "center",
-    color: "white",
-  },
-  adminSection: {
-    marginTop: 24,
-  },
-  adminText: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
+  // shareButton: {
+  //   marginTop: 16,
+  //   padding: 12,
+  //   borderRadius: 20,
+  //   backgroundColor: "#9D4C6A"
+  // },
+  // shareButtonText: {
+  //   textAlign: "center",
+  //   color: "white",
+  // },
+  // adminSection: {
+  //   marginTop: 24,
+  // },
+  // adminText: {
+  //   fontSize: 18,
+  //   fontWeight: "600",
+  //   marginBottom: 8,
+  // },
   buttonDark: {
     flexDirection: 'row',
-    height: 124,
+    height: '124',
     margin: 10,
     padding: 12,
     width: '80%',
@@ -173,7 +167,7 @@ const styles = StyleSheet.create({
   },
   roleButtons: {
     flexDirection: 'row',
-    height: 124,
+    height: '124',
     margin: 10,
     padding: 12,
     width: '80%',
@@ -186,9 +180,9 @@ const styles = StyleSheet.create({
     // borderColor: 'red',
     // borderStyle: 'solid',
     // borderWidth: '1',
-    height: '100%',
-    resizeMode: 'contain',
-    paddingRight: '20',
+    height: '124',
+    // resizeMode: 'contain',
+    borderRadius: '15%',
   },
   unclickableRegisterButton: {
     alignItems: 'center',
@@ -225,7 +219,7 @@ const styles = StyleSheet.create({
   modalView: {
     borderColor: 'red',
     borderWidth: '1px',
-    height: '150px',
+    height: '510',
     width: '100%',
     backgroundColor: '#6A7D66',
     borderRadius: 20,
@@ -237,24 +231,33 @@ const styles = StyleSheet.create({
       bottom: 0,
     }
   },
-  dateIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-  },
-  locationIcon: {
-    width: 18,
-    height: 22,
-    marginRight: 8,
-  },
-  dateText: {
-    fontSize: 16,
-    marginBottom: 4,
-    color: '#7D7D7D'
+  // dateIcon: {
+  //   width: 20,
+  //   height: 20,
+  //   marginRight: 8,
+  // },
+  // locationIcon: {
+  //   width: 18,
+  //   height: 22,
+  //   marginRight: 8,
+  // },
+  // dateText: {
+  //   fontSize: 16,
+  //   marginBottom: 4,
+  //   color: '#7D7D7D'
+  // },
+  blurContainer: {
+    flex: 1,
+    // padding: 20,
+    // margin: 16,
+    textAlign: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: "100%",
   },
 });
 
-export default RegisterModalPopup;
+export default RegisterModal;
 
 
 
