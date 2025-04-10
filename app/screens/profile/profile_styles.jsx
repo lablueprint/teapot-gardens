@@ -2,31 +2,54 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
-      padding: 20,
+      borderRadius: 40,
+      flex: 1,
+      paddingBottom: 100,
+      position: "relative",
+      zIndex: 1,
+    },
+    main_container: {
+      backgroundColor: '#E8E1DD',
+      paddingTop: 30,
+    },
+    events_container: {
+      marginTop: 20,
+      paddingHorizontal: 20,
     },
     name: {
       textAlign: "center",
-      fontSize: 20,
-      textDecorationLine: "underline",
+      fontSize: 32,
       marginBottom: 10,
+      fontWeight: 600,
     },
     handle: {
       textAlign: "center",
       fontSize: 16,
-      marginBottom: 10,
-    },
-    bio: {
-      textAlign: "center",
+      marginBottom: 5,
+      marginTop: 15
     },
     button: {
       alignItems: "center",
+      justifyContent: "center",
       padding: 7,
       borderWidth: 1,
       borderColor: 'grey',
-      margin: 7,
-      width: "50%",
-      borderRadius: 10,
-      backgroundColor: "#008c8c",
+      marginBottom: 50,
+      width: 98,
+      borderRadius: 14,
+      backgroundColor: "#FFFFFF",
+    }, 
+    qr: {
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 7,
+      borderWidth: 1,
+      borderColor: 'grey',
+      marginBottom: 50,
+      width: 300,
+      height: 150,
+      borderRadius: 14,
+      backgroundColor: "#FFFFFF",
     },
     buttonContainer: {
       alignItems: "center",
@@ -39,8 +62,11 @@ const styles = StyleSheet.create({
       color: "white",
     },
     subtitle: {
-      fontSize: 15,
+      fontSize: 18,
+      color: "white",
       marginBottom: 5,
+      fontWeight: 600,
+      marginLeft: 20,
     },
     input: {
       height: 40,
@@ -68,13 +94,29 @@ const styles = StyleSheet.create({
       display: "flex"
     },
     image: {
-      width: 100,
-      height: 100,
-      borderRadius: 50, 
+      width: 155,
+      height: 155,
+      borderRadius: 80, 
       alignSelf: "center",
       justifyContent: "center",
       marginVertical: 15,
     },
+    bushImage: {
+      width: '100%',
+      alignSelf: 'center',  
+      marginTop: 20,
+      paddingBottom: 20,         
+      zIndex: -1,
+    },
+    bushBackground: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: 0,
+    },    
+    
   });
   
   export default styles;
