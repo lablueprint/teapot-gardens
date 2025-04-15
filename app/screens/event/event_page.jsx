@@ -13,9 +13,12 @@ import locationIcon from "@assets/location-icon.png";
 import UserCard from "@screens/event/user_card.jsx";
 import ProgramCard from "@screens/event/program_card.jsx";
 
+import {launchImageLibrary} from 'react-native-image-picker';
+
+
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
 
-const url = "https://d7a2-2607-f010-2a7-1021-2d5f-b6e6-2282-35c9.ngrok-free.app";
+const url = "http://localhost:4000";
 
 const EventPage = () => {
   const navigation = useNavigation();
@@ -23,12 +26,14 @@ const EventPage = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [user, setUser] = useState(null);
   const [attendingEvents, setAttendingEvents] = useState([]);
+  const [attendedEvents, setAttendedEvents] = useState([]);
   const [event, setEvent] = useState(null);
   const [attendeeNames, setAttendeeNames] = useState([]);
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
   // const [showDynamicButtons, setShowDynamicButtons] = useState(true); //change based on if user is registered or not
   const [modalVisible, setModalVisible] = useState(false);
+  const [uploadVisible, setUploadVisible] = useState(false);
 
   // This holds the stats from the backend { userStatsList: [...] }
   const [stats, setStats] = useState({ userStatsList: [] }); // Ensure stats is never null
@@ -42,6 +47,7 @@ const EventPage = () => {
       try {
         const parsed = JSON.parse(eventData);
         setEvent(parsed);
+        console.log("eventDAta", eventData);
       } catch (err) {
         console.error("Error parsing eventData:", err);
         setEvent(null);
@@ -62,6 +68,7 @@ const EventPage = () => {
           console.log("Fetched user:", response.data);
           setUser(response.data);
           setAttendingEvents(response.data.attendingEvents || []);
+          setAttendedEvents(response.data.attendedEvents || []);
         } else {
           console.error("Failed to fetch user:", response.data.error);
         }
@@ -108,6 +115,7 @@ const EventPage = () => {
       console.error("Error fetching event:", error);
     }
   };
+  
   
 // whenever the event object changes -> the attenddees for that event need to be fetched again
 useEffect(() => {
@@ -173,6 +181,9 @@ const refreshUserData = async () => {
   }
 };
 
+// const checkEventID = async () => {
+//   if ()
+// }
 // Add event to user attending list + add user to event's attendee list
 const addUserEvent = async () => {
   if (!event?._id) return;
@@ -234,10 +245,11 @@ const deleteUserEvent = async () => {
     return (
       <View>
         <DynamicButtons attending={attending}/>
-        <RegisterModal modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+        <RegisterModal modalVisible={modalVisible} setModalVisible={setModalVisible} addUserEvent={addUserEvent}/>
       </View>
     );
   };
+
 
   const DynamicButtons = ({ attending }) => {
     let content
@@ -328,6 +340,17 @@ const deleteUserEvent = async () => {
             )}
           </View>
         )}
+        <Text>Community Gallery</Text>
+      {
+        (attendingEvents.includes(event?._id) || attendedEvents.includes(event?._id)) &&
+        (
+          <Pressable style={styles.shareButton} onPress={() => setUploadVisible(true) }>
+              
+            <Text>Upload Photos</Text>
+          </Pressable>
+        )
+      }
+  
       <View style={{ height: 50 }} />
       </View>
       </View>

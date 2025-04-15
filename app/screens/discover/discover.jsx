@@ -6,7 +6,7 @@ import axios from 'axios';
 import defaultPic from '@assets/default.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const url = 'https://d7a2-2607-f010-2a7-1021-2d5f-b6e6-2282-35c9.ngrok-free.app'
+const url = 'http://localhost:4000'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();

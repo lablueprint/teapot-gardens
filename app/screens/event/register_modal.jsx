@@ -37,7 +37,7 @@ import attendee from "@assets/attendee.png";
     )
   }
 
-  const RegisterButton = ({ roleStatus, setRoleStatus, setModalVisible }) => {
+  const RegisterButton = ({ roleStatus, setRoleStatus, setModalVisible, addUserEvent}) => {
     let buttonText = "Register";
     let onPressHandler = () => {};
   
@@ -64,7 +64,7 @@ import attendee from "@assets/attendee.png";
     );
   };
 
-  const RegisterModal = ({ modalVisible, setModalVisible }) => {
+  const RegisterModal = ({ modalVisible, setModalVisible, addUserEvent }) => {
     const [roleStatus, setRoleStatus] = useState("");
 
     return (
@@ -87,7 +87,7 @@ import attendee from "@assets/attendee.png";
 
             <VolunteerButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
             <AttendeeButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
-            <RegisterButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} setModalVisible={setModalVisible}/>
+            <RegisterButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} setModalVisible={setModalVisible} addUserEvent={addUserEvent}/>
 
             <Pressable style={styles.xButton} onPress={() => {setModalVisible(false); setRoleStatus("") }}>
             <Text style={{ textAlign: 'center', color: 'white' }}>X</Text>
