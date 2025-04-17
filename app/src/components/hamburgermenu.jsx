@@ -20,7 +20,9 @@ import Index from "@app/index";
 
 import ProgramPage from "@screens/program_page/program_page";
 import CreateEvent from "@screens/program_page/create_event";
-import CreateProgram from "@screens/discover/create_program"
+import CreateProgram from "@screens/discover/create_program";
+
+import NotificationPage from "@screens/notification/notification_page";
 
 import notificationIcon from "@assets/notifications.png";
 import menuIcon from "@assets/menu.png";
@@ -82,7 +84,7 @@ const HamburgerMenu = () => {
                     </TouchableOpacity>
                 ),
                 headerRight: () => (
-                    <TouchableOpacity onPress={() => alert("notifications!")} style={styles.iconButton}>
+                    <TouchableOpacity onPress={() => navigation.navigate("NotificationPage")} style={styles.iconButton}>
                         <Image source={notificationIcon} style={styles.icon} />
                     </TouchableOpacity>
                 ),
@@ -116,6 +118,7 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="RegistrationPage" component={RegistrationPage} />
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
+            <Drawer.Screen name="NotificationPage" component={NotificationPage} />
         </Drawer.Navigator>
     );
 };
