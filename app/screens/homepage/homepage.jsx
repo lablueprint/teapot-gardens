@@ -73,8 +73,11 @@ export default function Homepage() {
               // event is in the past fs
               //I NEED HELP WITH THIS PART
               console.log(userResponse.data.attendingEvents, event);
-              // userResponse.data.attendedEvents.push(event);
-              // userResponse.data.attendingEvents.remove(event);
+              await axios.patch('https://9cad-2607-f010-2a7-103f-bd39-11f5-b4e8-a209.ngrok-free.app/api/users/' + userResponse.data._id, {
+                attendedEvents: [...userResponse.data.attendedEvents, event],
+                attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
+              });
+              console.log("DONE");
             }
             else if (currentYear === eventyear) {
               if (currentMonth > eventmonth) {
