@@ -4,7 +4,7 @@ import { useNavigation } from 'expo-router';
 import axios from 'axios';
 import styles from '@screens/profile/profile_styles';
 import grapes from '@assets/grapes.jpg';
-import { LinearGradient } from "expo-linear-gradient";
+// import { LinearGradient } from "expo-linear-gradient";
 import bush from '@assets/bush.png'; 
 import EventCard from '@screens/homepage/homepage_components/eventcard';
 import ProfileQR from '@screens/profile/profile_qr';

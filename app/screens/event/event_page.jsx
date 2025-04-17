@@ -24,7 +24,6 @@ import garden from "@assets/garden.jpg";
 
 const EventPage = () => {
   // Temporary placeholders for demonstration
-  const tempEventId = "67932a72413f4d68be84e592"; // Example event ID
   const tempUserId = "678f3a6bc0368a4c717413a8"; // Example user ID -> admin true 
   const API_KEY = "http://localhost:4000";       // Example base URL
 
