@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, ScrollView, View, Pressable, StyleSheet, Alert, Modal, Image } from "react-native";
+import { Text, ScrollView, View, Pressable, StyleSheet, Alert, Modal, Image, TouchableOpacity } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import Collapsible from "react-native-collapsible";
@@ -15,10 +15,40 @@ import ProgramCard from "@screens/event/program_card.jsx";
 
 import {launchImageLibrary} from 'react-native-image-picker';
 
+import pichu from '@assets/pichu.jpg';
+import pikachu from '@assets/pikachu.jpg';
+
 
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
 
 const url = "http://localhost:4000";
+
+const mediaItems = [
+    {
+        id: '1',
+        name: "Japanese Garden",
+        image: pichu,
+        type: 'photo',
+    },
+    {
+        id: '2',
+        name: "garden 2",
+        image: pikachu,
+        type: 'video',
+    },
+    {
+      id: '3',
+      name: "garden 3",
+      image: pichu,
+      type: 'photo',
+  },
+  {
+    id: '4',
+    name: "garden 4",
+    image: pichu,
+    type: 'photo',
+},
+];
 
 const EventPage = () => {
   const navigation = useNavigation();
@@ -40,6 +70,9 @@ const EventPage = () => {
 
   const route = useRoute();
   const eventData = route.params?.eventData;
+
+  const photoCount = mediaItems.filter(item => item.type === 'photo').length;
+  const videoCount = mediaItems.filter(item => item.type === 'video').length;
 
   // Parse eventData string back into an object to access its data
   useEffect(() => {
@@ -340,7 +373,21 @@ const deleteUserEvent = async () => {
             )}
           </View>
         )}
-        <Text>Community Gallery</Text>
+        <View style={styles.photoContainer}>
+          <View style={styles.photoHeading}>
+            <Text style={{marginBottom: 5}}>COMMUNITY GALLERY</Text>
+            <Text>
+              {`${photoCount} photos ${videoCount} videos`}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate('CommunityPhotos')}> 
+              <Text style={styles.seeAllText}> See All {">"}</Text>
+            </TouchableOpacity>
+        </View>
+        <View style={styles.photoGalleryContainer}>
+          {mediaItems.map((item, index) => <Image key={index} source={item.image} style={styles.galleryPhoto}/>)}
+        </View>
+
       {
         (attendingEvents.includes(event?._id) || attendedEvents.includes(event?._id)) &&
         (
@@ -513,6 +560,29 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     width: "100%",
   },
+  seeAllText: {
+    color: 'gray',
+    textDecorationLine: 'underline',
+  },
+  photoContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between", 
+    marginTop: 20,
+  }, 
+  photoGalleryContainer: {
+    display: "flex", 
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    backgroundColor: "gray",
+    padding: 10,
+    marginTop: 10,
+  }, 
+  galleryPhoto: {
+    width: 70, 
+    height: 70, 
+    borderRadius: 5
+  }
 });
 
 export default EventPage;
