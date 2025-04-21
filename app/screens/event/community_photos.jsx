@@ -36,7 +36,7 @@ const mediaItems = [
   {
     id: '4',
     name: "garden 4",
-    image: pichu,
+    image: pikachu,
     type: 'photo',
 },
 {
@@ -48,7 +48,7 @@ const mediaItems = [
 {
 id: '6',
 name: "garden 4",
-image: pichu,
+image: pikachu,
 type: 'photo',
 },
 {
@@ -57,6 +57,57 @@ type: 'photo',
   image: pichu,
   type: 'photo',
   },
+  {
+    id: '6',
+    name: "garden 4",
+    image: pikachu,
+    type: 'photo',
+    },
+  {
+    id: '7',
+    name: "garden 4",
+    image: pichu,
+    type: 'photo',
+    },
+    {
+      id: '6',
+      name: "garden 4",
+      image: pikachu,
+      type: 'photo',
+      },
+    {
+      id: '7',
+      name: "garden 4",
+      image: pichu,
+      type: 'photo',
+      },
+      {
+        id: '6',
+        name: "garden 4",
+        image: pikachu,
+        type: 'photo',
+        },
+        {
+          id: '7',
+          name: "garden 4",
+          image: pichu,
+          type: 'photo',
+          },
+          {
+            id: '7',
+            name: "garden 4",
+            image: pikachu,
+            type: 'photo',
+            },
+            {
+              id: '7',
+              name: "garden 4",
+              image: pichu,
+              type: 'photo',
+              },
+    
+
+      
   
 
 ];
@@ -70,6 +121,9 @@ const CommunityPhotos = () => {
         <Text style={styles.backButtonText}>{"<"} Back </Text>
       </TouchableOpacity>
         <Text style={styles.title}>Community Photos</Text>
+          <TouchableOpacity style={styles.uploadButton}>
+            <Text>Upload photos and videos here!</Text>
+          </TouchableOpacity>
                 <View style={styles.photoGalleryContainer}>
                     {mediaItems.map((item, index) => (
                       <View key={index} style={styles.photoWrapper}>
@@ -101,6 +155,18 @@ const styles = StyleSheet.create({
       marginBottom: 20,
       textAlign: 'center',
       marginTop: 10,
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#D9D6CA',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+      marginBottom: 15,
+      alignSelf: 'center',
+      marginBottom: 20,
     },
     photoGalleryContainer: {
       display: "flex", 
