@@ -21,7 +21,7 @@ import pikachu from '@assets/pikachu.jpg';
 
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
 
-const url = "http://localhost:4000";
+const url = "https://1899-75-142-52-157.ngrok-free.app";
 
 const mediaItems = [
     {

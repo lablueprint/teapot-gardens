@@ -39,16 +39,43 @@ const mediaItems = [
     image: pichu,
     type: 'photo',
 },
+{
+  id: '5',
+  name: "garden 3",
+  image: pichu,
+  type: 'photo',
+},
+{
+id: '6',
+name: "garden 4",
+image: pichu,
+type: 'photo',
+},
+{
+  id: '7',
+  name: "garden 4",
+  image: pichu,
+  type: 'photo',
+  },
   
 
 ];
 
 const CommunityPhotos = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-        <Text>Community Photos</Text>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('EventPage')}>
+        <Text style={styles.backButtonText}>{"<"} Back </Text>
+      </TouchableOpacity>
+        <Text style={styles.title}>Community Photos</Text>
                 <View style={styles.photoGalleryContainer}>
-                    {mediaItems.map((item, index) => <Image key={index} source={item.image} style={styles.galleryPhoto}/>)}
+                    {mediaItems.map((item, index) => (
+                      <View key={index} style={styles.photoWrapper}>
+                      <Image  source={item.image} style={styles.galleryPhoto}/>
+                      </View>
+                      ))}
                   </View>
     </View>
     
@@ -64,18 +91,34 @@ const styles = StyleSheet.create({
       borderTopRightRadius: 32,
       overflow: "hidden",
     },
+    backButtonText: {
+      textDecorationLine: 'underline',
+      color: 'grey',
+    },
+    title:{
+      fontSize: 25,
+      fontWeight: 'bold',
+      marginBottom: 20,
+      textAlign: 'center',
+      marginTop: 10,
+    },
     photoGalleryContainer: {
       display: "flex", 
       flexDirection: "row", 
+      flexWrap: "wrap",
       justifyContent: "space-between", 
-      backgroundColor: "gray",
-      padding: 10,
-      marginTop: 10,
+      width: '100%'
+
     }, 
+    photoWrapper: {
+      width: '31%',
+      marginBottom: 10,
+      marginHorizontal: 1,
+    },
     galleryPhoto: {
-      width: 70, 
-      height: 70, 
-      borderRadius: 5
+      width: '100%', 
+      height: '100', 
+      borderRadius: 15,
     }
 })
 
