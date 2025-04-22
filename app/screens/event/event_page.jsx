@@ -15,39 +15,39 @@ import ProgramCard from "@screens/event/program_card.jsx";
 
 import {launchImageLibrary} from 'react-native-image-picker';
 
-import pichu from '@assets/pichu.jpg';
-import pikachu from '@assets/pikachu.jpg';
-
-
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
 
-const url = " https://272a-75-142-52-157.ngrok-free.app";
+// const url = " https://272a-75-142-52-157.ngrok-free.app";
+const url = "http://localhost:4000";
+
+import community1 from '@assets/community1.png';
+import community2 from '@assets/community2.png';
 
 const mediaItems = [
     {
         id: '1',
         name: "Japanese Garden",
-        image: pichu,
+        image: community1,
         type: 'photo',
     },
     {
         id: '2',
         name: "garden 2",
-        image: pikachu,
+        image: community2,
         type: 'video',
     },
     {
       id: '3',
       name: "garden 3",
-      image: pichu,
+      image: community1,
       type: 'photo',
   },
   {
     id: '4',
     name: "garden 4",
-    image: pichu,
+    image: community2,
     type: 'photo',
-},
+}
 ];
 
 const EventPage = () => {
@@ -80,7 +80,7 @@ const EventPage = () => {
       try {
         const parsed = JSON.parse(eventData);
         setEvent(parsed);
-        console.log("eventDAta", eventData);
+        console.log("eventData", eventData);
       } catch (err) {
         console.error("Error parsing eventData:", err);
         setEvent(null);
@@ -568,13 +568,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between", 
-    marginTop: 20,
+    marginTop: 40,
   }, 
   photoGalleryContainer: {
     display: "flex", 
     flexDirection: "row", 
     justifyContent: "space-between", 
-    backgroundColor: "gray",
+    backgroundColor: "#DFD8D0",
     padding: 10,
     marginTop: 10,
   }, 
