@@ -25,7 +25,7 @@ import garden from "@assets/garden.jpg";
 const EventPage = () => {
   // Temporary placeholders for demonstration
   const tempUserId = "678f3a6bc0368a4c717413a8"; // Example user ID -> admin true 
-  const API_KEY = "http://localhost:4000";       // Example base URL
+  const API_KEY = "https://8074-2607-f010-2a7-1021-6412-8d25-cdd7-edf.ngrok-free.app";       // Example base URL
 
   // Local state
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -111,7 +111,7 @@ const EventPage = () => {
     if (!event?._id) return;
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/events/${event._id}/attendee-stats`
+        `https://0bdc-2607-f010-2a7-1021-8533-399e-1831-9f2e.ngrok-free.app/api/events/${event._id}/attendee-stats`
       );
       console.log("Stats from server:", response.data);
 
