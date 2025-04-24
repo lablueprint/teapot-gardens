@@ -5,7 +5,7 @@ import NotificationComponent from './notification_component';
 import { notificationData } from '@screens/homepage/homepage_components/data';
 import notif_background from '@assets/notif-background.png';
 
-const url = 'https://e942-2607-f010-2a7-1021-1d56-6e7b-f4c-820.ngrok-free.app';
+const url = 'https://8074-2607-f010-2a7-1021-6412-8d25-cdd7-edf.ngrok-free.app';
 
 export default function NotificationPage() {
     const [user, setUser] = useState({});

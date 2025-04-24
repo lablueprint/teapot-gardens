@@ -22,7 +22,7 @@ export default function DiscoverPage() {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const tempUserId = '678f3a6bc0368a4c717413a8';
-    const API_KEY = 'http://localhost:4000';
+    const API_KEY = 'https://8074-2607-f010-2a7-1021-6412-8d25-cdd7-edf.ngrok-free.app';
     const [user, setUser] = useState(null);
     const [grid, setGrid] = useState(false);
 
