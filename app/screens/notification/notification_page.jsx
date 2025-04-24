@@ -33,8 +33,8 @@ export default function NotificationPage() {
         <ScrollView style={styles.main_container}>
         <Text style = {styles.title}> Notifications </Text>
         {userNotifs.map((notif, index) => (
-            <NotificationComponent description={notif} />
-        ))}
+            <NotificationComponent key={index} description={notif} />
+          ))}
         {/* <NotificationComponent description="this is my notification"/> */}
         </ScrollView>
     </ImageBackground>

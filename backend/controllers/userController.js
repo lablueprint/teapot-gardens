@@ -59,9 +59,20 @@ const updateUser = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)){
         return res.status(404).json({error: "User not found"})
     }
-    const user = await User.findOneAndUpdate({_id: id}, {
-        ...req.body
-    })
+
+    let updatePayload;
+ 
+    if (req.body.notifications) {
+        updatePayload = {
+            $push: { notifications: req.body.notifications },
+        };
+    } else {
+        updatePayload = { ...req.body };
+    }
+
+    const user = await User.findOneAndUpdate({ _id: id }, updatePayload, {
+        new: true,
+    });
     
     if (!user) {
         return res.status(404).json({error: "User not found"})
