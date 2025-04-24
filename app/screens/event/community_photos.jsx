@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, ScrollView, View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from 'expo-router';
+import { useRoute } from "@react-navigation/native";
 import * as ImagePicker from 'expo-image-picker';
 
 import community1 from '@assets/community1.png';
@@ -82,9 +83,21 @@ const mediaItems = [
   }
 ];
 
+
+
 const CommunityPhotos = () => {
   const navigation = useNavigation();
   const [userImages, setUserImages] = useState([]);
+
+  const route = useRoute();
+  const eventData = route.params?.eventData;
+  const attendedEvents = route.params?.attendedEvents; 
+  const attendingEvents = route.params?.attendingEvents;
+  const event = JSON.parse(eventData);
+
+  console.log("community event data", eventData)
+  console.log("community attended", attendedEvents)
+  console.log("community attending", attendingEvents)
 
   const pickImage = async() => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -116,6 +129,10 @@ const CommunityPhotos = () => {
     let items = [];
     
     // Add upload button as first item
+    const eventId = String(event?._id);
+    console.log('event id', event?._id);
+    if (attendingEvents.includes(eventId) || attendedEvents.includes(eventId))
+    {
     items.push(
       <View key="upload" style={styles.photoWrapper}>
         <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
@@ -123,7 +140,7 @@ const CommunityPhotos = () => {
           <Text style={styles.uploadButtonText}>Upload Your Own</Text>
         </TouchableOpacity>
       </View>
-    );
+    )}
     
     // Add user uploaded images
     userImages.forEach((item, index) => {
@@ -148,7 +165,10 @@ const CommunityPhotos = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('EventPage')}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate({
+                                    name: 'EventPage',
+                                    params: { eventData: JSON.stringify(event) }, // converting the event object into a string json to pass it in
+                                })}>
         <Text style={styles.backButtonText}>←</Text>
       </TouchableOpacity>
       

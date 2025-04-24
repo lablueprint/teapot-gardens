@@ -13,8 +13,6 @@ import locationIcon from "@assets/location-icon.png";
 import UserCard from "@screens/event/user_card.jsx";
 import ProgramCard from "@screens/event/program_card.jsx";
 
-import {launchImageLibrary} from 'react-native-image-picker';
-
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
 
 // const url = " https://272a-75-142-52-157.ngrok-free.app";
@@ -70,6 +68,7 @@ const EventPage = () => {
 
   const route = useRoute();
   const eventData = route.params?.eventData;
+  console.log('event page evetndata', eventData);
 
   const photoCount = mediaItems.filter(item => item.type === 'photo').length;
   const videoCount = mediaItems.filter(item => item.type === 'video').length;
@@ -356,7 +355,8 @@ const deleteUserEvent = async () => {
             )}
           </Collapsible>
         </View>
-  
+            
+        {console.log('attendingEvents bor', attendingEvents)}
         <Buttons attending={attendingEvents.includes(event?._id)} />
   
         {user?.admin && (
@@ -380,23 +380,16 @@ const deleteUserEvent = async () => {
               {`${photoCount} photos ${videoCount} videos`}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('CommunityPhotos')}> 
+          <TouchableOpacity onPress={() =>  navigation.navigate({
+                                    name: 'CommunityPhotos',
+                                    params: { eventData: JSON.stringify(event), attendedEvents: JSON.stringify(attendedEvents), attendingEvents: JSON.stringify(attendingEvents)}, // converting the event object into a string json to pass it in
+                                })}> 
               <Text style={styles.seeAllText}> See All {">"}</Text>
             </TouchableOpacity>
         </View>
         <View style={styles.photoGalleryContainer}>
           {mediaItems.map((item, index) => <Image key={index} source={item.image} style={styles.galleryPhoto}/>)}
         </View>
-
-      {
-        (attendingEvents.includes(event?._id) || attendedEvents.includes(event?._id)) &&
-        (
-          <Pressable style={styles.shareButton} onPress={() => setUploadVisible(true) }>
-              
-            <Text>Upload Photos</Text>
-          </Pressable>
-        )
-      }
   
       <View style={{ height: 50 }} />
       </View>
