@@ -13,7 +13,9 @@ import Index from "@app/index";
 import EventPage from "@screens/event/event_page";
 import ProgramPage from "@screens/program_page/program_page";
 import CreateEvent from "@screens/program_page/create_event";
-import CreateProgram from "@screens/discover/create_program"
+import CreateProgram from "@screens/discover/create_program";
+
+import NotificationPage from "@screens/notification/notification_page";
 import RegistrationPage from "@screens/event/registration_page";
 import CommunityPhotos from "@screens/event/community_photos"
 
@@ -22,6 +24,10 @@ import menuIcon from "@assets/menu.png";
 import tempIcon from "@assets/tempicon.png";
 import closeIcon from "@assets/close.png";
 
+import AdminDashboard from "@screens/admin_dashboard/admin_dashboard";
+import AdminScanner from "@screens/event/admin_scanner";
+import Login from "@app/login";
+import { Draw } from "@mui/icons-material";
 
 
 const Drawer = createDrawerNavigator();
@@ -72,42 +78,31 @@ const HamburgerMenu = () => {
         <Drawer.Navigator
             drawerContent={(props) => <CustomDrawerContent {...props} />}
             initialRouteName="Home"
-            screenOptions={({ navigation, route }) => {
-                let headerBg = "#ffffff";
-
-                // Get the focused route name from navigation state
-                const routeName = navigation.getState().routes[navigation.getState().index].name;
-
-                // Change color based on route
-                if (routeName === "Profile") {
-                    headerBg = "#E8E1DD"; // custom color for profile
-                }
-                return {
-                    headerLeft: () => (
-                        <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconButton}>
-                            <Image source={menuIcon} style={styles.icon} />
-                        </TouchableOpacity>
-                    ),
-                    headerRight: () => (
-                        <TouchableOpacity onPress={() => alert("notifications!")} style={styles.iconButton}>
-                            <Image source={notificationIcon} style={styles.icon} />
-                        </TouchableOpacity>
-                    ),
-                    headerTitle: "",
-                    headerStyle: {
-                        backgroundColor: headerBg,
-                        shadowOpacity: 0,
-                    },
-                    drawerStyle: {
-                        backgroundColor: "#f5f5f5",
-                        width: '75%',
-                    },
-                    drawerContentStyle: {
-                        backgroundColor: "transparent",
-                    },
-                    overlayColor: "transparent",
-                };
-            }}
+            screenOptions={({ navigation }) => ({
+                headerLeft: () => (
+                    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconButton}>
+                        <Image source={menuIcon} style={styles.icon} />
+                    </TouchableOpacity>
+                ),
+                headerRight: () => (
+                    <TouchableOpacity onPress={() => navigation.navigate("NotificationPage")} style={styles.iconButton}>
+                        <Image source={notificationIcon} style={styles.icon} />
+                    </TouchableOpacity>
+                ),
+                headerTitle: "",
+                headerStyle: {
+                    backgroundColor: "#ffffff",
+                    shadowOpacity: 0, 
+                },
+                drawerStyle: {
+                    backgroundColor: "#f5f5f5",
+                    width: '75%',
+                },
+                drawerContentStyle: {
+                    backgroundColor: "transparent",
+                },
+                overlayColor: "transparent",
+            })}
         >
             <Drawer.Screen name="Home" component={Homepage} />
             <Drawer.Screen name="Discover" component={DiscoverPage} />
@@ -120,9 +115,12 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="ProgramPage" component={ProgramPage} />
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
+            <Drawer.Screen name="NotificationPage" component={NotificationPage} />
+            <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
+            <Drawer.Screen name="AdminScanner" component={AdminScanner} />
             <Drawer.Screen name="RegistrationPage" component={RegistrationPage} />
+            <Drawer.Screen name="Login" component={Login} />
             <Drawer.Screen name="CommunityPhotos" component={CommunityPhotos} />
-
         </Drawer.Navigator>
     );
 };
