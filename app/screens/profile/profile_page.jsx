@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View, FlatList, Switch, Image, ScrollView, Pressable } from "react-native";
+import { StyleSheet, Text, View, FlatList, Switch, Image, ScrollView, Pressable, ImageBackground } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from 'expo-router';
 import axios from 'axios';
 import styles from '@screens/profile/profile_styles';
 import grapes from '@assets/grapes.jpg';
-import { LinearGradient } from "expo-linear-gradient";
-import bush from '@assets/bush.png'; 
+import profileBg from '@assets/profilebg.png'; 
 import EventCard from '@screens/homepage/homepage_components/eventcard';
 import ProfileQR from '@screens/profile/profile_qr';
+import bear from '@assets/bear.jpg';
 
 
 const url = 'http://localhost:4000'
@@ -93,18 +93,13 @@ const Profile = () => {
   
 
   return (
-    <View style={{ flex: 1, position: 'relative' }}>
+    <View style={styles.bgWrapper}>
       <Image
-        source={bush}
-        style={styles.bushBackground}
-        resizeMode="stretch" // or "cover" if you prefer
+        source={profileBg}
+        style={styles.bgImage}
+        resizeMode="cover"
       />
-      <ScrollView style={styles.main_container} contentContainerStyle={{ flexGrow: 1 }} scrollIndicatorInsets={{ right: 1 }}>
-        <View>
-          <LinearGradient
-                colors={['#EAEBE4', '#E8E1DD']}
-                style={styles.container}
-          >
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
             <Text style={styles.handle}>@{user.username} </Text>
             <Image 
                 source={grapes} 
@@ -133,7 +128,8 @@ const Profile = () => {
                   time={event.time}
                   date={event.date}
                   location={event.location}
-                  image={event.image}
+                  // image={event.image} if we put in images, change this
+                  image = {bear}
                 />
               ))}
             </View>
@@ -168,17 +164,8 @@ const Profile = () => {
                 <Text style={styles.message}>Your data is visible to others.</Text>
               )}
             </View> */}
-            <View style={{ marginTop: 40 }}>
-              <Image
-                source={bush}
-                style={styles.bushImage}
-                resizeMode="stretch"
-              />
-            </View>
-          </LinearGradient>
-        </View>
       </ScrollView>
-      </View>
+    </View>
   );
 };
 
