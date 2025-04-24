@@ -9,6 +9,8 @@ import pichu from '@assets/pichu.jpg';
 import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
 
+const url = 'http://localhost:4000'
+
 export default function Homepage() {
   const [userData, setUserData] = useState(null);
   const [userAttendingEvents, setUserAttendingEvents] = useState([]);
@@ -20,41 +22,31 @@ export default function Homepage() {
   const tempUserId = '6789f49f8e0a009647312c7a';
   const tempEventId = '67932a72413f4d68be84e592';
 
-useEffect(() => {
-  const fetchUserData = async () => {
-    try {
-      // fetching user data here
-      const userResponse = await axios.get(`http://localhost:4000/api/users/${tempUserId}`);
-      const testResponse = await axios.get(`http://localhost:4000/api/events/${tempEventId}`);
-      setTestEvent(testResponse.data);
-      
-      if (userResponse.status === 200) {
-        const fetchedUser = userResponse.data;
-        setUserData(fetchedUser);
-        
-        if (Array.isArray(fetchedUser.attendingEvents)) {
-          const attendingEventsRequests = fetchedUser.attendingEvents.map((eventId) =>
-            axios.get(`http://localhost:4000/api/events/${eventId}`)
-          );
-          const attendingEventsResponse = await Promise.all(attendingEventsRequests);
-          const events_attending = attendingEventsResponse.map((response) => response.data);
-          setUserAttendingEvents(events_attending);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // fetching user data here
+        const userResponse = await axios.get(`${url}/api/users/6789f49f8e0a009647312c7a`);
+        const testResponse = await axios.get(`${url}/api/events/678f315b8d423da67c615e95`);
+        setTestEvent(testResponse);
+  
+        if (userResponse.status === 200) {
+          setUserData(userResponse.data);
+          setUserAttendingEvents(userResponse.data.attendingEvents);
+          console.log(userResponse.data.attendingEvents);
         } else {
           console.warn("No attending events found for the user");
           setUserAttendingEvents([]);
         }
-      } else {
-        console.error('Failed to fetch user: ', userResponse.data.error);
+      } catch (error) {
+        console.error('Error fetching user or events: ', error.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching user or events: ', error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
   
-  fetchUserData();
-}, []);
+    fetchUserData();
+  }, []);
 
   
   if (userData && userData.tamagatchiXP !== undefined) {

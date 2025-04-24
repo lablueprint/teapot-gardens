@@ -10,7 +10,7 @@ import Collapsible from 'react-native-collapsible';
 import eventData from './eventData.json';
 import axios from 'axios';
 
-const url = "https://fcf2-2607-f010-2a7-1021-146c-10b3-5521-5c7f.ngrok-free.app";
+const url = "http://localhost:4000";
 
 const BulletPoints = (props) => {
   return (
@@ -113,7 +113,7 @@ const ProgramPage = () => {
         </Text>
         <Pressable onPress={ toggleCollapsedActivities } >
             <Text style={styles.button}>Follow Program</Text>
-          </Pressable>
+        </Pressable>
 
       {/*  Upcoming Events Carousel  */}
       <Text style={ styles.header }>Upcoming Events</Text>

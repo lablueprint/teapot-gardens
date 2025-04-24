@@ -9,13 +9,17 @@ import RegisterModal from './register_modal.jsx'
 import Paradise from "@assets/paradise.png";
 import dateIcon from "@assets/date-icon.png";
 import locationIcon from "@assets/location-icon.png";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
+// Custom components & assets
+import AdminDashboard from "@screens/admin_dashboard/admin_dashboard.jsx";
 import UserCard from "@screens/event/user_card.jsx";
 import ProgramCard from "@screens/event/program_card.jsx";
 
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
 
 // const url = " https://272a-75-142-52-157.ngrok-free.app";
+const tempUserId = "678f3a6bc0368a4c717413a8";
 const url = "http://localhost:4000";
 
 import community1 from '@assets/community1.png';
@@ -47,6 +51,9 @@ const mediaItems = [
     type: 'photo',
 }
 ];
+// import grapes from "@assets/grapes.jpg"; // Not used, so removed
+
+
 
 const EventPage = () => {
   const navigation = useNavigation();
@@ -59,12 +66,13 @@ const EventPage = () => {
   const [attendeeNames, setAttendeeNames] = useState([]);
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   // const [showDynamicButtons, setShowDynamicButtons] = useState(true); //change based on if user is registered or not
   const [modalVisible, setModalVisible] = useState(false);
   const [uploadVisible, setUploadVisible] = useState(false);
-
-  // This holds the stats from the backend { userStatsList: [...] }
-  const [stats, setStats] = useState({ userStatsList: [] }); // Ensure stats is never null
+  const [stats, setStats] = useState({ userStatsList: [] }); // { userStatsList: [...] }
 
   const route = useRoute();
   const eventData = route.params?.eventData;
@@ -73,7 +81,7 @@ const EventPage = () => {
   const photoCount = mediaItems.filter(item => item.type === 'photo').length;
   const videoCount = mediaItems.filter(item => item.type === 'video').length;
 
-  // Parse eventData string back into an object to access its data
+  // Parse eventData (passed via route params) back into an object
   useEffect(() => {
     if (eventData) {
       try {
@@ -89,7 +97,7 @@ const EventPage = () => {
     }
   }, [eventData]);
 
-  // Fetch user data (temp)
+  // Fetch user data (and event data) on mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -108,18 +116,38 @@ const EventPage = () => {
         console.error("Error fetching user:", error.message);
       }
     };
+
+    const fetchEvent = async (eventId) => {
+      if (!eventId) return;
+      try {
+        const response = await axios.get(`${url}/api/events/${eventId}`);
+        if (response.status === 200) {
+          setEvent(response.data);
+          setLikeCount(response.data.likes || 0);
+          setLiked(response.data.likedBy.includes(tempUserId)); // Check if user already liked
+        } else {
+          console.error("Failed to fetch event:", response.data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching event:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchUser();
+    fetchEvent();
   }, []);
 
   // If admin and event ID exist, fetch stats
   useEffect(() => {
     if (user?.admin && event?._id) {
-      console.log("Calling fetchAttendeeStats with eventId:", event._id);
+      console.log("Fetching stats for admin with eventId:", event._id);
       fetchAttendeeStats();
     } else {
       console.log("Skipped fetchAttendeeStats => admin:", user?.admin, "eventId:", event?._id);
     }
-  }, [user, event]); 
+  }, [user, event]);
 
   const fetchAttendeeStats = async () => {
     if (!event?._id) return;
@@ -196,10 +224,10 @@ useEffect(() => {
     }
   };
 
-  fetchAttendeeNames();
-  getAttendeeCount();
-  getNewAttendeeCount();
-}, [event]);
+    fetchAttendeeNames();
+    getAttendeeCount();
+    getNewAttendeeCount();
+  }, [event]);
 
 // Refresh user data after changes (adding event to user)
 const refreshUserData = async () => {
@@ -234,9 +262,9 @@ const addUserEvent = async () => {
       $push: { attendeeList: user._id },
     });
 
-    // Refresh data
-    await refreshUserData();
-    await fetchEventData(event._id);
+      // Refresh data
+      await refreshUserData();
+      await fetchEventData(event._id);
 
     setModalVisible(false); // go back to the main button state
 
@@ -408,6 +436,30 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop: -30,
   },
+  imageContainer: {
+    position: "relative",
+  },
+  image: {
+    width: 340,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  likeContainer: {
+    position: "absolute",
+    top: 8,
+    right: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.7)",
+    padding: 4,
+    borderRadius: 12,
+  },
+  likeCount: {
+    marginLeft: 4,
+    fontSize: 16,
+    color: "black",
+  },
   eventHeader: {
     textAlign: 'center',
     fontSize: 24,
@@ -422,6 +474,9 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     marginBottom: 4,
+  },
+  attendeesList: {
+    marginTop: 8,
   },
   attendeesButton: {
     padding: 8,

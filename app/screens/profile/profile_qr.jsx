@@ -29,8 +29,6 @@ const ProfileQR = () => {
     
     return (
         <View style={styles.container}>
-            <Text style={{fontSize: 30}}>User QR</Text>
-            <View style={{margin: 20}}/>
             <QRCode style={styles.qr} value={user._id} size={200} />
         </View>
     );

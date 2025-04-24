@@ -62,10 +62,10 @@ const userSchema = new Schema(
         genderIdentification: {
             type: String,
             default: "Unknown",
-        },
-    },
-    { timestamps: true } // Adds createdAt and updatedAt automatically
-);
+        }
+
+}, { timestamps: true })
+
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

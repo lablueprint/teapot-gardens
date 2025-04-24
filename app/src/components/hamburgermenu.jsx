@@ -72,31 +72,42 @@ const HamburgerMenu = () => {
         <Drawer.Navigator
             drawerContent={(props) => <CustomDrawerContent {...props} />}
             initialRouteName="Home"
-            screenOptions={({ navigation }) => ({
-                headerLeft: () => (
-                    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconButton}>
-                        <Image source={menuIcon} style={styles.icon} />
-                    </TouchableOpacity>
-                ),
-                headerRight: () => (
-                    <TouchableOpacity onPress={() => alert("notifications!")} style={styles.iconButton}>
-                        <Image source={notificationIcon} style={styles.icon} />
-                    </TouchableOpacity>
-                ),
-                headerTitle: "",
-                headerStyle: {
-                    backgroundColor: "#ffffff",
-                    shadowOpacity: 0, 
-                },
-                drawerStyle: {
-                    backgroundColor: "#f5f5f5",
-                    width: '75%',
-                },
-                drawerContentStyle: {
-                    backgroundColor: "transparent",
-                },
-                overlayColor: "transparent",
-            })}
+            screenOptions={({ navigation, route }) => {
+                let headerBg = "#ffffff";
+
+                // Get the focused route name from navigation state
+                const routeName = navigation.getState().routes[navigation.getState().index].name;
+
+                // Change color based on route
+                if (routeName === "Profile") {
+                    headerBg = "#E8E1DD"; // custom color for profile
+                }
+                return {
+                    headerLeft: () => (
+                        <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconButton}>
+                            <Image source={menuIcon} style={styles.icon} />
+                        </TouchableOpacity>
+                    ),
+                    headerRight: () => (
+                        <TouchableOpacity onPress={() => alert("notifications!")} style={styles.iconButton}>
+                            <Image source={notificationIcon} style={styles.icon} />
+                        </TouchableOpacity>
+                    ),
+                    headerTitle: "",
+                    headerStyle: {
+                        backgroundColor: headerBg,
+                        shadowOpacity: 0,
+                    },
+                    drawerStyle: {
+                        backgroundColor: "#f5f5f5",
+                        width: '75%',
+                    },
+                    drawerContentStyle: {
+                        backgroundColor: "transparent",
+                    },
+                    overlayColor: "transparent",
+                };
+            }}
         >
             <Drawer.Screen name="Home" component={Homepage} />
             <Drawer.Screen name="Discover" component={DiscoverPage} />
@@ -178,4 +189,3 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
     },
 });
-

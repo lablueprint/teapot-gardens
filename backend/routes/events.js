@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require('express');
 const {
     getEvents,
     getEvent,
@@ -7,27 +7,23 @@ const {
     updateEvent,
     updateEventUsers,
     getAttendees,
+    likeEvent,
     getAttendeeStats
-} = require('../controllers/eventController')
+} = require('../controllers/eventController');
 
-const Event = require('../models/EventModel')
+const router = express.Router();
 
-const router = express.Router()
+// specific routes
+router.get('/:eventId/attendee-stats', getAttendeeStats);
+router.get('/attendees/:id', getAttendees);
+router.patch('/like/:id', likeEvent);
 
-router.get("/:eventId/attendee-stats", getAttendeeStats);
+// general routes
+router.get('/', getEvents);
+router.get('/:id', getEvent);
+router.post('/', createEvent);
+router.delete('/:id', deleteEvent);
+router.patch('/:id', updateEvent);
+router.patch('/', updateEventUsers);
 
-router.get('/', getEvents)
-
-router.get('/:id', getEvent)
-
-router.post('/', createEvent)
-
-router.delete('/:id', deleteEvent)
-
-router.patch('/:id', updateEvent)
-
-router.patch('/', updateEventUsers)
-
-router.get('/attendees/:id', getAttendees)
-
-module.exports = router
+module.exports = router;
