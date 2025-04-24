@@ -29,7 +29,7 @@ export default function DiscoverPage() {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get(`${API_KEY}/api/events/`);
+                const response = await axios.get(`${url}/api/events/`);
                 if (response.status === 200) {
                     const eventsWithLikeFlag = response.data.map(event => ({
                         ...event,
@@ -50,7 +50,7 @@ export default function DiscoverPage() {
 
         const fetchPrograms = async () => {
             try {
-                const response = await axios.get(`${API_KEY}/api/programs/`);
+                const response = await axios.get(`${url}/api/programs/`);
                 if (response.status === 200) {
                     setPrograms(response.data);
                 } else {
@@ -65,7 +65,7 @@ export default function DiscoverPage() {
 
         const fetchUser = async () => {
             try {
-                const response = await axios.get(`${API_KEY}/api/users/${tempUserId}`);
+                const response = await axios.get(`${url}/api/users/${tempUserId}`);
                 if (response.status === 200) {
                     setUser(response.data);
                 } else {
@@ -87,7 +87,7 @@ export default function DiscoverPage() {
         try {
             const eventToUpdate = { ...events[index] };
             const response = await axios.patch(
-                `${API_KEY}/api/events/like/${eventId}`,
+                `${url}/api/events/like/${eventId}`,
                 { userId: tempUserId }
             );
             if (response.status === 200) {
