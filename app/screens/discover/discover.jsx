@@ -48,7 +48,6 @@ export default function DiscoverPage () {
             } finally {
                 setLoading(false);
             }
-            fetchEvents([]);
         };
 
         const fetchPrograms = async () => {
