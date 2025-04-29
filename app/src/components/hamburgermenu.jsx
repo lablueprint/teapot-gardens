@@ -17,11 +17,19 @@ import CreateProgram from "@screens/discover/create_program";
 
 import NotificationPage from "@screens/notification/notification_page";
 import AdminDashboard from "@screens/admin_dashboard/admin_dashboard"
+import RegistrationPage from "@screens/event/registration_page";
+import CommunityPhotos from "@screens/event/community_photos"
 
 import notificationIcon from "@assets/notifications.png";
 import menuIcon from "@assets/menu.png";
 import tempIcon from "@assets/tempicon.png";
 import closeIcon from "@assets/close.png";
+
+import AdminDashboard from "@screens/admin_dashboard/admin_dashboard";
+import AdminScanner from "@screens/event/admin_scanner";
+import Login from "@app/login";
+import { Draw } from "@mui/icons-material";
+
 
 const Drawer = createDrawerNavigator();
 
@@ -110,6 +118,13 @@ const HamburgerMenu = () => {
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
             <Drawer.Screen name="NotificationPage" component={NotificationPage} />
             <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
+<<<<<<< HEAD
+=======
+            <Drawer.Screen name="AdminScanner" component={AdminScanner} />
+            <Drawer.Screen name="RegistrationPage" component={RegistrationPage} />
+            <Drawer.Screen name="Login" component={Login} />
+            <Drawer.Screen name="CommunityPhotos" component={CommunityPhotos} />
+>>>>>>> origin/main
         </Drawer.Navigator>
     );
 };

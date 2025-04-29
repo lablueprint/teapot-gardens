@@ -9,7 +9,10 @@ import upcoming from '@assets/upcoming.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import garden from '@assets/garden.jpg';
 
-export default function DiscoverPage() {
+// const url = 'https://272a-75-142-52-157.ngrok-free.app'
+const url = 'http://localhost:4000'
+
+export default function DiscoverPage () {
     const navigation = useNavigation();
     const scrollViewRef = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
