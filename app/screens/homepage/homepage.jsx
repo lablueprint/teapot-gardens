@@ -10,6 +10,8 @@ import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
 import User from 'backend/models/UserModel';
 
+const url = 'http://localhost:4000'
+
 export default function Homepage() {
   const [userData, setUserData] = useState(null);
   const [userAttendingEvents, setUserAttendingEvents] = useState([]);
@@ -19,7 +21,7 @@ export default function Homepage() {
   const [loading, setLoading] = useState(true);
   let level_img = sample_logo;
   const tempUserId = '6789f49f8e0a009647312c7a';
-  const tempEventId = '67932a72413f4d68be84e592';
+  const tempEventId = '678f315b8d423da67c615e95';
 
   const today = new Date();
   const currentDate = today.toISOString().split('T')[0];
@@ -48,15 +50,15 @@ export default function Homepage() {
     const fetchUserData = async () => {
       try {
         // fetching user data here
-        const userResponse = await axios.get('https://9cad-2607-f010-2a7-103f-bd39-11f5-b4e8-a209.ngrok-free.app/api/users/6789f49f8e0a009647312c7a');
-        const testResponse = await axios.get('https://9cad-2607-f010-2a7-103f-bd39-11f5-b4e8-a209.ngrok-free.app/api/events/678f315b8d423da67c615e95');
+        const userResponse = await axios.get(`${url}/api/users/${tempUserId}`);
+        const testResponse = await axios.get(`${url}/api/events/${tempEventId}`);
         setTestEvent(testResponse);
   
         if (userResponse.status === 200) {
           setUserData(userResponse.data);
           setUserAttendingEvents(userResponse.data.attendingEvents);
           for (let event of userResponse.data.attendingEvents) {
-            const eventDate = await axios.get('https://9cad-2607-f010-2a7-103f-bd39-11f5-b4e8-a209.ngrok-free.app/api/events/' + event);
+            const eventDate = await axios.get(`https://${url}/api/events/` + event);
             // event date formatted like "February 20th 2024"
             // event time formatted like "3:00 PM"
             eventAMPM = eventDate.data.time.split(' ')[1];
@@ -73,7 +75,7 @@ export default function Homepage() {
               // event is in the past fs
               //I NEED HELP WITH THIS PART
               console.log(userResponse.data.attendingEvents, event);
-              await axios.patch('https://9cad-2607-f010-2a7-103f-bd39-11f5-b4e8-a209.ngrok-free.app/api/users/' + userResponse.data._id, {
+              await axios.patch(`https://${url}/api/users/` + userResponse.data._id, {
                 attendedEvents: [...userResponse.data.attendedEvents, event],
                 attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
               });
@@ -98,9 +100,6 @@ export default function Homepage() {
               }
             }
           }
-
-
-
         } else {
           console.warn("No attending events found for the user");
           setUserAttendingEvents([]);
@@ -124,10 +123,9 @@ export default function Homepage() {
     } else {
       level_img = raichu;
     }
-
   }
 
-
+  console.log(userAttendingEvents);
 
   return (
     <ScrollView style={styles.main_container}>

@@ -10,6 +10,8 @@ import Collapsible from 'react-native-collapsible';
 import eventData from './eventData.json';
 import axios from 'axios';
 
+const url = "http://localhost:4000";
+
 const BulletPoints = (props) => {
   return (
     <View style={ styles.bulletContainer }>
@@ -46,7 +48,7 @@ const ProgramPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8');
+        const response = await axios.get(`${url}/api/users/678f3a6bc0368a4c717413a8`);
         if (response.status === 200) {
           setUser(response.data);
         } else {
@@ -62,14 +64,14 @@ const ProgramPage = () => {
     const fetchEventsWithPictures = async () => {
       try {
         // First fetch past events
-        const response = await axios.get('http://localhost:4000/api/programs/past-events/6789ed54a5e1c0261cefac4f');
+        const response = await axios.get(`${url}/api/programs/past-events/6789ed54a5e1c0261cefac4f`);
         
         if (response.status === 200) {
           const eventIds = response.data;
           setPastEvents(eventIds);
           try{
             const pictureResponses = await Promise.all(eventIds.map(id =>
-              axios.get(`http://localhost:4000/api/events/${id}`)
+              axios.get(`${url}/api/events/${id}`)
             ));
             
             setPastPictures(prevPictures => {

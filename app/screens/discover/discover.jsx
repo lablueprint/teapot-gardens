@@ -9,7 +9,10 @@ import upcoming from '@assets/upcoming.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import garden from '@assets/garden.jpg';
 
-export default function DiscoverPage() {
+// const url = 'https://272a-75-142-52-157.ngrok-free.app'
+const url = 'http://localhost:4000'
+
+export default function DiscoverPage () {
     const navigation = useNavigation();
     const scrollViewRef = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
@@ -22,14 +25,14 @@ export default function DiscoverPage() {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const tempUserId = '678f3a6bc0368a4c717413a8';
-    const API_KEY = 'http://localhost:4000';
+    const API_KEY = 'https://8074-2607-f010-2a7-1021-6412-8d25-cdd7-edf.ngrok-free.app';
     const [user, setUser] = useState(null);
     const [grid, setGrid] = useState(false);
 
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get(`${API_KEY}/api/events/`);
+                const response = await axios.get(`${url}/api/events/`);
                 if (response.status === 200) {
                     const eventsWithLikeFlag = response.data.map(event => ({
                         ...event,
@@ -50,7 +53,7 @@ export default function DiscoverPage() {
 
         const fetchPrograms = async () => {
             try {
-                const response = await axios.get(`${API_KEY}/api/programs/`);
+                const response = await axios.get(`${url}/api/programs/`);
                 if (response.status === 200) {
                     setPrograms(response.data);
                 } else {
@@ -65,7 +68,7 @@ export default function DiscoverPage() {
 
         const fetchUser = async () => {
             try {
-                const response = await axios.get(`${API_KEY}/api/users/${tempUserId}`);
+                const response = await axios.get(`${url}/api/users/${tempUserId}`);
                 if (response.status === 200) {
                     setUser(response.data);
                 } else {
@@ -87,7 +90,7 @@ export default function DiscoverPage() {
         try {
             const eventToUpdate = { ...events[index] };
             const response = await axios.patch(
-                `${API_KEY}/api/events/like/${eventId}`,
+                `${url}/api/events/like/${eventId}`,
                 { userId: tempUserId }
             );
             if (response.status === 200) {

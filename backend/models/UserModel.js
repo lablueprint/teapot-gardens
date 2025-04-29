@@ -47,6 +47,10 @@ const userSchema = new Schema(
             type: [String],
             default: [],
         },
+        notifications: {
+            type: [String], // Note: just adding the bodyText for now but not subject
+            default: [],
+        },
         race: {
             type: String,
             default: "Unknown",
