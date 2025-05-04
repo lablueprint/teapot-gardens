@@ -18,12 +18,20 @@ import CreateEvent from "@screens/program_page/create_event";
 import CreateProgram from "@screens/discover/create_program";
 import SignIn from "@screens/login/signin";
 
+import NotificationPage from "@screens/notification/notification_page";
+import AdminDashboard from "@screens/admin_dashboard/admin_dashboard"
+import RegistrationPage from "@screens/event/registration_page";
+import CommunityPhotos from "@screens/event/community_photos"
+
 import notificationIcon from "@assets/notifications.png";
 import menuIcon from "@assets/menu.png";
 import tempIcon from "@assets/tempicon.png";
 import closeIcon from "@assets/close.png";
 
 import IntroSlides from "@screens/login/introSlides";
+import AdminScanner from "@screens/event/admin_scanner";
+import Login from "@app/login";
+import { Draw } from "@mui/icons-material";
 
 const Drawer = createDrawerNavigator();
 
@@ -101,7 +109,7 @@ const createMainNavigator = () => {
                     </TouchableOpacity>
                 ),
                 headerRight: () => (
-                    <TouchableOpacity onPress={() => alert("notifications!")} style={styles.iconButton}>
+                    <TouchableOpacity onPress={() => navigation.navigate("NotificationPage")} style={styles.iconButton}>
                         <Image source={notificationIcon} style={styles.icon} />
                     </TouchableOpacity>
                 ),
@@ -133,6 +141,12 @@ const createMainNavigator = () => {
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
             <Drawer.Screen name="SignIn" component={SignIn} />
+            <Drawer.Screen name="NotificationPage" component={NotificationPage} />
+            <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
+            <Drawer.Screen name="AdminScanner" component={AdminScanner} />
+            <Drawer.Screen name="RegistrationPage" component={RegistrationPage} />
+            <Drawer.Screen name="Login" component={Login} />
+            <Drawer.Screen name="CommunityPhotos" component={CommunityPhotos} />
         </Drawer.Navigator>
     );
 };

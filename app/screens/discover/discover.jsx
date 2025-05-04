@@ -1,120 +1,251 @@
-import {React, useState, useEffect} from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 import { useNavigation } from 'expo-router';
-import { Text, StyleSheet, ScrollView, View, Image, TextInput, Pressable } from 'react-native';
-import garden from '@assets/garden.jpg';
+import { useFonts } from 'expo-font';
+import { Text, StyleSheet, ScrollView, View, Image, Pressable, Dimensions } from 'react-native';
 import axios from 'axios';
 import defaultPic from '@assets/default.png';
+import discover from '@assets/discover.png';
+import upcoming from '@assets/upcoming.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import garden from '@assets/garden.jpg';
 
+// const url = 'https://272a-75-142-52-157.ngrok-free.app'
+const url = 'http://localhost:4000'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();
+    const scrollViewRef = useRef(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const windowWidth = Dimensions.get('window').width;
+    const cardWidth = windowWidth * 0.7;
+    const cardSpacing = 10;
+
     const [events, setEvents] = useState([]);
     const [programs, setPrograms] = useState([]);
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
+    const tempUserId = '678f3a6bc0368a4c717413a8';
+    const API_KEY = 'https://8074-2607-f010-2a7-1021-6412-8d25-cdd7-edf.ngrok-free.app';
     const [user, setUser] = useState(null);
+    const [grid, setGrid] = useState(false);
 
     useEffect(() => {
         const fetchEvents = async () => {
-          try {
-            const response = await axios.get('http://localhost:4000/api/events/');
-            if (response.status === 200) {
-              setEvents(response.data);
-            } else {
-              console.error('Failed to fetch events: ', response.data.error);
+            try {
+                const response = await axios.get(`${url}/api/events/`);
+                if (response.status === 200) {
+                    const eventsWithLikeFlag = response.data.map(event => ({
+                        ...event,
+                        liked: event.likedBy.includes(tempUserId),
+                        likes: event.likes || 0,
+                    }));
+                    setEvents(eventsWithLikeFlag);
+                } else {
+                    console.error('Failed to fetch events: ', response.data.error);
+                }
+            } catch (error) {
+                console.error('Error fetching events: ', error.message);
+            } finally {
+                setLoading(false);
             }
-          } catch (error) {
-            console.error('Error fetching events: ', error.message);
-          } finally {
-            setLoading(false);
-          }
-          
+            fetchEvents([]);
         };
 
         const fetchPrograms = async () => {
             try {
-              const response = await axios.get('http://localhost:4000/api/programs/');
-              if (response.status === 200) {
-                setPrograms(response.data);
-              } else {
-                console.error('Failed to fetch programs: ', response.data.error);
-              }
+                const response = await axios.get(`${url}/api/programs/`);
+                if (response.status === 200) {
+                    setPrograms(response.data);
+                } else {
+                    console.error('Failed to fetch programs: ', response.data.error);
+                }
             } catch (error) {
-              console.error('Error fetching programs: ', error.message);
+                console.error('Error fetching programs: ', error.message);
             } finally {
-              setLoading(false);
+                setLoading(false);
             }
-          };
+        };
 
-          const fetchUser = async () => {
+        const fetchUser = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8')
-                if (response.status == 200) {
+                const response = await axios.get(`${url}/api/users/${tempUserId}`);
+                if (response.status === 200) {
                     setUser(response.data);
                 } else {
                     console.error('Failed to fetch user', response.data.error);
                 }
             } catch (error) {
-                console.error('failed to fetch user', error.message);
+                console.error('Failed to fetch user', error.message);
             } finally {
                 setLoading(false);
             }
-          }
+        };
+
         fetchEvents();
         fetchPrograms();
         fetchUser();
-      }, []);
+    }, []);
 
-    const options = [
-        { name: "Option"}, {name: "Option"}, {name: "Option"}, {name: "Option"}, {name: "Option"}
-    ]
+    const handleLike = async (eventId, index) => {
+        try {
+            const eventToUpdate = { ...events[index] };
+            const response = await axios.patch(
+                `${url}/api/events/like/${eventId}`,
+                { userId: tempUserId }
+            );
+            if (response.status === 200) {
+                const updatedEvent = {
+                    ...eventToUpdate,
+                    liked: response.data.likedBy.includes(tempUserId),
+                    likes: response.data.likes,
+                };
+                setEvents(prevEvents => {
+                    const updatedEvents = [...prevEvents];
+                    updatedEvents[index] = updatedEvent;
+                    return updatedEvents;
+                });
+            }
+        } catch (error) {
+            console.error("Error updating like:", error.response?.data || error.message);
+        }
+    };
+
+    const toggleGrid = () => {
+        setGrid(prevGrid => !prevGrid);
+    };
+
+    const handleScroll = (event) => {
+        const contentOffsetX = event.nativeEvent.contentOffset.x;
+        const currentIndex = Math.round(contentOffsetX / (cardWidth + cardSpacing));
+        setActiveIndex(currentIndex);
+    };
+
+    const scrollToIndex = (index) => {
+        scrollViewRef.current?.scrollTo({
+            x: index * (cardWidth + cardSpacing),
+            animated: true,
+        });
+        setActiveIndex(index);
+    };
+
+    const [fontsLoaded] = useFonts({
+        'IMFell': require('../../../assets/fonts/IMFellGreatPrimer-Regular.ttf'),
+        'IMFellItalic': require('../../../assets/fonts/IMFellGreatPrimer-Italic.ttf')
+    });
+
+    if (!fontsLoaded) return null;
 
     return (
         <ScrollView>
             <View style={styles.pageContainer}>
-            <Text style={ styles.mainTitle}>Discover</Text>
-            <View>
-                <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
-                <TextInput 
-                    style={styles.searchInput}
-                    placeholder="Search for events"
-                    value={search}
-                    onChangeText={setSearch}
-                    />
-            </View>
-            <ScrollView horizontal={true}>
-                <View style={styles.optionContainer}>
-                    {options.map((opt, index) => (
-                        <Pressable key={index} style={styles.option}>
-                            <Text>{opt.name}</Text>
+                <View style={styles.toggleIcon}>
+                    <Pressable onPress={toggleGrid}>
+                        <Ionicons 
+                            name={grid ? "grid" : "tablet-portrait"}
+                            size={40} 
+                            color="#D2D0D0" 
+                        />
+                    </Pressable>
+                </View>
+
+                <Text style={styles.mainTitle}>Discover</Text>
+                <Text style={styles.subHeading}>Explore Program Pages</Text>
+
+                <ScrollView
+                    ref={scrollViewRef}
+                    horizontal={grid}
+                    showsHorizontalScrollIndicator={false}
+                    onScroll={handleScroll}
+                    scrollEventThrottle={16}
+                    decelerationRate="fast"
+                    snapToInterval={cardWidth}
+                    style={styles.eventContainer}
+                >
+                    {programs.map((program, index) => (
+                        <Pressable
+                            key={index}
+                            style={[
+                                grid ? styles.gridProgramContainer : styles.listProgramContainer,
+                                grid ? { width: cardWidth, marginLeft: cardSpacing / 2, marginRight: cardSpacing / 2 } : {}
+                            ]}
+                            onPress={() => navigation.navigate('ProgramPage')}
+                        >
+                            {grid ? (
+                                <Image source={discover} style={styles.gridProgramImage} />
+                            ) : (
+                                <>
+                                    <Image source={discover} style={styles.listProgramImage} />
+                                    <View style={styles.listText}>
+                                        <Text style={styles.listName}>{program.name}</Text>
+                                        <Text style={styles.listDescription}>{program.description}</Text>
+                                    </View>
+                                    <Pressable style={styles.followButton}>
+                                        <Text style={{ color: 'darkgreen' }}>Follow</Text>
+                                    </Pressable>
+                                    <Ionicons name="arrow-forward-outline" size={20} color="gray" />
+                                </>
+                            )}
                         </Pressable>
                     ))}
+                </ScrollView>
+
+                {grid && (
+                    <View style={styles.indicatorContainer}>
+                        {programs.map((_, index) => (
+                            <Pressable
+                                key={index}
+                                style={[
+                                    styles.indicator,
+                                    index === activeIndex ? styles.activeIndicator : styles.inactiveIndicator
+                                ]}
+                                onPress={() => scrollToIndex(index)}
+                            />
+                        ))}
+                    </View>
+                )}
+
+                <View style={styles.createProgramContainer}>
+                    {user?.admin && (
+                        <Pressable
+                            style={styles.createProgramButton}
+                            onPress={() => navigation.navigate('CreateProgram')}
+                        >
+                            <Text style={styles.plusButton}>+</Text>
+                        </Pressable>
+                    )}
                 </View>
-            </ScrollView>
-            <View>
-                <Text style={styles.subHeading}>Upcoming Events</Text>
+
+                <Text style={styles.mainTitle}>Upcoming Events</Text>
+                <Text style={styles.subHeading}>Explore upcoming events</Text>
                 <ScrollView horizontal={true} style={styles.eventContainer}>
                     {events.map((event, index) => (
-                        <Pressable 
-                            key={index} 
+                        <Pressable
+                            key={index}
                             style={styles.eventBox}
-                            onPress={() => navigation.navigate('EventPage', 
-                                { 
-                                    title: event.name, 
-                                    date: event.date,
-                                    location: event.location, 
-                                    time: event.time, 
-                                    details: event.eventDescription 
-                                })}
-                            >
-                            {/* <View>
-                                <Text>{event.date}</Text>
-                            </View> */}
-                            <Image source={garden} style={styles.image}/>
+                            onPress={() => {
+                                console.log("Navigating to EventPage with eventData:", event);
+                                navigation.navigate('EventPage', {
+                                eventData: JSON.stringify(event),
+                                });
+                            }}
+                        >
+                            <View style={styles.imageContainer}>
+                                <Image source={garden} style={styles.image} />
+                                <View style={styles.likeContainer}>
+                                    <Ionicons
+                                        name={event.liked ? 'heart' : 'heart-outline'}
+                                        size={24}
+                                        color={event.liked ? 'red' : 'gray'}
+                                        onPress={() => handleLike(event._id, index)}
+                                    />
+                                    <Text style={styles.likeCount}>{event.likes}</Text>
+                                </View>
+                            </View>
+                            <Image source={event.image ? { uri: event.image } : upcoming} style={styles.image} />
                             <View style={styles.eventInfoBox}>
                                 <Text style={styles.eventName}>{event.name}</Text>
                                 <Text style={styles.eventDescription}>{event.eventDescription}</Text>
-                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Ionicons name="location" size={20} color="gray" />
                                     <Text style={styles.eventLocation}>{event.location}</Text>
                                 </View>
@@ -124,36 +255,6 @@ export default function DiscoverPage () {
                     ))}
                 </ScrollView>
             </View>
-            <Text style={styles.subHeading}>Explore Program Pages</Text>
-            <View>
-                <ScrollView>
-                {programs.map((program, index) => (
-                    <Pressable 
-                        style={styles.programContainer} 
-                        key={index}
-                        onPress={() => navigation.navigate('ProgramPage')}
-                        >
-                        <Image source={defaultPic} style={styles.programImage}/>
-                        <Text>{program.description}</Text>
-                        <Ionicons name="chevron-forward" size={20} color="gray" style={styles.arrow}/>
-                    </Pressable>
-                ))}
-                </ScrollView>
-                {/* create new program if admin*/}
-                <View style={styles.createProgramContainer}>
-                {
-                user?.admin && (
-                    <Pressable 
-                    style={styles.createProgramButton}
-                    onPress={() => navigation.navigate('CreateProgram')}
-                    >
-                    <Text style={styles.plusButton}>+</Text>
-                    </Pressable>
-                )
-                }
-                </View>
-            </View>
-            </View>
         </ScrollView>
     );
 }
@@ -162,49 +263,30 @@ const styles = StyleSheet.create({
     pageContainer: {
         padding: 16,
         gap: 10,
+        fontFamily: 'IMFell'
     },
-    mainTitle:{
-        fontSize: 30, 
-        fontWeight: 'bold'
-    }, 
-    searchIcon: {
-        position: 'absolute', 
-        left: 12, 
-        top: '50%', 
-        transform: [{translateY: -9}],
+    mainTitle: {
+        fontSize: 25,
+        fontFamily: 'IMFell'
     },
-    searchInput: {
-        borderWidth: 1, 
-        borderRadius: 20, 
-        padding: 8,
-        flex: 1, 
-        paddingLeft: 35,
+    toggleIcon: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        zIndex: 10,
     },
     subHeading: {
-        fontSize: 20, 
-        fontWeight: 'bold',
+        fontSize: 15,
         marginBottom: 20,
+        fontFamily: 'IMFellItalic'
     },
-    optionContainer: {
-        display: "flex", 
-        flexDirection: "row", 
-        paddingBottom: 10, 
-        gap: 10
-    },
-    option: {
-        borderWidth: 1, 
-        paddingVertical: 10,
-        paddingHorizontal: 15,  
-        borderRadius: 20, 
-    }, 
     eventContainer: {
-        display: "flex", 
-        flexDirection: "row", 
+        flexDirection: "row",
         marginBottom: 20,
     },
     eventBox: {
-        borderWidth: 1, 
-        width: 250,
+        marginTop: 10,
+        borderWidth: 1,
         borderRadius: 15,
         overflow: 'hidden',
         marginRight: 15
@@ -212,65 +294,121 @@ const styles = StyleSheet.create({
     eventInfoBox: {
         padding: 10,
     },
+    imageContainer: {
+        position: 'relative',
+    },
     image: {
-        height: 150, 
+        height: 150,
         width: 250,
     },
+    likeContainer: {
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255,255,255,0.7)',
+        padding: 4,
+        borderRadius: 12,
+    },
+    likeCount: {
+        marginLeft: 4,
+        fontSize: 16,
+        color: 'black',
+    },
     eventName: {
-        fontSize: 20, 
-        fontWeight: 'bold', 
-        marginVertical: 3,
-    }, 
-    eventInformation: {
-        fontSize: 15, 
-        marginVertical: 5,
-    }, 
+        fontSize: 20,
+        fontWeight: 'bold',
+        fontFamily: 'IMFell'
+    },
+    eventDescription: {
+        fontSize: 15,
+        fontFamily: 'IMFell'
+    },
     eventLocation: {
-        fontSize: 14, 
-        marginVertical: 5,
+        fontSize: 14,
+        fontFamily: 'IMFell'
     },
     eventTag: {
-        backgroundColor: 'lightgray', 
+        backgroundColor: 'lightgray',
         fontWeight: 'bold',
-        borderRadius: 10, 
+        borderRadius: 10,
         fontSize: 13,
         padding: 5,
         width: 200,
         marginVertical: 5,
     },
-    programContainer: {
-        borderWidth: 1, 
+    gridProgramImage: {
+        height: 390,
+        width: 250,
+    },
+    indicatorContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    indicator: {
+        height: 8,
+        borderRadius: 4,
+        marginHorizontal: 5,
+    },
+    activeIndicator: {
+        width: 24,
+        backgroundColor: '#4b4b4b',
+    },
+    inactiveIndicator: {
+        width: 8,
+        backgroundColor: '#d3d3d3',
+    },
+    listProgramContainer: {
+        borderWidth: 1,
+        borderColor: 'gray',
         borderRadius: 10,
         height: 80,
         marginBottom: 15,
-        overflow: 'hidden',
-        padding: 10,
         flexDirection: 'row',
-        gap: 10,
-        alignItems: 'center'
+        padding: 10,
+        alignItems: 'center',
     },
-    programImage: {
-        height: 60, 
+    listProgramImage: {
+        height: 60,
         width: 60,
-    }, 
-    arrow: {
-        position: 'absolute', 
-        right: 40,
+        marginRight: 10,
+    },
+    listText: {
+        width: 140,
+    },
+    listName: {
+        fontFamily: 'IMFell',
+        fontSize: 18,
+    },
+    listDescription: {
+        fontFamily: 'IMFell',
+        fontSize: 13,
+    },
+    followButton: {
+        borderRadius: 15,
+        borderWidth: 1,
+        paddingVertical: 4,
+        paddingHorizontal: 10,
+        borderColor: 'darkgreen',
+        marginRight: 15,
     },
     createProgramButton: {
-        borderWidth: 1, 
-        borderRadius: 100, 
-        backgroundColor: 'black', 
-        position: 'absolute', 
-        paddingHorizontal: 10, 
+        borderWidth: 1,
+        borderRadius: 100,
+        backgroundColor: 'black',
+        position: 'absolute',
+        paddingHorizontal: 10,
         paddingVertical: 6,
         right: 0,
-        justifyContent: 'center', 
+        justifyContent: 'center',
         alignItems: 'center',
     },
     plusButton: {
-        color: 'white', 
-        fontWeight: 'bold',         
+        color: 'white',
+        fontWeight: 'bold',
     },
     createProgramContainer: {
         padding: 10,

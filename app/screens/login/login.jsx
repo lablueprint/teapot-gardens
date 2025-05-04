@@ -1,5 +1,18 @@
 import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image, Pressable} from "react-native";
-import React, { useState } from "react";
+import { 
+  KeyboardAvoidingView, 
+  Platform, 
+  TouchableOpacity, 
+  StyleSheet, 
+  Text, 
+  TextInput, 
+  View, 
+  Alert, 
+  Image, 
+  ScrollView 
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 import planticon from '@assets/planticon.png';
 import { useNavigation } from 'expo-router';
@@ -7,6 +20,8 @@ import logo from '@assets/teapot-logo.png';
 import apple from '@assets/apple.png';
 import google from '@assets/google.png'
 import { useFonts } from 'expo-font';
+
+const BACKEND = "https://ee6e-38-73-241-58.ngrok-free.app";
 
 const Login = () => {
   const navigation = useNavigation();
@@ -19,26 +34,74 @@ const Login = () => {
       'CooperLtBT': require('@assets/Cooper_BT_Font_Family/CooperLtBT-Regular.ttf'),
     });
   
+  const [race, setRace] = useState("");
+  const [income, setIncome] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
+
+  const [showOnboarding, setShowOnboarding] = useState(true);
+
+  useEffect(() => {
+    checkIfFirstTime();
+  }, []);
+
+  const checkIfFirstTime = async () => {
+    try {
+      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+      if (hasSeenOnboarding != null) {
+        setShowOnboarding(false);
+      }
+    } catch (error) {
+      console.log('Error checking first-time status:', error);
+    }
+  };
+
+  const handleOnboardingComplete = async () => {
+    try {
+      await AsyncStorage.setItem('hasSeenOnboarding', 'true');
+      setShowOnboarding(false);
+    } catch (error) {
+      console.log('Error saving onboarding status:', error);
+    }
+  };
   const handleSubmit = async () => {
     if (
       !name ||
       !email ||
-      !password
+      !password ||
+      !birthday ||
+      !username ||
+      !race ||
+      !income ||
+      !age ||
+      !gender
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
     } else {
-      Alert.alert("Success", "Form submitted successfully!");
+      // Convert age to a number if needed
+      const numericAge = Number(age);
 
-      const user = {name: name, email: email, password: password, dob: birthday, username: username}
-      
-      console.log(user)
+      const user = {
+        name: name,
+        email: email,
+        password: password,
+        dob: birthday,
+        username: username,
+        race: race,
+        incomeLevel: income,
+        age: numericAge,
+        genderIdentification: gender
+      };
+
+      console.log(user);
       try {
-        const response = await axios.post('https://ea94-38-73-241-58.ngrok-free.app/api/users/', user);
-        console.log(response.data)
-        
-      }
-      catch (error) {
-        console.log("error", error)
+        // Use backticks for template interpolation of BACKEND
+        const response = await axios.post(`${BACKEND}/api/users/`, user);
+        console.log(response.data);
+        Alert.alert("Success", "Form submitted successfully!");
+      } catch (error) {
+        console.log("error", error);
+        Alert.alert("Error", "An error occurred while submitting the form.");
       }
     }
   };
@@ -166,13 +229,13 @@ const styles = StyleSheet.create({
     fontFamily: 'CooperLtBT',
   }, 
   header: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     fontSize: 40,
     marginTop: 90,
     marginBottom: 40,
   },
   button: {
-    padding: 10,
+    padding: 1,
     justifyContent: "center",
     alignItems: "center", 
     borderRadius: 16,

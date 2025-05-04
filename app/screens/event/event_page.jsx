@@ -1,375 +1,558 @@
-import AdminDashboard from '@screens/admin_dashboard/admin_dashboard.jsx';
-import React, { useState, useEffect} from "react";
-import { Text, ScrollView, View, Pressable, StyleSheet, Image } from "react-native";
-import UserCard from '@screens/program_page/user_card.jsx';
-import Collapsible from 'react-native-collapsible';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import garden from '@assets/garden.jpg';
-import grapes from '@assets/grapes.jpg';
-import { useLocalSearchParams } from "expo-router";
-import { Link } from "expo-router"; 
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Text, ScrollView, View, Pressable, StyleSheet, Alert, Modal, Image, TouchableOpacity } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import axios from "axios";
+import Collapsible from "react-native-collapsible";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useNavigation } from 'expo-router';
+import RegisterModal from './register_modal.jsx'
+import Paradise from "@assets/paradise.png";
+import dateIcon from "@assets/date-icon.png";
+import locationIcon from "@assets/location-icon.png";
+import Ionicons from "react-native-vector-icons/Ionicons";
+
+// Custom components & assets
+import AdminDashboard from "@screens/admin_dashboard/admin_dashboard.jsx";
+import UserCard from "@screens/event/user_card.jsx";
+import ProgramCard from "@screens/event/program_card.jsx";
+
+import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
+
+// const url = " https://272a-75-142-52-157.ngrok-free.app";
+const tempUserId = "678f3a6bc0368a4c717413a8";
+const url = "http://localhost:4000";
+
+import community1 from '@assets/community1.png';
+import community2 from '@assets/community2.png';
+
+const mediaItems = [
+    {
+        id: '1',
+        name: "Japanese Garden",
+        image: community1,
+        type: 'photo',
+    },
+    {
+        id: '2',
+        name: "garden 2",
+        image: community2,
+        type: 'video',
+    },
+    {
+      id: '3',
+      name: "garden 3",
+      image: community1,
+      type: 'photo',
+  },
+  {
+    id: '4',
+    name: "garden 4",
+    image: community2,
+    type: 'photo',
+}
+];
+// import grapes from "@assets/grapes.jpg"; // Not used, so removed
+
 
 
 const EventPage = () => {
-  const tempEventId = '67932a72413f4d68be84e592' //valentines picnic woohoo
-  const tempUserId = '678f3a6bc0368a4c717413a8' //testingggg
+  const navigation = useNavigation();
 
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);
   const [attendingEvents, setAttendingEvents] = useState([]);
+  const [attendedEvents, setAttendedEvents] = useState([]);
   const [event, setEvent] = useState(null);
+  const [attendeeNames, setAttendeeNames] = useState([]);
   const [attendeeCount, setAttendeeCount] = useState(null);
   const [newAttendeeCount, setNewAttendeeCount] = useState(null);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  // const [showDynamicButtons, setShowDynamicButtons] = useState(true); //change based on if user is registered or not
+  const [modalVisible, setModalVisible] = useState(false);
+  const [uploadVisible, setUploadVisible] = useState(false);
+  const [stats, setStats] = useState({ userStatsList: [] }); // { userStatsList: [...] }
 
-  const toggleCollapsed = () => {
-    setIsCollapsed((prevState) => !prevState);
-  };
-  const attendees = [
-    { 
-      "name": "Victoria", 
-      "profilePicture": grapes 
-    },
-    { 
-      "name": "Angela", 
-      "profilePicture": grapes
+  const route = useRoute();
+  const eventData = route.params?.eventData;
+  console.log('event page evetndata', eventData);
+
+  const photoCount = mediaItems.filter(item => item.type === 'photo').length;
+  const videoCount = mediaItems.filter(item => item.type === 'video').length;
+
+  // Parse eventData (passed via route params) back into an object
+  useEffect(() => {
+    if (eventData) {
+      try {
+        const parsed = JSON.parse(eventData);
+        setEvent(parsed);
+        console.log("eventData", eventData);
+      } catch (err) {
+        console.error("Error parsing eventData:", err);
+        setEvent(null);
+      }
+    } else {
+      setEvent(null);
     }
-  ]
-  
-  const { title, date, location, time, details} = useLocalSearchParams();
+  }, [eventData]);
 
+  // Fetch user data (and event data) on mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/users/678f3a6bc0368a4c717413a8');
+        // ------- CHANGE THE USER ID HERE --------- -> RIGHT NOW THE ID FOR AN ADMIN USER
+        const userId = "6789f49f8e0a009647312c7a"; // Admin user ID
+        const response = await axios.get(`${url}/api/users/${userId}`);
         if (response.status === 200) {
+          console.log("Fetched user:", response.data);
           setUser(response.data);
-          setAttendingEvents(response.data.attendingEvents);
+          setAttendingEvents(response.data.attendingEvents || []);
+          setAttendedEvents(response.data.attendedEvents || []);
         } else {
-          console.error('Failed to fetch user: ', response.data.error);
+          console.error("Failed to fetch user:", response.data.error);
         }
       } catch (error) {
-        console.error('Error fetching user: ', error.message);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching user:", error.message);
       }
-      
     };
-    const fetchEvent = async () => {
+
+    const fetchEvent = async (eventId) => {
+      if (!eventId) return;
       try {
-        const response = await axios.get('http://localhost:4000/api/events/678f315b8d423da67c615e95');
+        const response = await axios.get(`${url}/api/events/${eventId}`);
         if (response.status === 200) {
           setEvent(response.data);
+          setLikeCount(response.data.likes || 0);
+          setLiked(response.data.likedBy.includes(tempUserId)); // Check if user already liked
         } else {
-          console.error('Failed to fetch user: ', response.data.error);
+          console.error("Failed to fetch event:", response.data.error);
         }
       } catch (error) {
-        console.error('Error fetching user: ', error.message);
+        console.error("Error fetching event:", error.message);
       } finally {
         setLoading(false);
       }
-      
-      };
+    };
+
     fetchUser();
     fetchEvent();
-    getAttendeeCount();
-    getNewAttendeeCount();
   }, []);
 
+  // If admin and event ID exist, fetch stats
+  useEffect(() => {
+    if (user?.admin && event?._id) {
+      console.log("Fetching stats for admin with eventId:", event._id);
+      fetchAttendeeStats();
+    } else {
+      console.log("Skipped fetchAttendeeStats => admin:", user?.admin, "eventId:", event?._id);
+    }
+  }, [user, event]);
+
+  const fetchAttendeeStats = async () => {
+    if (!event?._id) return;
+    try {
+      const response = await axios.get(
+        `${url}/api/events/${event._id}/attendee-stats`
+      );
+      console.log("Stats from server:", response.data);
+
+      // Ensure stats is always an object with userStatsList
+      setStats(response.data || { userStatsList: [] });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      setStats({ userStatsList: [] }); // Set empty array on error
+    }
+  };
+
+  // this function is called whenever a user decides to register for an event or unregister for an event -> need to fetch this new event data
+  const fetchEventData = async (eventId) => {
+    if (!eventId) return;
+    try {
+      const response = await axios.get(`${url}/api/events/${eventId}`);
+      setEvent(response.data);
+    } catch (error) {
+      console.error("Error fetching event:", error);
+    }
+  };
+  
+  
+// whenever the event object changes -> the attenddees for that event need to be fetched again
+useEffect(() => {
+  if (!event) {
+    setAttendeeNames([]);
+    setAttendeeCount(null);
+    setNewAttendeeCount(null);
+    return;
+  }
+
+  const fetchAttendeeNames = async () => {
+    try {
+      if (!event.attendeeList || event.attendeeList.length === 0) {
+        setAttendeeNames([]);
+        return;
+      }
+      const responses = await Promise.all(
+        event.attendeeList.map((id) => axios.get(`${url}/api/users/${id}`))
+      );
+      const names = responses.map((res) => res.data.name);
+      setAttendeeNames(names);
+    } catch (error) {
+      console.error("Error fetching attendee names:", error);
+    }
+  };
+
+  const getAttendeeCount = async () => {
+    try {
+      const response = await axios.get(`${url}/api/events/attendees/${event._id}`);
+      setAttendeeCount(response.data.length);
+    } catch (error) {
+      console.error("Error fetching attendee count:", error);
+    }
+  };
+
+  const getNewAttendeeCount = async () => {
+    try {
+      const response = await axios.get(`${url}/api/events/attendees/${event._id}`);
+      const attendeeIds = response.data;
+      const userRequests = attendeeIds.map((id) => axios.get(`${url}/api/users/${id}`));
+      const users = await Promise.all(userRequests);
+      const brandNewAttendees = users.filter((u) => u.data.attendedEvents?.length === 0);
+      setNewAttendeeCount(brandNewAttendees.length);
+    } catch (error) {
+      console.error("Error fetching new attendees:", error);
+    }
+  };
+
+    fetchAttendeeNames();
+    getAttendeeCount();
+    getNewAttendeeCount();
+  }, [event]);
+
+// Refresh user data after changes (adding event to user)
+const refreshUserData = async () => {
+  if (!user?._id) return;
+  try {
+    const response = await axios.get(`${url}/api/users/${user._id}`);
+    setUser(response.data);
+    setAttendingEvents(response.data.attendingEvents || []);
+  } catch (error) {
+    console.error("Error refreshing user data:", error);
+  }
+};
+
+// const checkEventID = async () => {
+//   if ()
+// }
+// Add event to user attending list + add user to event's attendee list
+const addUserEvent = async () => {
+  if (!event?._id) return;
+  if (attendingEvents.includes(event._id)) {
+    Alert.alert("You are already registered for this event.");
+    return;
+  }
+  try {
+    // Update the user
+    await axios.patch(`${url}/api/users/${user._id}`, {
+      $push: { attendingEvents: event._id },
+    });
+
+    // Update the event
+    await axios.patch(`${url}/api/events/${event._id}`, {
+      $push: { attendeeList: user._id },
+    });
+
+      // Refresh data
+      await refreshUserData();
+      await fetchEventData(event._id);
+
+    setModalVisible(false); // go back to the main button state
+
+  } catch (error) {
+    console.error("Error registering for the event:", error);
+    Alert.alert("Error registering. Please try again.");
+  }
+};
+
+// Remove event from user attending list + remove user from event's attendee list
+const deleteUserEvent = async () => {
+  console.log("here");
+  if (!event?._id) return;
+  try {
+    // Update the user
+    await axios.patch(`${url}/api/users/${user._id}`, {
+      $pull: { attendingEvents: event._id },
+    });
+
+    // Update the event
+    await axios.patch(`${url}/api/events/${event._id}`, {
+      $pull: { attendeeList: user._id },
+    });
+
+    // Refresh data
+    await refreshUserData();
+    await fetchEventData(event._id);
+  } catch (error) {
+    console.error("Error cancelling registration:", error);
+    Alert.alert("Error cancelling registration. Please try again.");
+  }
+};
+
   //buttons for registration/cancel registration/view ticket
-  const [showDynamicButtons, setShowDynamicButtons] = useState(true);
+  // const [showDynamicButtons, setShowDynamicButtons] = useState(true);
   const Buttons = ({ attending }) => {
+    // console.log(modalVisible)
     return (
       <View>
-        {showDynamicButtons && <DynamicButtons attending={attending}/>}
-        {!showDynamicButtons && <RegisterButtons />}
+        <DynamicButtons attending={attending}/>
+        <RegisterModal modalVisible={modalVisible} setModalVisible={setModalVisible} addUserEvent={addUserEvent}/>
       </View>
     );
   };
+
+
   const DynamicButtons = ({ attending }) => {
     let content
     if (!attending) {
       content = 
-      <Pressable style={styles.shareButton} onPress={() => setShowDynamicButtons(false)}>
-      <Text style={styles.shareButtonText}>Register</Text>
+      <Pressable style={styles.shareButton} onPress={() => setModalVisible(true)}>
+        <Text style={styles.shareButtonText}>Register</Text>
       </Pressable>
     } else {
       content = (
         <View>
-          <Pressable style={styles.shareButton}>
-          <Text style={styles.shareButtonText}>View Ticket</Text>
-          </Pressable>
           <Pressable style={styles.shareButton} onPress={deleteUserEvent}>
-          <Text style={styles.shareButtonText}>Cancel Registration</Text>
+            <Text style={styles.shareButtonText}>Cancel Registration</Text>
           </Pressable>
         </View>
       )
     }
     return <View style={{ padding: 24 }}>{content}</View>
   }
-  const RegisterButtons = () => {
-    return (
-      <View style={{alignItems: 'center'}}>
-        <Text style={{paddingTop: 10}}>Will you be coming as...</Text>
 
-        <Pressable style={styles.registerButtons} onPress={addUserEvent}>
-        <Text style={styles.shareButtonText}>volunteer</Text>
-        </Pressable>
-        
-        <Pressable style={styles.registerButtons} onPress={addUserEvent}>
-        <Text style={styles.shareButtonText}>attendee</Text>
-        </Pressable>
-
-        <Pressable style={styles.xButton} onPress={() => setShowDynamicButtons(true)}>
-        <Text style={styles.shareButtonText}>X</Text>
-        </Pressable>
-      </View>
-    )
-  }
-    
-  //add user event
-  const addUserEvent = async () => {
-    try {
-        console.log('add to user events')
-        const response = await axios.patch(
-            'https://0dd7-172-91-75-11.ngrok-free.app/api/users/', 
-            {
-                userId: tempUserId,
-                eventId: tempEventId // Replace with actual eventId
-            }
-        );
-    } catch (error) {
-        console.error('Error:', error);
-    }
-  };
-
-  //delete user event
-  const deleteUserEvent = async () => {
-    //gets rid of event from attendingEvents array
-    const updatedEvents = attendingEvents.filter((item) => item !== tempEventId);
-    try {
-      const response = await axios.patch(`https://0dd7-172-91-75-11.ngrok-free.app/api/users/${tempUserId}`, { attendingEvents: updatedEvents } );
-      console.log(response.data)
-    }
-    catch (error) {
-      console.log("error", error)
-    }
-    
-  }
-
-  const updateEventUsers = async () => {
-    try {
-      console.log('update events')
-      const response = await axios.patch(
-        'http://localhost:4000/api/events/', 
-        {
-          // Replace with actual eventId and userId
-          eventId: '678f315b8d423da67c615e95',
-          userId: '678f3a6bc0368a4c717413a8'
-        }
-      );
-
-      console.log('Updated Event:', response.data);
-    } catch (error) {
-        console.error('Error:', error);
-    }
-  }
-
-  const getAttendeeCount = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/events/attendees/678f315b8d423da67c615e95/`);
-      setAttendeeCount(response.data.length);
-    } catch (error) {
-        console.error('Error:', error);
-    }
-  }
-
-  const getNewAttendeeCount = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/events/attendees/678f315b8d423da67c615e95/`
-      );
-      const attendeeIds = response.data;
-      const userRequests = attendeeIds.map(attendeeId =>
-          axios.get(`http://localhost:4000/api/users/${attendeeId}`)
-      );
-      const users = await Promise.all(userRequests);
-      let count = users.filter(user => user.data.attendedEvents.length === 0).length;
-      setNewAttendeeCount(count); 
-    } catch (error) {
-      console.error('Error fetching new attendees:', error);
-    }
-  }
-  
   return (
-    <ScrollView style={styles.container}>
-      <Image 
-        style={styles.image}
-        source = {garden}
-      />
-      <UserCard name={user?.name} profilePicture={garden} style={styles.hostCard} />
-
-      <Text style={styles.eventHeader}>{title}</Text>
-
-      <Text style={styles.subtext}>{date}, {time}</Text>
-      <Text style={styles.subtext}>Location </Text>
-      <Text>{location}</Text>
-
-      <Text style={styles.subtext}>Attendees</Text>
-      <Text>{newAttendeeCount !== null ? `${newAttendeeCount}+ new Teapost goers are attending!` : ""}</Text>
-      <Text>{attendeeCount !== null ? attendeeCount : "No attendees yet!"}</Text>
-
-      <Text style={styles.details}>About Event</Text>
-      <Text style={styles.detailParagraph}>{details}</Text>
-
-
-      {/* Attendees Section */}
-
-      <View>
-        <Pressable onPress={toggleCollapsed} style={styles.attendeesButton}>
-          <Text style={styles.attendeesButtonText}>Attendees</Text>
-          <AntDesign
-            color='black'
-            name={isCollapsed ? "down": "up"}
-            size={13}
-            style={{ paddingTop: 2 }}
-          />
-        </Pressable>
-        <Collapsible collapsed={isCollapsed}>
-          {attendees?.map((attendees, index) => (
-            <UserCard
-              key={index}
-              name={attendees.name}
-              profilePicture={attendees.profilePicture}
-              style={styles.attendeeCard}
-            />
-          ))}
-        </Collapsible>
+    <ScrollView 
+      contentContainerStyle={{ flexGrow: 1 }} 
+    >
+      <View style={{ flex: 1 }}>
+        <Image style={{ width: '100%', height: '500', resizeMode: "cover" }} source={Paradise} />
       </View>
+      
+      <View style={{borderRadius: 10}}>
+      <View style={styles.container}>
+        <ProgramCard name={user?.name} profilePicture={garden} style={styles.hostCard} />
+        <Text style={styles.eventHeader}>{event?.name}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Image style={styles.dateIcon} source={dateIcon}/>
+          <Text style={styles.dateText}>{event?.date}, {event?.time}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Image style={styles.locationIcon} source={locationIcon}/>
+          <Text style={styles.dateText}>{event?.location}</Text>
+        </View>
+        <Text style={styles.subtext}>ABOUT EVENT</Text>
+        <Text style={styles.description}>{event?.eventDescription}</Text>
+        <View style={{margin: 10}}></View>
 
+        <Text style={styles.subtext}>HOSTED BY</Text>
+        <Text style={styles.description}>{event?.hostDescription}</Text>
+        <View style={{margin: 10}}></View>
 
-      <Buttons attending={attendingEvents.includes(tempEventId)}/>
-      <Pressable style={styles.shareButton} onPress={() => 
-        {
-        updateUserEvents(); 
-        updateEventUsers();
-        }}>
-        <Text style={styles.shareButtonText}>Attending</Text>
-      </Pressable>
-
-      {/* Share Button */}
-      <Pressable style={styles.shareButton}>
-        <Text style={styles.shareButtonText}>Share</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Link
-          href={{
-            pathname: "screens/event/registration_page",
-            params: {
-              title,
-              date,
-              location,
-              time,
-              details
-            },
-          }}
-          style={styles.link}
-        >
-        <Text style={styles.buttonText}>Register</Text>
-        </Link>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Link
-          href={{
-            pathname: "screens/event/admin_scanner",
-            params: {
-              title,
-              date,
-              location,
-              time,
-              details
-            },
-          }}
-          style={styles.link}
-        >
-        <Text style={styles.buttonText}>Admin QR Scanner</Text>
-        </Link>
-      </Pressable>
+        <Text style={styles.subtext}>ATTENDEES</Text>
+        {attendeeCount !== null ? (
+          <>
+            {newAttendeeCount !== null && newAttendeeCount > 0 && (
+              <Text>{newAttendeeCount}+ new attendees!</Text>
+            )}
+            <Text>{attendeeCount} total attendees</Text>
+          </>
+        ) : (
+          <Text>No attendees yet!</Text>
+        )}
+  
+        <View style={styles.attendeesList}>
+          <Pressable onPress={() => setIsCollapsed(!isCollapsed)} style={styles.attendeesButton}>
+            <Text style={styles.attendeesButtonText}>Attendees</Text>
+            <AntDesign name={isCollapsed ? "down" : "up"} size={13} />
+          </Pressable>
+          <Collapsible collapsed={isCollapsed}>
+            {attendeeNames.length > 0 ? (
+              attendeeNames.map((name, index) => <UserCard key={index} name={name} />)
+            ) : (
+              <Text>No attendees yet</Text>
+            )}
+          </Collapsible>
+        </View>
+            
+        {console.log('attendingEvents bor', attendingEvents)}
+        <Buttons attending={attendingEvents.includes(event?._id)} />
+  
+        {user?.admin && (
+          <View style={styles.adminSection}>
+            <Text style={styles.adminText}>Admin Panel</Text>
+            {stats?.userStatsList?.length > 0 ? (
+              stats.userStatsList.map((usr, i) => (
+                <Text key={i}>
+                  Income: {usr.incomeLevel}, Gender: {usr.genderIdentification}, Race: {usr.race}
+                </Text>
+              ))
+            ) : (
+              <Text>No attendee stats available</Text>
+            )}
+          </View>
+        )}
+        <View style={styles.photoContainer}>
+          <View style={styles.photoHeading}>
+            <Text style={{marginBottom: 5}}>COMMUNITY GALLERY</Text>
+            <Text>
+              {`${photoCount} photos ${videoCount} videos`}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() =>  navigation.navigate({
+                                    name: 'CommunityPhotos',
+                                    params: { eventData: JSON.stringify(event), attendedEvents: JSON.stringify(attendedEvents), attendingEvents: JSON.stringify(attendingEvents)}, // converting the event object into a string json to pass it in
+                                })}> 
+              <Text style={styles.seeAllText}> See All {">"}</Text>
+            </TouchableOpacity>
+        </View>
+        <View style={styles.photoGalleryContainer}>
+          {mediaItems.map((item, index) => <Image key={index} source={item.image} style={styles.galleryPhoto}/>)}
+        </View>
+  
+      <View style={{ height: 50 }} />
+      </View>
+      </View>
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ 
   container: {
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 30,
+    backgroundColor: "#E9E5DA",
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    overflow: "hidden",
+    marginTop: -30,
+  },
+  imageContainer: {
+    position: "relative",
+  },
+  image: {
+    width: 340,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  likeContainer: {
+    position: "absolute",
+    top: 8,
+    right: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.7)",
+    padding: 4,
+    borderRadius: 12,
+  },
+  likeCount: {
+    marginLeft: 4,
+    fontSize: 16,
+    color: "black",
   },
   eventHeader: {
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 8,
   },
   subtext: {
-    fontSize: 16,
+    color: "#8B8B8B",
+    fontSize: 12,
     marginBottom: 4,
-    fontStyle: 'bold',
   },
-  details: {
-    fontSize: 16,
-    marginTop: 16,
-    marginBottom: 16,
-    fontStyle: "italic",
+  description: {
+    fontSize: 14,
+    marginBottom: 4,
   },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 12,
-    marginTop: 10,
-  },
-  hostCard: {
-    fontSize: 12,  
+  attendeesList: {
+    marginTop: 8,
   },
   attendeesButton: {
     padding: 8,
     backgroundColor: "lightgray",
     borderRadius: 8,
     marginBottom: 8,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
   },
   attendeesButtonText: {
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  attendeeCard: {
-    marginBottom: 4,
-    fontSize: 10,  
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 999,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
+    marginRight: 5,
   },
   shareButton: {
     marginTop: 16,
     padding: 12,
-    backgroundColor: "gray",
+    borderRadius: 20,
+    backgroundColor: "#9D4C6A"
+  },
+  shareButtonText: {
+    textAlign: "center",
+    color: "white",
+  },
+  adminSection: {
+    marginTop: 24,
+  },
+  adminText: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+  buttonDark: {
+    flexDirection: 'row',
+    height: '124',
+    margin: 10,
+    padding: 12,
+    width: '80%',
+    backgroundColor: "#rgba(30, 30, 30, 0.25)",
+    color: "white",
+    borderRadius: 20,
+    padding: 0,
+  },
+  roleButtons: {
+    flexDirection: 'row',
+    height: '124',
+    margin: 10,
+    padding: 12,
+    width: '80%',
+    backgroundColor: "#rgba(194, 194, 194, 0.25)",
+    color: "white",
+    borderRadius: 20,
+    padding: 0,
+  },
+  volunteer: {
+    // borderColor: 'red',
+    // borderStyle: 'solid',
+    // borderWidth: '1',
+    height: '124',
+    // resizeMode: 'contain',
+    borderRadius: '15%',
+  },
+  unclickableRegisterButton: {
+    alignItems: 'center',
+    height: '10%',
+    margin: 10,
+    padding: 12,
+    width: '80%',
+    backgroundColor: "#rgba(157, 76, 106, 1)",
     borderRadius: 20,
   },
-  registerButtons: {
-    marginTop: 16,
+  clickableRegisterButton: {
+    alignItems: 'center',
+    height: '10%',
+    margin: 10,
     padding: 12,
-    width: 150,
-    backgroundColor: "gray",
+    width: '80%',
+    backgroundColor: "#rgba(157, 76, 106, 0.25)",
     borderRadius: 20,
   },
   xButton: {
@@ -379,20 +562,78 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     borderRadius: 20,
   },
-  buttonText: {
-    textAlign: "center",
-    color: "white",
-    fontWeight: "bold",
+  centeredView: {
+    borderColor: 'red',
+    borderWidth: '1px',
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
-  image: {
-    width: '340',
-    height: '200',
-    borderRadius: 10,
-    marginBottom: 10,
+  modalView: {
+    borderColor: 'red',
+    borderWidth: '1px',
+    height: '510',
+    width: '100%',
+    backgroundColor: '#6A7D66',
+    borderRadius: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+      bottom: 0,
+    }
+  },
+  dateIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+  },
+  locationIcon: {
+    width: 18,
+    height: 22,
+    marginRight: 8,
+  },
+  dateText: {
+    fontSize: 16,
+    marginBottom: 4,
+    color: '#7D7D7D'
+  },
+  blurContainer: {
+    flex: 1,
+    // padding: 20,
+    // margin: 16,
+    textAlign: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: "100%",
+  },
+  seeAllText: {
+    color: 'gray',
+    textDecorationLine: 'underline',
+  },
+  photoContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between", 
+    marginTop: 40,
   }, 
-  detailParagraph: {
-    marginBottom: 20,
+  photoGalleryContainer: {
+    display: "flex", 
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    backgroundColor: "#DFD8D0",
+    padding: 10,
+    marginTop: 10,
+  }, 
+  galleryPhoto: {
+    width: 70, 
+    height: 70, 
+    borderRadius: 5
   }
 });
 
 export default EventPage;
+
+
+
