@@ -1,25 +1,25 @@
 {
   "events": [
     {
-      "title": "Kimchi Gardens", 
+      "name": "Kimchi Gardens", 
       "date": "September 10", 
       "location": "LA", 
       "time": "5PM", 
-      "details": "Learn about kimchi!"
+      "eventDescription": "Learn about kimchi!"
     },
     {
-      "title": "Reaping",
+      "name": "Reaping",
       "date": "March 10", 
       "location": "LA", 
       "time": "5PM", 
-      "details": "Learn about reaping!"
+      "eventDescription": "Learn about reaping!"
     }, 
     {
-      "title": "Sewing",
+      "name": "Sewing",
       "date": "March 10", 
       "location": "LA", 
       "time": "5PM", 
-      "details": "Learn about reaping!"
+      "eventDescription": "Learn about reaping!"
     }
   ]
 }
