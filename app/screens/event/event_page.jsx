@@ -26,23 +26,23 @@ import community1 from '@assets/community1.png';
 import community2 from '@assets/community2.png';
 
 const mediaItems = [
-    {
-        id: '1',
-        name: "Japanese Garden",
-        image: community1,
-        type: 'photo',
-    },
-    {
-        id: '2',
-        name: "garden 2",
-        image: community2,
-        type: 'video',
-    },
-    {
-      id: '3',
-      name: "garden 3",
-      image: community1,
-      type: 'photo',
+  {
+    id: '1',
+    name: "Japanese Garden",
+    image: community1,
+    type: 'photo',
+  },
+  {
+    id: '2',
+    name: "garden 2",
+    image: community2,
+    type: 'video',
+  },
+  {
+    id: '3',
+    name: "garden 3",
+    image: community1,
+    type: 'photo',
   },
   {
     id: '4',
@@ -52,8 +52,6 @@ const mediaItems = [
 }
 ];
 // import grapes from "@assets/grapes.jpg"; // Not used, so removed
-
-
 
 const EventPage = () => {
   const navigation = useNavigation();

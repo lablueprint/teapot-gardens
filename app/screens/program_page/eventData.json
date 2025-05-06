@@ -1,25 +1,25 @@
 {
   "events": [
     {
-      "title": "Kimchi Gardens", 
-      "date": "September 10", 
+      "name": "Kimchi Gardens", 
+      "date": "Saturday, Sept 10 2025", 
       "location": "LA", 
       "time": "5PM", 
-      "details": "Learn about kimchi!"
+      "eventDescription": "Learn about kimchi!"
     },
     {
-      "title": "Reaping",
-      "date": "March 10", 
+      "name": "Reaping Gardens",
+      "date": "Monday, Mar 10 2025", 
       "location": "LA", 
       "time": "5PM", 
-      "details": "Learn about reaping!"
+      "eventDescription": "Learn about reaping!"
     }, 
     {
-      "title": "Sewing",
-      "date": "March 10", 
+      "name": "Sewing Gardens",
+      "date": "Sunday, Mar 10 2025", 
       "location": "LA", 
       "time": "5PM", 
-      "details": "Learn about reaping!"
+      "eventDescription": "Learn about sewing!"
     }
   ]
 }
