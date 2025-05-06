@@ -9,8 +9,9 @@ import pichu from '@assets/pichu.jpg';
 import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
 import User from 'backend/models/UserModel';
+import * as SecureStore from 'expo-secure-store';
 
-const url = 'http://localhost:4000'
+const url = 'https://7545-2607-f010-2a7-103f-79b0-f6ce-cae6-6a09.ngrok-free.app'
 
 export default function Homepage() {
   const [userData, setUserData] = useState(null);
@@ -50,15 +51,24 @@ export default function Homepage() {
     const fetchUserData = async () => {
       try {
         // fetching user data here
-        const userResponse = await axios.get(`${url}/api/users/${tempUserId}`);
-        const testResponse = await axios.get(`${url}/api/events/${tempEventId}`);
+        // first get the current user id
+        const userData = await SecureStore.getItemAsync('user');
+        if (!userData) {
+          console.warn('No user stored');
+          return;
+        }
+
+        const { userId, token } = JSON.parse(userData);
+
+        const userResponse = await axios.get(`${url}/api/users/${userId}`);
+        const testResponse = await axios.get(`${url}/api/events/${userId}`);
         setTestEvent(testResponse);
   
         if (userResponse.status === 200) {
           setUserData(userResponse.data);
           setUserAttendingEvents(userResponse.data.attendingEvents);
           for (let event of userResponse.data.attendingEvents) {
-            const eventDate = await axios.get(`https://${url}/api/events/` + event);
+            const eventDate = await axios.get(`${url}/api/events/` + event);
             // event date formatted like "February 20th 2024"
             // event time formatted like "3:00 PM"
             eventAMPM = eventDate.data.time.split(' ')[1];
@@ -75,7 +85,7 @@ export default function Homepage() {
               // event is in the past fs
               //I NEED HELP WITH THIS PART
               console.log(userResponse.data.attendingEvents, event);
-              await axios.patch(`https://${url}/api/users/` + userResponse.data._id, {
+              await axios.patch(`${url}/api/users/` + userResponse.data._id, {
                 attendedEvents: [...userResponse.data.attendedEvents, event],
                 attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
               });

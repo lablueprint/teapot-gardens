@@ -26,6 +26,7 @@ const SignIn = () => {
       !password
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
+      return false;
     } else {
       Alert.alert("Success", "Form submitted successfully!");
 
@@ -35,6 +36,7 @@ const SignIn = () => {
       try {
         const response = await axios.post('https://ea94-38-73-241-58.ngrok-free.app/api/users/', user);
         console.log(response.data)
+        return true;
       }
       catch (error) {
         console.log("error", error)
@@ -66,7 +68,12 @@ const SignIn = () => {
           placeholder="Create a password"
         />
         <View style={styles.buttonContainer} >
-          <TouchableOpacity style={styles.button} onPress={() => {handleSubmit; navigation.navigate("Home");}} >
+          <TouchableOpacity style={styles.button} onPress={async () => {
+              const success = await handleSubmit();
+              if (success) {
+                navigation.navigate('Home');
+              }
+            }} >
             <Text style={{fontSize: 30, color: 'white'}} >Sign In</Text>
           </TouchableOpacity>
         </View>

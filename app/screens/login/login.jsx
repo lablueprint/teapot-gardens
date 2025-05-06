@@ -13,8 +13,9 @@ import logo from '@assets/teapot-logo.png';
 import apple from '@assets/apple.png';
 import google from '@assets/google.png'
 import { useFonts } from 'expo-font';
+import * as SecureStore from 'expo-secure-store';
 
-const BACKEND = "https://ee6e-38-73-241-58.ngrok-free.app";
+const BACKEND = "https://7545-2607-f010-2a7-103f-79b0-f6ce-cae6-6a09.ngrok-free.app";
 
 const Login = () => {
   const navigation = useNavigation();
@@ -61,29 +62,30 @@ const Login = () => {
     if (
       !name ||
       !email ||
-      !password ||
-      !birthday ||
-      !username ||
-      !race ||
-      !income ||
-      !age ||
-      !gender
+      !password
+      // !birthday ||
+      // !username ||
+      // !race ||
+      // !income ||
+      // !age ||
+      // !gender
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
+      return false;
     } else {
       // Convert age to a number if needed
-      const numericAge = Number(age);
+      // const numericAge = Number(age);
 
       const user = {
         name: name,
         email: email,
         password: password,
-        dob: birthday,
-        username: username,
-        race: race,
-        incomeLevel: income,
-        age: numericAge,
-        genderIdentification: gender
+        // dob: birthday,
+        // username: username,
+        // race: race,
+        // incomeLevel: income,
+        // age: numericAge,
+        // genderIdentification: gender
       };
 
       console.log(user);
@@ -91,7 +93,13 @@ const Login = () => {
         // Use backticks for template interpolation of BACKEND
         const response = await axios.post(`${BACKEND}/api/users/`, user);
         console.log(response.data);
+        const { userId, token } = response.data;
+
+        // store user data securely
+        await SecureStore.setItemAsync('user', JSON.stringify({ userId, token }));
+        
         Alert.alert("Success", "Form submitted successfully!");
+        return true;
       } catch (error) {
         console.log("error", error);
         Alert.alert("Error", "An error occurred while submitting the form.");
@@ -148,9 +156,11 @@ const Login = () => {
         />
         <View style={styles.buttonContainer} >
           <TouchableOpacity style={styles.button} 
-            onPress={() => {
-              handleSubmit(); // Call handleSubmit first
-              navigation.navigate('Home'); // Navigate to Home only after the form submission
+            onPress={async () => {
+              const success = await handleSubmit();
+              if (success) {
+                navigation.navigate('Home');
+              }
             }} >
             <Text style={{ fontSize: 30, color: 'white'}} >Create Profile</Text>
           </TouchableOpacity>
