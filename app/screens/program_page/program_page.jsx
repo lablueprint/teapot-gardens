@@ -174,10 +174,8 @@ const ProgramPage = () => {
           </View>
         </View>
         
-
-      {/*  Past Events Carousel  */}
-      <Text style={ styles.header }>Past Events</Text>
-      {/* <ScrollView horizontal={ true } style={ styles.carouselContainer }> */}
+      {/* We no longer have past event carousel and goals/activities}
+      {/* <Text style={ styles.header }>Past Events</Text>
         <View style={ styles.carouselContainer }>
           {pastEvents?.map((eventId, index) => (
               <View key={index}>
@@ -194,7 +192,6 @@ const ProgramPage = () => {
               </View>
               ))}
         </View>
- {/* </ScrollView> */}
 
       <View style={ styles.collapsible }>
           <Pressable onPress={ toggleCollapsedGoals } >
@@ -211,7 +208,7 @@ const ProgramPage = () => {
         <Collapsible collapsed={ isCollapsedActivities } >
           <BulletPoints items={ activities } ></BulletPoints>
         </Collapsible>
-      </View>
+      </View> */}
       </View>
     </ScrollView>
   );
