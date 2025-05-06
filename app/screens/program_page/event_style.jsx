@@ -3,35 +3,35 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     eventContainer: {
         display: 'flex',
-        padding: 10,
         marginTop: 10,
-        borderWidth: 1,
-        borderRadius: 15,
+        borderRadius: 20,
         overflow: 'hidden',
         marginRight: 15, 
+        height: '200',
+        width: '300',
+        backgroundColor: '#D0D4C2',
     },
     eventInfoContainer: {
+        height: '200',
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
     },
     listProgramImage: {
-        height: 60,
-        width: 60,
-        borderWidth: 1, 
-        borderRadius: 5,
-        marginRight: 10,
+        height: '100%',
     },
     listText: {
-        width: 140,
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '20',
+        width: '60%', 
     },
     listName: {
         fontFamily: 'IMFell',
-        fontSize: 18,
+        fontSize: 37,
     },
     listDescription: {
         fontFamily: 'IMFell',
-        fontSize: 13,
+        fontSize: 14,
     },
     followButton: {
         borderRadius: 15,

@@ -52,6 +52,11 @@ const styles = StyleSheet.create({
         textAlign: 'center', 
         color: 'white',
     },
+    upcomingBox: {
+        height: 500,
+        borderWidth: 1,
+        borderColor: 'red',
+    },
     createEventContainer: {
         padding: 10,
         marginTop: 10,
@@ -89,7 +94,26 @@ const styles = StyleSheet.create({
     collapsible: {
         margin: 2,
         backgroundColor: '#D3D3D3'
-    }
+    },
+    photoContainer: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between", 
+        marginTop: 40,
+      }, 
+      photoGalleryContainer: {
+        display: "flex", 
+        flexDirection: "row", 
+        justifyContent: "space-between", 
+        backgroundColor: "#DFD8D0",
+        padding: 10,
+        marginTop: 10,
+      }, 
+      galleryPhoto: {
+        width: 70, 
+        height: 70, 
+        borderRadius: 5
+      }
 })
 
 export default styles;

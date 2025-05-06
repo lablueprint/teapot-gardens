@@ -14,6 +14,9 @@ import eventData from './eventData.json';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 
+import community1 from '@assets/community1.png';
+import community2 from '@assets/community2.png';
+
 const url = "http://localhost:4000";
 
 const BulletPoints = (props) => {
@@ -54,6 +57,33 @@ const ProgramPage = () => {
   const handleCreateEvent = () => {
     console.log('hi');
   }
+  
+  const mediaItems = [
+    {
+      id: '1',
+      name: "Japanese Garden",
+      image: community1,
+      type: 'photo',
+    },
+    {
+      id: '2',
+      name: "garden 2",
+      image: community2,
+      type: 'video',
+    },
+    {
+      id: '3',
+      name: "garden 3",
+      image: community1,
+      type: 'photo',
+    },
+    {
+      id: '4',
+      name: "garden 4",
+      image: community2,
+      type: 'photo',
+  }
+  ];
 
   // parse programdata
   useEffect(() => {
@@ -138,27 +168,31 @@ const ProgramPage = () => {
       </View>
       <View style={ styles.contentContainer }>
         <View style={styles.infoContainer}>
-          <Text style={ styles.programTitle }>{program?.name || ''}</Text>
+          <Text style={ styles.programTitle }>{program?.name || 'Default'}</Text>
           <ProgramCard name="Sorina Varizi" profilePicture={garden}/>
-          <Text style={styles.header}>About {program?.name}</Text>
-          <Text style={styles.description}>{program?.description || ''}</Text>
-          <Pressable>
-            <Text style={{textDecorationLine: 'underline', marginBottom: 20}}>Read more</Text>
-          </Pressable>
           <Pressable onPress={ toggleCollapsedActivities } style={styles.button} >
             <Ionicons name="star-outline" size={20} color="white" />
             <Text style={styles.buttonText}>Follow Program</Text>
           </Pressable>
+          <Text style={styles.header}>About {program?.name}</Text>
+          <Text style={styles.description}>{program?.description || 'Lorem Ipsum'}</Text>
+          <Pressable>
+            <Text style={{textDecorationLine: 'underline', marginBottom: 20}}>Read more</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.photoGalleryContainer}>
+          {mediaItems.map((item, index) => <Image key={index} source={item.image} style={styles.galleryPhoto}/>)}
         </View>
 
       {/*  Upcoming Events Carousel  */}
       <Text style={ styles.header }>Upcoming Events</Text>
         <View>
-          <View>
+          <ScrollView horizontal={true} styles={styles.upcomingBox}>
           {eventData.events.map((event, index) => (
               <Event {...event} key={index}/>
             ))}
-          </View>
+          </ScrollView>
           {/* create new event if admin */}
           <View style={styles.createEventContainer}>
             {
