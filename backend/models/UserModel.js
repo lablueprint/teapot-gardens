@@ -27,6 +27,10 @@ const userSchema = new Schema(
             type: String,
             unique: true,
         },
+        bio: {
+            type: String,
+            default: "",
+        },
         tamagatchiType: {
             type: String,
             default: "",

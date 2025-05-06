@@ -106,6 +106,7 @@ const Profile = () => {
                 style={styles.image}
             />
             <Text style={styles.name}>{user.name} </Text>
+            <Text style={styles.handle}>{user.bio} </Text>
             <View style={styles.buttonContainer}>
               <Pressable 
                 style={styles.button} 
