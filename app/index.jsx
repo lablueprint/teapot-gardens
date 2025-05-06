@@ -40,6 +40,12 @@ export default function App() {
       <Link href="/screens/events" style={{ color: "blue" }}>
         Go to Events Page
       </Link>
+      <Pressable
+        style={styles.button}
+        onPress={() => navigation.navigate('Garden')}
+        >
+        <Text style={{ color: "green "}}>Garden</Text>
+      </Pressable>
     </View>
   );
 }
