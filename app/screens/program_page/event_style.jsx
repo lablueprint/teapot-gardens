@@ -2,30 +2,45 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     eventContainer: {
-        height: 80,
-        marginTop: 10,
-        borderColor: 'gray',
-        borderWidth: 1,
-        padding: 10,
         display: 'flex',
-        flexDirection: 'row', 
+        padding: 10,
+        marginTop: 10,
+        borderWidth: 1,
+        borderRadius: 15,
+        overflow: 'hidden',
+        marginRight: 15, 
     },
-    eventPic: {
-        width: 70, 
-        height: '200',
-        borderRadius: 5, 
-    }, 
-    eventInfo: {
-        paddingLeft: 20,
+    eventInfoContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-    eventTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 5,
+    listProgramImage: {
+        height: 60,
+        width: 60,
+        borderWidth: 1, 
+        borderRadius: 5,
+        marginRight: 10,
     },
-    eventDate: {
-        fontSize: 14,
-    }, 
+    listText: {
+        width: 140,
+    },
+    listName: {
+        fontFamily: 'IMFell',
+        fontSize: 18,
+    },
+    listDescription: {
+        fontFamily: 'IMFell',
+        fontSize: 13,
+    },
+    followButton: {
+        borderRadius: 15,
+        borderWidth: 1,
+        paddingVertical: 4,
+        paddingHorizontal: 10,
+        borderColor: 'darkgreen',
+        marginRight: 8
+    }
 })
 
 export default styles;

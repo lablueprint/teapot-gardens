@@ -2,12 +2,16 @@ import { Text, View, Image, ScrollView, Pressable, ViewComponent } from "react-n
 import { Link } from "expo-router";
 import { useNavigation } from "expo-router";
 import React, { useState, useEffect } from "react";
+import { useRoute } from "@react-navigation/native";
 import Event from './event';
 import styles from './program_page_style';
+import programBg from '@assets/program-bg.png'
 import garden from '@assets/garden.jpg';
 import garden2 from '@assets/garden2.jpg';
 import Collapsible from 'react-native-collapsible';
+import ProgramCard from "@screens/event/program_card";
 import eventData from './eventData.json';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 
 const url = "http://localhost:4000";
@@ -26,13 +30,20 @@ const BulletPoints = (props) => {
 
 const ProgramPage = () => {
   const navigation = useNavigation();
+
   const goals = ['make garden', 'grow tomatoes']
   const activities = ['grow strawberries', 'plant trees']
   const [isCollapsedGoals, setIsCollapsedGoals] = useState(true);
   const [isCollapsedActivities, setIsCollapsedActivities] = useState(true);
   const [user, setUser] = useState(null); 
+  const [program, setProgram] = useState(null);
   const [pastEvents, setPastEvents] = useState();
   const [pastPictures, setPastPictures] = useState([]); 
+
+  const route = useRoute();
+  const programData = route.params?.programData;
+  console.log('program page data', programData);
+
   const toggleCollapsedGoals = () => {
     setIsCollapsedGoals((prevState) => !prevState);
   }
@@ -43,6 +54,22 @@ const ProgramPage = () => {
   const handleCreateEvent = () => {
     console.log('hi');
   }
+
+  // parse programdata
+  useEffect(() => {
+    if (programData) {
+      try {
+        const parsed = JSON.parse(programData);
+        setProgram(parsed);
+        console.log("programData", programData);
+      } catch (err) {
+        console.error("Error parsing programData:", err);
+        setProgram(null);
+      }
+    } else {
+      setProgram(null);
+    }
+  }, [programData]);
   
   // get program's pastEvent array
   useEffect(() => {
@@ -102,18 +129,27 @@ const ProgramPage = () => {
 
   return (
     <ScrollView contentContainerStyle={ styles.outerContainer }>
-      <Image 
+      {/* <Image 
         style={styles.banner}
-        source={garden}
-      />
+        source={programBg}
+      /> */}
+      <View style={{ flex: 1 }}>
+        <Image style={{ width: '100%', height: '250', resizeMode: "cover" }} source={programBg} />
+      </View>
       <View style={ styles.contentContainer }>
-        <Text style={ styles.programTitle }>Garden Sundaze</Text>
-        <Text style={ styles.description }>
-          Garden Sundaze is an organization that likes to garden and grow tomatoes!
-        </Text>
-        <Pressable onPress={ toggleCollapsedActivities } >
-            <Text style={styles.button}>Follow Program</Text>
-        </Pressable>
+        <View style={styles.infoContainer}>
+          <Text style={ styles.programTitle }>{program?.name || ''}</Text>
+          <ProgramCard name="Sorina Varizi" profilePicture={garden}/>
+          <Text style={styles.header}>About {program?.name}</Text>
+          <Text style={styles.description}>{program?.description || ''}</Text>
+          <Pressable>
+            <Text style={{textDecorationLine: 'underline', marginBottom: 20}}>Read more</Text>
+          </Pressable>
+          <Pressable onPress={ toggleCollapsedActivities } style={styles.button} >
+            <Ionicons name="star-outline" size={20} color="white" />
+            <Text style={styles.buttonText}>Follow Program</Text>
+          </Pressable>
+        </View>
 
       {/*  Upcoming Events Carousel  */}
       <Text style={ styles.header }>Upcoming Events</Text>

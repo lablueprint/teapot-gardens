@@ -3,29 +3,54 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     outerContainer: {
         alignItems: 'left',
-    },
-    banner: {
-        height: '200', 
+        flexGrow: 1,
     },
     contentContainer: {
         alignItems: 'left',
         padding: 20,
+        backgroundColor: '#EAE6E0',
+        borderRadius: 30,
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        overflow: "hidden",
+        marginTop: -30,
+    },
+    infoContainer: {
+        marginTop: 20,
     },
     programTitle: {
-        fontSize: 25,
-        fontWeight: 'bold',
+        fontFamily: 'IMFell',
+        fontSize: 35,
+        textAlign: 'center',
+    },
+    header: {
+        fontFamily: 'IMFell',
+        fontSize: 16,
+        marginTop: 30,
+        fontWeight: 10
     },
     description: {
+        fontFamily: 'IMFell',
         fontsize: 20,
+        fontWeight: 8,
+        color: '#7D7D7D',
         marginTop: 20, 
         marginBottom: 20
     },
     button: {
-        backgroundColor: 'black',
-        color: 'white',
+        backgroundColor: '#757B45',
+        display: 'flex',
+        flexDirection: 'row',
         padding: 15, 
         borderRadius: 20, 
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 10,
+    },
+    buttonText: {
+        fontFamily: 'IMFell',
         textAlign: 'center', 
+        color: 'white',
     },
     createEventContainer: {
         padding: 10,
@@ -45,11 +70,6 @@ const styles = StyleSheet.create({
     plusButton: {
         color: 'white', 
         fontWeight: 'bold',         
-    },
-    header: {
-        fontSize: 20,
-        marginTop: 30,
-        fontWeight: 'bold'
     },
     carouselContainer: {
         flexDirection: 'row',
