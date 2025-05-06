@@ -2,16 +2,26 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
-      borderRadius: 40,
       flex: 1,
-      paddingBottom: 100,
-      position: "relative",
-      zIndex: 1,
+      width: '100%',
+      height: '100%',
+      resizeMode: 'cover',
     },
     main_container: {
       backgroundColor: '#E8E1DD',
       paddingTop: 30,
     },
+    foregroundContainer: {
+      flex: 1,
+      // backgroundColor: '#E8E1DD',
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
+      overflow: 'hidden',
+      zIndex: -1,
+    },   
     events_container: {
       marginTop: 20,
       paddingHorizontal: 20,
@@ -115,7 +125,23 @@ const styles = StyleSheet.create({
       width: '100%',
       height: '100%',
       zIndex: 0,
-    },    
+    },  
+    bgImage: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      resizeMode: 'cover',
+      zIndex: -1,
+      borderTopLeftRadius: 80,
+      borderTopRightRadius: 80,
+      overflow: 'hidden',
+    },
+    bgWrapper: {
+      flex: 1,
+      borderTopLeftRadius: 80,
+      borderTopRightRadius: 80,
+    }
+    
     
   });
   
