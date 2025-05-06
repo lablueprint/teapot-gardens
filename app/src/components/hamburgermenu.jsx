@@ -30,7 +30,6 @@ import closeIcon from "@assets/close.png";
 
 import IntroSlides from "@screens/login/introSlides";
 import AdminScanner from "@screens/event/admin_scanner";
-import Login from "@app/login";
 import { Draw } from "@mui/icons-material";
 
 const Drawer = createDrawerNavigator();
@@ -145,7 +144,6 @@ const createMainNavigator = () => {
             <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
             <Drawer.Screen name="AdminScanner" component={AdminScanner} />
             <Drawer.Screen name="RegistrationPage" component={RegistrationPage} />
-            <Drawer.Screen name="Login" component={Login} />
             <Drawer.Screen name="CommunityPhotos" component={CommunityPhotos} />
         </Drawer.Navigator>
     );

@@ -1,14 +1,7 @@
 import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image, Pressable} from "react-native";
 import { 
   KeyboardAvoidingView, 
-  Platform, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Text, 
-  TextInput, 
-  View, 
-  Alert, 
-  Image, 
+  Platform,   
   ScrollView 
 } from "react-native";
 import React, { useState, useEffect } from "react";
