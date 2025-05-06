@@ -24,6 +24,7 @@ import RegistrationPage from "@screens/event/registration_page";
 import CommunityPhotos from "@screens/event/community_photos"
 
 import Garden from "@screens/garden/garden"
+import Nursery from "@screens/garden/nursery"
 
 import notificationIcon from "@assets/notifications.png";
 import menuIcon from "@assets/menu.png";
@@ -50,7 +51,7 @@ const CustomDrawerContent = (props) => {
             </View>
 
             <View style={styles.drawerItemsContainer}>
-                {["Home", "View Plant", "My Events", "Discover", "Garden"].map((screen, index) => {
+                {["Home", "View Plant", "My Events", "Discover", "Garden", "Nursery"].map((screen, index) => {
                     const routeName = (screen === "My Events") ? "Temp" : screen;
                     const isActive = props.state.routes[props.state.index].name === routeName;
 
@@ -148,6 +149,7 @@ const createMainNavigator = () => {
             <Drawer.Screen name="RegistrationPage" component={RegistrationPage} />
             <Drawer.Screen name="CommunityPhotos" component={CommunityPhotos} />
             <Drawer.Screen name="Garden" component={Garden} />
+            <Drawer.Screen name="Nursery" component={Nursery} />
         </Drawer.Navigator>
     );
 };

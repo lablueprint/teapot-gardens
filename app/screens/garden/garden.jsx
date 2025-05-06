@@ -8,8 +8,10 @@ import {
   Pressable,
   Modal,
   TouchableOpacity,
+  TouchableWithoutFeedback,  
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+
 
 // ─── Assets ──────────────────────────────────────────────────────
 import gardenBg     from '@assets/garden-assets/garden-background.png';
@@ -19,7 +21,8 @@ import { BlurView } from 'expo-blur';
 
 
 export default function GardenScreen() {
-  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupVisible, setPopupVisible] = useState(false);  
+  const navigation = useNavigation();
 
   return (
     <View style={{ flex: 1, overflow: 'hidden' }}>
@@ -33,16 +36,24 @@ export default function GardenScreen() {
         <View style={styles.header}>
           <Text style={styles.headerText}>Your Garden</Text>
           <View style={styles.iconBox}>
-            <Text style={styles.icon}>🌱</Text>
-          </View>
+            <TouchableOpacity onPress={() => navigation.navigate("Nursery")}>
+                <Text style={styles.icon}>🌱</Text>
+            </TouchableOpacity>
+            </View>
         </View>
 
         {/* ─── Greeting Bubble ─────────────────────────────────── */}
+        <View style={styles.speechWrapper}>
         <View style={styles.speechBubble}>
-          <Text style={styles.speechText}>
+            <Text style={styles.speechText}>
             <Text style={{ fontStyle: 'italic' }}>Welcome Henry!</Text>
-          </Text>
+            </Text>
         </View>
+
+        {/* little triangle tail */}
+        <View style={styles.speechTail} />
+        </View>
+
 
         {/* ─── Flower ──────────────────────────────────────────── */}
         <Image 
@@ -73,6 +84,7 @@ export default function GardenScreen() {
         visible={popupVisible}
         onRequestClose={() => setPopupVisible(false)}
       >
+    <TouchableWithoutFeedback onPress={() => setPopupVisible(false)}>
         <BlurView intensity={25} tint="dark" style={styles.modalBackdrop}>
             <View style={styles.popupCard}>
             {/* Header */}
@@ -116,6 +128,7 @@ export default function GardenScreen() {
             </View>
           </View>
         </BlurView>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
@@ -145,15 +158,36 @@ const styles = StyleSheet.create({
   iconBox: { backgroundColor: '#fff', borderRadius: 10, padding: 5 },
   icon: { fontSize: 18 },
 
-  /* Greeting */
+/* ---------- Speech bubble ---------- */
+speechWrapper: {
+    position: 'absolute',
+    top: 470,            // tune these two numbers so the
+    left:  160,           // bubble sits where you want it
+    maxWidth: '70%',
+  },
+  
   speechBubble: {
     backgroundColor: '#fff',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 10,
-    marginTop: 150,
-    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 1 },
   },
+  
+  speechTail: {
+    position: 'absolute',
+    bottom: -6,          // pulls the tail just under the bubble
+    left:   30,          // moves tail horizontally – tweak as needed
+    width:  14,
+    height: 14,
+    backgroundColor: '#fff',
+    transform: [{ rotate: '45deg' }],   // makes the square a ♦
+  },
+  
+  speechText: { fontSize: 16, color: '#000' },
+  
   speechText: { fontSize: 16, color: '#000' },
 
   /* Flower */
@@ -178,7 +212,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
   },
-  nameText: { fontSize: 20, fontWeight: 'bold' },
+  nameText: { fontSize: 20, fontWeight: 'bold'},
   subText: { color: 'gray', marginBottom: 10 },
   progressBar: {
     width: '100%',
@@ -205,12 +239,27 @@ const styles = StyleSheet.create({
   },
   popupHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'center',
   },
-  popupTitle: { fontSize: 22, fontWeight: '700' },
-  popupSubtitle: { color: 'gray', marginBottom: 12 },
-  closeIcon: { fontSize: 22 },
+  popupTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+    color: '#101828'
+  },  
+  popupSubtitle: { 
+    color: '#10182880', 
+    marginBottom: 12,
+    fontSize: 14,
+    textAlign: 'center', 
+    fontWeight: 400          
+
+   },
+  closeIcon: { fontSize: 22,
+    position: 'absolute',
+    right: -120,                      // parks ✕ on the far right without
+    top: 10,                        // disturbing the centered title
+   },
 
   plantTitle: { fontWeight: '600', marginBottom: 4 },
   plantDescription: { color: 'gray', marginBottom: 12 },
