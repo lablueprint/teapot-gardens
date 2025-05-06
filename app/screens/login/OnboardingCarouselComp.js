@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
+//import { Image } from 'expo-image';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import pichu from '@assets/pichu.jpg';
 import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
-import notAIGarden from '@assets/notAIGarden.jpg'
+import notAIGarden from '@assets/notAIGarden.jpg';
+import welcomepage from '@assets/welcome_page.png';
 import BackIcon from '@assets/favicon.png'
 import { executeNativeBackPress } from 'react-native-screens';
 import { Dimensions } from 'react-native';
+import firstLogin from '@assets/Onboarding1.png';
+import secondLogin from '@assets/Onboarding2.1.png';
+import thirdLogin from '@assets/Onboarding3.png';
+import fourthLogin from '@assets/Onboarding4.png';
 
-const OnboardingCarousel = ({ onComplete }) => {
+const OnboardingCarousel = ({onComplete = () => console.log('No onComplete handler provided') }) => {
   const [currentSlide, setCurrentSlide ] = useState(0);
 
     const handleFinish = () => {
@@ -18,23 +24,19 @@ const OnboardingCarousel = ({ onComplete }) => {
     const slides = [
         {
             id: 1,
-            title: 'Welcome to Teapot Gardens',
-            image: pichu
+            image: firstLogin
         },
         {
             id: 2,
-            title: 'Evolve your Garden',
-            image: pikachu
+            image: secondLogin
         },
         {
             id: 3,
-            title: 'Sign up for socials',
-            image: raichu
+            image: thirdLogin
         },
         {
             id: 4,
-            title: 'Thanks for joining',
-            image: notAIGarden
+            image: fourthLogin
         }
     ];
 
@@ -60,6 +62,7 @@ const OnboardingCarousel = ({ onComplete }) => {
 
     return (
         <View style={styles.container}>
+        <Image source={slides[currentSlide].image} style={styles.backgroundImage} resizeMode="cover" />
             <View style={styles.carouselWrapper}>
               {/* back button */}
                 {currentSlide > 0 && (
@@ -91,12 +94,12 @@ const OnboardingCarousel = ({ onComplete }) => {
                     </View>
                         <Text style={styles.slideTitle}>{slides[currentSlide].title}</Text>
                 </View>
-                <Image
+                {/* <Image
             source={slides[currentSlide].image}
             style={styles.slideImage}
             resizeMode="contain"
             onError={(e) => console.log('image error:', NativeEventEmitter.error)}
-          />
+          /> */}
           {currentSlide != slides.length -1 && <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.skipButton}
@@ -133,6 +136,11 @@ const styles = StyleSheet.create({
   container: {
       flex: 1,
       backgroundColor: 'white',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
   },
   carouselWrapper: {
       flex: 1,

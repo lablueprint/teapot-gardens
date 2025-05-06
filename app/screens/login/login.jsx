@@ -1,31 +1,32 @@
+import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image, Pressable} from "react-native";
 import { 
   KeyboardAvoidingView, 
-  Platform, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Text, 
-  TextInput, 
-  View, 
-  Alert, 
-  Image, 
+  Platform,   
   ScrollView 
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 import planticon from '@assets/planticon.png';
-import OnboardingCarousel from "./OnboardingCarouselComp";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from 'expo-router';
+import logo from '@assets/teapot-logo.png';
+import apple from '@assets/apple.png';
+import google from '@assets/google.png'
+import { useFonts } from 'expo-font';
 
 const BACKEND = "https://ee6e-38-73-241-58.ngrok-free.app";
 
 const Login = () => {
-  // Define state for each input field
+  const navigation = useNavigation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [birthday, setBirthday] = useState("");
   const [username, setUsername] = useState("");
+  const [fontsLoaded] = useFonts({
+      'CooperLtBT': require('@assets/Cooper_BT_Font_Family/CooperLtBT-Regular.ttf'),
+    });
+  
   const [race, setRace] = useState("");
   const [income, setIncome] = useState("");
   const [age, setAge] = useState("");
@@ -56,7 +57,6 @@ const Login = () => {
       console.log('Error saving onboarding status:', error);
     }
   };
-
   const handleSubmit = async () => {
     if (
       !name ||
@@ -100,107 +100,90 @@ const Login = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 10 }}
-    >
-      <ScrollView>
-        <View style={styles.container}>
-          {showOnboarding ? (
-            <OnboardingCarousel onComplete={handleOnboardingComplete} />
-          ) : (
-            <View>
-              <View style={styles.header}>
-                <Text style={styles.title}>Create an Account</Text>
-                <Image style={{ marginTop: 3, marginLeft: 10 }} source={planticon} />
-              </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Register</Text>
+        <Image style={styles.logo} source={ logo } />
+      </View>
 
-              <Text>Name</Text>
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={(text) => setName(text)}
-                placeholder="Enter your name"
-              />
+      <Text>Name</Text>
+      <TextInput
+        style={styles.input}
+        value={name}
+        onChangeText={(text) => setName(text)}
+        placeholder="Enter your name"
+      />
 
-              <Text>Race</Text>
-              <TextInput
-                style={styles.input}
-                value={race}
-                onChangeText={(text) => setRace(text)}
-                placeholder="Enter your race"
-              />
+      <Text>Email</Text>
+      <TextInput
+        style={styles.input}
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+        placeholder="Enter your email"
+      />
 
-              <Text>Income Level</Text>
-              <TextInput
-                style={styles.input}
-                value={income}
-                onChangeText={(text) => setIncome(text)}
-                placeholder="Enter your income level"
-              />
+      {/* <Text>Birthday</Text>
+      <TextInput
+        style={styles.input}
+        value={birthday}
+        onChangeText={(text) => setBirthday(text)}
+        placeholder="MM/DD/YYYY"
+      />
 
-              <Text>Age</Text>
-              <TextInput
-                style={styles.input}
-                value={age}
-                onChangeText={(text) => setAge(text)}
-                placeholder="Enter your age"
-                keyboardType="numeric"
-              />
+      <Text>Username</Text>
+        <TextInput
+          style={styles.input}
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+          placeholder="Create a username"
+        /> */}
 
-              <Text>Gender Identification</Text>
-              <TextInput
-                style={styles.input}
-                value={gender}
-                onChangeText={(text) => setGender(text)}
-                placeholder="Enter your gender identification"
-              />
-
-              <Text>Email</Text>
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-                placeholder="Enter your email"
-                keyboardType="email-address"
-              />
-
-              <Text>Birthday</Text>
-              <TextInput
-                style={styles.input}
-                value={birthday}
-                onChangeText={(text) => setBirthday(text)}
-                placeholder="MM/DD/YYYY"
-              />
-
-              <Text>Username</Text>
-              <TextInput
-                style={styles.input}
-                value={username}
-                onChangeText={(text) => setUsername(text)}
-                placeholder="Create a username"
-              />
-
-              <Text>Password</Text>
-              <TextInput
-                style={styles.input}
-                value={password}
-                secureTextEntry
-                onChangeText={(text) => setPassword(text)}
-                placeholder="Create a password"
-              />
-
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                  <Text style={{ fontSize: 18 }}>Sign Up</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
+      <Text>Password</Text>
+        <TextInput
+          style={styles.input}
+          value={password}
+          secureTextEntry
+          onChangeText={(text) => setPassword(text)}
+          placeholder="Enter your password"
+        />
+        <View style={styles.buttonContainer} >
+          <TouchableOpacity style={styles.button} 
+            onPress={() => {
+              handleSubmit(); // Call handleSubmit first
+              navigation.navigate('Home'); // Navigate to Home only after the form submission
+            }} >
+            <Text style={{ fontSize: 30, color: 'white'}} >Create Profile</Text>
+          </TouchableOpacity>
         </View>
-        <View style={{ margin: 50 }} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+
+        <View style={styles.orContainer}>
+          <View style={styles.orline} />
+          <Text style={styles.orText}>Or</Text>
+          <View style={styles.orline} />
+        </View>
+
+        <View style={styles.customSignInContainer}>
+          <TouchableOpacity style={styles.customSignIn}>
+            <Image style={styles.goog} source={google} />
+            <Text>Sign in with Google</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.customSignIn}>
+            <Image style={styles.goog} source={apple} />
+            <Text>Sign in with Apple</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+          <TouchableOpacity>
+              <Text>Have an account? </Text>
+          </TouchableOpacity>
+          <Pressable
+            onPress={() => navigation.navigate('SignIn')}
+          >
+            <Text style={{color: 'blue'}}>Sign in </Text>
+          </Pressable>
+        </View>
+    </View>
   );
 };
 
@@ -209,20 +192,35 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 30,
+    backgroundColor: "#AFC9C9"
+  },
+  logo: {
+    position: 'absolute',
+    right: 20, 
+    bottom: 1,
+  },
+  goog: {
+    width: 15, 
+    height: 15,
   },
   input: {
-    height: 30,
-    borderColor: "gray",
+    height: 40,
     borderWidth: 1,
+    marginTop: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 8,
+    backgroundColor: "white", 
+    borderColor: "white",
+    opacity: 0.5,
+    fontSize: 10,
   },
   title: {
-    fontSize: 30,
+    fontSize: 50, 
     fontWeight: 'bold',
-  },
+    fontFamily: 'CooperLtBT',
+  }, 
   header: {
     flexDirection: 'row',
     fontSize: 40,
@@ -232,15 +230,73 @@ const styles = StyleSheet.create({
   button: {
     padding: 1,
     justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 30,
-    width: '50%',
-    borderColor: 'black',
+    alignItems: "center", 
+    borderRadius: 16,
+    width: '330',
+    backgroundColor: '#0D0D0D',
+    opacity: 0.5,
     borderWidth: 1,
-    height: 40,
+    height: '60',
   },
   buttonContainer: {
     alignItems: "center",
-    marginTop: 20,
+    justifyContent: 'flex-end',
+    height: 40,
+    marginTop: 30, 
+  },
+  lineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'white',
+  },
+  text: {
+    paddingHorizontal: 10,
+  },
+  orContainer: {
+    marginVertical: 20,
+    display: 'flex', 
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  orText: {
+    color: "#6b7280",
+    fontSize: 14,
+    backgroundColor: 'white',
+    fontSize: 10,
+    padding: 3,
+  },
+  orline: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'white',
+    display: 'flex', 
+    flexDirection: 'row',
+  },
+  line: {
+    flex: 1, 
+    height: 0.1, 
+    backgroundColor: 'white',
+  },
+  customSignInContainer: {
+    display: 'flex', 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginVertical: 20,
+  },
+  customSignIn: {
+    display: 'flex', 
+    flexDirection: 'row',
+    gap: 5,
+    borderColor: "white", 
+    borderWidth: 0.5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
   }
 });

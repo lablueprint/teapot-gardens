@@ -56,7 +56,7 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Create an Account</Text>
+        <Text style={styles.title}>Register</Text>
         <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } />
       </View>
 
@@ -68,12 +68,6 @@ const Login = () => {
         placeholder="Enter your name"
       />
 
-      {/* <Text>Last Name</Text>
-      <TextInput
-        style={styles.input}
-        value={lastName}
-        onChangeText={(text) => setLastName(text)}
-      /> */}
 
       <Text>Email</Text>
       <TextInput
@@ -110,7 +104,7 @@ const Login = () => {
         onChangeText={(text) => setZipcode(text)}
       /> */}
 
-      <Text>Birthday</Text>
+      {/* <Text>Birthday</Text>
       <TextInput
         style={styles.input}
         value={birthday}
@@ -124,7 +118,7 @@ const Login = () => {
           value={username}
           onChangeText={(text) => setUsername(text)}
           placeholder="Create a username"
-        />
+        /> */}
 
       <Text>Password</Text>
         <TextInput
@@ -151,7 +145,7 @@ const Login = () => {
 
       <View style={styles.buttonContainer} >
         <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-          <Text style={{ fontSize: 18,}} >Sign Up</Text>
+          <Text style={{ fontSize: 18}} >Create Profile</Text>
         </TouchableOpacity>
       </View>
     </View>

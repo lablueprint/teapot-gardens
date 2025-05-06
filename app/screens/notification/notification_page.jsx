@@ -4,28 +4,32 @@ import axios from 'axios';
 import NotificationComponent from './notification_component';
 import { notificationData } from '@screens/homepage/homepage_components/data';
 import notif_background from '@assets/notif-background.png';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
-const url = 'https://8074-2607-f010-2a7-1021-6412-8d25-cdd7-edf.ngrok-free.app';
+const url = 'http://192.168.1.187:4000';
 
 export default function NotificationPage() {
     const [user, setUser] = useState({});
     const [userNotifs, setUserNotifs] = useState([]);
     
     const tempUserId = '6789f49f8e0a009647312c7a';
-    useEffect(() => {
-        const getUser = async () => {
-            try {
-              const response = await axios.get(`${url}/api/users/${tempUserId}`)
-              console.log(response.data)
-              setUser(response.data)
-              setUserNotifs(response.data.notifications)
-            }
-            catch (error) {
-              console.log("Error getting user", error)
-            }
-          }
-        getUser()
-    }, [])
+    const getUser = async () => {
+      try {
+          const response = await axios.get(`${url}/api/users/${tempUserId}`);
+          console.log(response.data);
+          setUser(response.data);
+          setUserNotifs(response.data.notifications);
+      } catch (error) {
+          console.log("Error getting user", error);
+      }
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            getUser();
+        }, [])
+    );
     
 
     return (
@@ -34,7 +38,7 @@ export default function NotificationPage() {
         <Text style = {styles.title}> Notifications </Text>
         {userNotifs.map((notif, index) => (
             <NotificationComponent key={index} description={notif} />
-          ))}
+        ))}
         {/* <NotificationComponent description="this is my notification"/> */}
         </ScrollView>
     </ImageBackground>
