@@ -35,6 +35,10 @@ const userSchema = new Schema(
             type: Number,
             default: 0,
         },
+        tamagatchiLevel: {
+            type: Number,
+            default: 1,
+        },
         followedPrograms: {
             type: [String],
             default: [],

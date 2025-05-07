@@ -9,7 +9,7 @@ import pichu from '@assets/pichu.jpg';
 import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
 
-const url = 'http://localhost:4000'
+const url = 'https://f244-38-73-241-58.ngrok-free.app'
 
 export default function Homepage() {
   const [userData, setUserData] = useState(null);
@@ -44,11 +44,22 @@ export default function Homepage() {
         setLoading(false);
       }
     };
+
+    if (userData) {
+      const XPLevel = Math.floor(userData.tamagatchiXP / 100);
+      if (XPLevel > userData.tamagatchiLevel) {
+        const text = `Your plant has reached level ${XPLevel}`;
+        return axios.patch(`${url}/api/users/${tempUserId}`, {
+          notifications: text,
+          tamagatchiLevel: XPLevel
+        });
+      }
+    }  
   
     fetchUserData();
   }, []);
 
-  
+    
   if (userData && userData.tamagatchiXP !== undefined) {
     if (userData.tamagatchiXP < 1000) {
       level_img = pichu;
