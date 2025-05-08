@@ -10,10 +10,15 @@ import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
 import User from 'backend/models/UserModel';
 import * as SecureStore from 'expo-secure-store';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
-const url = 'https://7545-2607-f010-2a7-103f-79b0-f6ce-cae6-6a09.ngrok-free.app'
+const url = 'https://33cb-2607-f010-2a7-103f-f14e-a839-5723-9e40.ngrok-free.app'
 
 export default function Homepage() {
+  const { user } = useContext(AuthContext);
+  const userId = user?.userId;
+
   const [userData, setUserData] = useState(null);
   const [userAttendingEvents, setUserAttendingEvents] = useState([]);
 
@@ -49,20 +54,24 @@ export default function Homepage() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!userId) {
+        console.log("Waiting for userId...");
+        return;
+      }
       try {
         // fetching user data here
         // first get the current user id
-        const userData = await SecureStore.getItemAsync('user');
-        if (!userData) {
-          console.warn('No user stored');
-          return;
-        }
+        // const userData = await SecureStore.getItemAsync('user');
+        // if (!userData) {
+        //   console.warn('No user stored');
+        //   return;
+        // }
 
-        const { userId, token } = JSON.parse(userData);
+        // const { userId, token } = JSON.parse(userData);
 
         const userResponse = await axios.get(`${url}/api/users/${userId}`);
-        const testResponse = await axios.get(`${url}/api/events/${userId}`);
-        setTestEvent(testResponse);
+        // const testResponse = await axios.get(`${url}/api/events/${userId}`);
+        // setTestEvent(testResponse);
   
         if (userResponse.status === 200) {
           setUserData(userResponse.data);
@@ -122,7 +131,7 @@ export default function Homepage() {
     };
   
     fetchUserData();
-  }, []);
+  }, [userId]);
 
   
   if (userData && userData.tamagatchiXP !== undefined) {
@@ -139,7 +148,7 @@ export default function Homepage() {
 
   return (
     <ScrollView style={styles.main_container}>
-      <Text style = {styles.title}> Your Teapot Garden </Text>
+      <Text style = {styles.title}> {userData.name} Teapot Garden </Text>
       <Placeholder imageSource={level_img} />
       <Text style = {styles.subtitle}> Upcoming Events </Text>
       <View style={styles.events_container}>

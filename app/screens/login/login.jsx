@@ -14,11 +14,14 @@ import apple from '@assets/apple.png';
 import google from '@assets/google.png'
 import { useFonts } from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
-const BACKEND = "https://7545-2607-f010-2a7-103f-79b0-f6ce-cae6-6a09.ngrok-free.app";
+const BACKEND = "https://33cb-2607-f010-2a7-103f-f14e-a839-5723-9e40.ngrok-free.app";
 
 const Login = () => {
   const navigation = useNavigation();
+  const { setUser } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -97,6 +100,8 @@ const Login = () => {
 
         // store user data securely
         await SecureStore.setItemAsync('user', JSON.stringify({ userId, token }));
+        // update context
+        setUser({ userId, token });
         
         Alert.alert("Success", "Form submitted successfully!");
         return true;
