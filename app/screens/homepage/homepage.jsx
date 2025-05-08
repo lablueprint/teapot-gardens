@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import axios from 'axios';
 import Placeholder from './homepage_components/mainimage';
-import EventCard from './homepage_components/eventcard';
+import Event from '@screens/program_page/event';
 import { programPages, upcomingEvents } from './homepage_components/data';
 import sample_logo from '@assets/sample.png';
 import pichu from '@assets/pichu.jpg';
 import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
 import User from 'backend/models/UserModel';
+import garden from '@assets/garden.jpg';
 
 const url = 'http://localhost:4000'
 
@@ -22,7 +23,7 @@ export default function Homepage() {
   let level_img = sample_logo;
   const tempUserId = '6789f49f8e0a009647312c7a';
   const tempEventId = '678f315b8d423da67c615e95';
-
+  const [events, setEvents] = useState([]);
   const today = new Date();
   const currentDate = today.toISOString().split('T')[0];
   const currentYear = today.getFullYear();
@@ -58,7 +59,7 @@ export default function Homepage() {
           setUserData(userResponse.data);
           setUserAttendingEvents(userResponse.data.attendingEvents);
           for (let event of userResponse.data.attendingEvents) {
-            const eventDate = await axios.get(`https://${url}/api/events/` + event);
+            const eventDate = await axios.get(`${url}/api/events/` + event);
             // event date formatted like "February 20th 2024"
             // event time formatted like "3:00 PM"
             eventAMPM = eventDate.data.time.split(' ')[1];
@@ -110,11 +111,14 @@ export default function Homepage() {
         setLoading(false);
       }
     };
-  
     fetchUserData();
   }, []);
+  useEffect (() => {
+    if (userAttendingEvents.length > 0) {
+      populateEvents();
+    }
+  }, [userAttendingEvents]);
 
-  
   if (userData && userData.tamagatchiXP !== undefined) {
     if (userData.tamagatchiXP < 1000) {
       level_img = pichu;
@@ -126,6 +130,18 @@ export default function Homepage() {
   }
 
   console.log(userAttendingEvents);
+  const populateEvents = async () => {
+    try {
+      const eventPromises = userAttendingEvents?.map(eventId => axios.get(`${url}/api/events/${eventId}`));
+      const eventResponses = await Promise.all(eventPromises);
+      console.log(eventResponses, "EVENTS");
+      const events = eventResponses.map(response => response.data);
+      setEvents(events);
+      console.log(events, "EVENTS");
+    } catch (error) {
+      console.error('Error fetching events: ', error.message);
+    }
+  }
 
   return (
     <ScrollView style={styles.main_container}>
@@ -133,8 +149,8 @@ export default function Homepage() {
       <Placeholder imageSource={level_img} />
       <Text style = {styles.subtitle}> Upcoming Events </Text>
       <View style={styles.events_container}>
-        {userAttendingEvents.map((event, index) => (
-          <EventCard key={index} title={event.title} time={event.time} date={event.date} location={event.location} image={event.image} />
+        {events?.map((event, index) => (
+          <Event {...event} key={index}  />
         ))}
       </View>
     </ScrollView>
