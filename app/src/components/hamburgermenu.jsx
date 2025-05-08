@@ -97,7 +97,7 @@ const createOnboardingNavigator = () => (
 );
 
 const createMainNavigator = () => {
-    const noHeaderScreens = ["IntroSlides", "Login", "SignIn"];
+    const noHeaderScreens = ["IntroSlides", "Login", "SignIn", "Nursery", "Garden"];
     
     return (
         <Drawer.Navigator

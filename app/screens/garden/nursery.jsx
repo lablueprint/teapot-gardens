@@ -12,30 +12,27 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
-
 // ─── Assets ────────────────────────────────────────────────────
-import nurseryBg   from '@assets/garden-assets/garden-background.png';
-import dandelion   from '@assets/garden-assets/starter-plant.png';
-import sprout      from '@assets/garden-assets/starter-plant.png';
-// (optional) use any plant you like; lock icon comes from Ionicons
+import nurseryBg         from '@assets/garden-assets/garden-background.png';
+import plant_1_level_1   from '@assets/garden-assets/plant_1/plant_1_level_1.png';
+import sprout            from '@assets/garden-assets/plant_1/plant_1_level_1.png';
+import dandelion         from '@assets/garden-assets/plant_1/plant_1_level_1.png';
 
 export default function NurseryScreen() {
-  /* collapse-state for each section */
   const [collapsed, setCollapsed] = useState({
     starters: false,
     spring:   false,
     special:  false,
   });
-  const toggle = key => setCollapsed(p => ({ ...p, [key]: !p[key] }));
-  const navigation = useNavigation();
-  
+  const toggle       = key => setCollapsed(p => ({ ...p, [key]: !p[key] }));
+  const navigation   = useNavigation();
 
   return (
     <View style={{ flex: 1, overflow: 'hidden' }}>
       <ImageBackground source={nurseryBg} style={styles.bg} resizeMode="cover">
         {/* ─── Header ─────────────────────────────────────────── */}
         <View style={styles.header}>
-          <TouchableOpacity  style={styles.backBtn} onPress={() => navigation.navigate("Garden")}>
+          <TouchableOpacity style={styles.backBtn} onPress={() => navigation.navigate('Garden')}>
             <Ionicons name="chevron-back" size={22} color="#101828" />
           </TouchableOpacity>
 
@@ -51,7 +48,7 @@ export default function NurseryScreen() {
         </View>
 
         {/* ─── Hero flower ───────────────────────────────────── */}
-        <Image source={dandelion} style={styles.hero} resizeMode="contain" />
+        <Image source={plant_1_level_1} style={styles.hero} resizeMode="contain" />
 
         {/* ─── Action buttons ───────────────────────────────── */}
         <View style={styles.actionRow}>
@@ -64,9 +61,10 @@ export default function NurseryScreen() {
           </Pressable>
         </View>
 
-        {/* ─── Scroll card ──────────────────────────────────── */}
+        {/* ─── Scroll panel ─────────────────────────────────── */}
         <ScrollView
-          contentContainerStyle={styles.card}
+          style={styles.card}                    // white rounded panel
+          contentContainerStyle={{ paddingBottom: 48 }}
           showsVerticalScrollIndicator={false}
         >
           <PlantSection
@@ -75,9 +73,9 @@ export default function NurseryScreen() {
             collapsed={collapsed.starters}
             onToggle={() => toggle('starters')}
             plants={[
-              { id: 1, img: sprout,    unlocked: true },
-              { id: 2, img: dandelion, unlocked: true, selected: true },
-              { id: 3, img: sprout,    unlocked: true },
+              { id: 1, img: sprout,            unlocked: true },
+              { id: 2, img: plant_1_level_1,   unlocked: true, selected: true },
+              { id: 3, img: sprout,            unlocked: true },
             ]}
           />
 
@@ -103,9 +101,9 @@ export default function NurseryScreen() {
             collapsed={collapsed.special}
             onToggle={() => toggle('special')}
             plants={[
-              { id: 7, img: sprout,    unlocked: false },
-              { id: 8, img: dandelion, unlocked: false },
-              { id: 9, img: sprout,    unlocked: false },
+              { id: 7, img: sprout,          unlocked: false },
+              { id: 8, img: plant_1_level_1, unlocked: false },
+              { id: 9, img: sprout,          unlocked: false },
             ]}
           />
         </ScrollView>
@@ -114,7 +112,7 @@ export default function NurseryScreen() {
   );
 }
 
-/* ─── Helpers ──────────────────────────────────────────────── */
+/* ─── Helpers ─────────────────────────────────────────────── */
 function PlantSection({ title, subtitle, collapsed, onToggle, plants }) {
   return (
     <View>
@@ -132,9 +130,7 @@ function PlantSection({ title, subtitle, collapsed, onToggle, plants }) {
 
       {!collapsed && (
         <View style={styles.plantRow}>
-          {plants.map(p => (
-            <PlantThumb key={p.id} {...p} />
-          ))}
+          {plants.map(p => <PlantThumb key={p.id} {...p} />)}
         </View>
       )}
     </View>
@@ -156,13 +152,13 @@ function PlantThumb({ img, unlocked, selected }) {
 
 const Separator = () => <View style={styles.sep} />;
 
-/* ─── Styles ──────────────────────────────────────────────── */
+/* ─── Styles ─────────────────────────────────────────────── */
 const styles = StyleSheet.create({
   bg: { flex: 1, paddingTop: 60, alignItems: 'center' },
 
   /* Header */
   header: {
-    width: '100%',
+    width: '90%',
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
@@ -177,8 +173,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title:     { fontSize: 28, fontWeight: '700', color: '#101828' },
-  subTitle:  { fontSize: 14, color: '#10182880', textAlign: 'center' },
+  title:    { fontSize: 28, fontWeight: '700', color: '#101828' },
+  subTitle: { fontSize: 14, color: '#10182880', textAlign: 'center' },
   badge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -205,13 +201,20 @@ const styles = StyleSheet.create({
   },
   actTxt: { color: '#fff', marginLeft: 8, fontWeight: '600' },
 
-  /* Card */
+  /* White rounded panel (scroll-view) */
   card: {
-    backgroundColor: '#ffffffee',
-    width: '85%',
-    borderRadius: 20,
-    padding: 24,
-    paddingBottom: 48,
+    width: '90%',
+    backgroundColor: '#ffffff',
+    borderRadius: 25,
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 12,
+    elevation: 4,
+    overflow: 'hidden',
   },
 
   /* Section */
@@ -221,9 +224,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 16,
   },
-  secTitle:     { fontSize: 22, fontWeight: '700', color: '#101828' },
-  secSubtitle:  { fontSize: 13, color: '#10182880', marginTop: 2 },
-  plantRow:     { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
+  secTitle:    { fontSize: 24, fontWeight: '700', color: '#101828' },
+  secSubtitle: { fontSize: 14, color: '#10182880', marginTop: 2 },
+  plantRow:    { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
 
   /* Plant thumbnail */
   thumb: {
@@ -251,6 +254,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  /* Misc */
-  sep: { width: '100%', height: 1, backgroundColor: '#e4e4e4', marginVertical: 12 },
+  /* Dashed separator */
+  sep: {
+    width: '100%',
+    height: 1,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor: '#d6d6d6',
+    marginVertical: 24,
+  },
 });
