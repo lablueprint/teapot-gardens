@@ -15,7 +15,39 @@ import { useNavigation } from '@react-navigation/native';
 
 // ─── Assets ──────────────────────────────────────────────────────
 import gardenBg     from '@assets/garden-assets/garden-background.png';
-import defaultFlower from '@assets/garden-assets/starter-plant.png';
+
+// -- Assets for Plant 1 ---------------------------------------------
+import plant_1_level_1 from '@assets/garden-assets/plant_1/plant_1_level_1.png';
+import plant_1_level_2 from '@assets/garden-assets/plant_1/plant_1_level_2.png';
+import plant_1_level_3 from '@assets/garden-assets/plant_1/plant_1_level_3.png';
+
+import plant_1_level_1_locked from "@assets/garden-assets/plant_1/plant_1_level_2_locked.png";
+import plant_1_level_2_locked from "@assets/garden-assets/plant_1/plant_1_level_2_locked.png";
+import plant_1_level_3_locked from "@assets/garden-assets/plant_1/plant_1_level_3_locked.png";
+
+
+// -- Assets for Plant 2 ----------------------------------------------
+import plant_2_level_1 from '@assets/garden-assets/plant_2/plant_2_level_1.png';
+import plant_2_level_2 from '@assets/garden-assets/plant_2/plant_2_level_2.png';
+import plant_2_level_3 from '@assets/garden-assets/plant_2/plant_2_level_3.png';
+
+import plant_2_level_1_locked from '@assets/garden-assets/plant_2/plant_2_level_1.png';
+import plant_2_level_2_locked from '@assets/garden-assets/plant_2/plant_2_level_2.png';
+import plant_2_level_3_locked from '@assets/garden-assets/plant_2/plant_2_level_3.png';
+
+
+// -- Assets for Plant 3 ----------------------------------------------
+import plant_3_level_1 from '@assets/garden-assets/plant_3/plant_3_level_1.png';
+import plant_3_level_2 from '@assets/garden-assets/plant_3/plant_3_level_2.png';
+import plant_3_level_3 from '@assets/garden-assets/plant_3/plant_3_level_3.png';
+
+import plant_3_level_1_locked from '@assets/garden-assets/plant_3/plant_3_level_1.png';
+import plant_3_level_2_locked from '@assets/garden-assets/plant_3/plant_3_level_2.png';
+import plant_3_level_3_locked from '@assets/garden-assets/plant_3/plant_3_level_3.png';
+
+
+
+// -------------------------------------------------
 import { BlurView } from 'expo-blur';
 
 
@@ -26,12 +58,7 @@ export default function GardenScreen() {
 
   return (
     <View style={{ flex: 1, overflow: 'hidden' }}>
-      <ImageBackground
-        source={gardenBg}
-        resizeMode="cover"
-        style={styles.background}
-        imageStyle={{ width: 625, height: 900, alignSelf: 'flex-start' }}
-      >
+      <ImageBackground source={gardenBg} style={styles.bg} resizeMode="cover">
         {/* ─── Header ───────────────────────────────────────────── */}
         <View style={styles.header}>
           <Text style={styles.headerText}>Your Garden</Text>
@@ -57,7 +84,7 @@ export default function GardenScreen() {
 
         {/* ─── Flower ──────────────────────────────────────────── */}
         <Image 
-            source={defaultFlower} 
+            source={plant_1_level_1} 
             style={styles.flower} 
             resizeMode="contain" 
         />
@@ -104,9 +131,9 @@ export default function GardenScreen() {
 
             {/* Level images */}
             <View style={styles.popupLevels}>
-              <Image source={defaultFlower} style={styles.popupLevelIcon} />
-              <Image source={defaultFlower} style={[styles.popupLevelIcon, { opacity: 0.3 }]} />
-              <Image source={defaultFlower} style={[styles.popupLevelIcon, { opacity: 0.15 }]} />
+              <Image source={plant_1_level_1} style={styles.popupLevelIcon} />
+              <Image source={plant_1_level_2_locked} style={[styles.popupLevelIcon, { opacity: 0.3 }]} />
+              <Image source={plant_1_level_3_locked} style={[styles.popupLevelIcon, { opacity: 0.15 }]} />
             </View>
             <View style={styles.popupLevelsLabel}>
               <Text style={styles.popupLevelText}>LV1</Text>
@@ -138,25 +165,23 @@ export default function GardenScreen() {
 // Styles
 // ───────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: 50,
-  },
-
+  bg: { flex: 1, paddingTop: 60, alignItems: 'center' },
   /* Header */
   header: {
     position: 'absolute',
-    top: 30,
+    top: 20,
     width: '90%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+
+    marginTop: '50'
   },
   headerText: { fontSize: 24, fontWeight: '600', color: '#000' },
   iconBox: { backgroundColor: '#fff', borderRadius: 10, padding: 5 },
   icon: { fontSize: 18 },
+
+  /*Header
 
 /* ---------- Speech bubble ---------- */
 speechWrapper: {
