@@ -14,9 +14,37 @@ import { useNavigation } from '@react-navigation/native';
 
 // ─── Assets ────────────────────────────────────────────────────
 import nurseryBg         from '@assets/garden-assets/garden-background.png';
-import plant_1_level_1   from '@assets/garden-assets/plant_1/plant_1_level_1.png';
 import sprout            from '@assets/garden-assets/plant_1/plant_1_level_1.png';
 import dandelion         from '@assets/garden-assets/plant_1/plant_1_level_1.png';
+
+// -- Assets for Plant 1 ---------------------------------------------
+import plant_1_level_1 from '@assets/garden-assets/plant_1/plant_1_level_1.png';
+import plant_1_level_2 from '@assets/garden-assets/plant_1/plant_1_level_2.png';
+import plant_1_level_3 from '@assets/garden-assets/plant_1/plant_1_level_3.png';
+
+import plant_1_level_1_locked from "@assets/garden-assets/plant_1/plant_1_level_2_locked.png";
+import plant_1_level_2_locked from "@assets/garden-assets/plant_1/plant_1_level_2_locked.png";
+import plant_1_level_3_locked from "@assets/garden-assets/plant_1/plant_1_level_3_locked.png";
+
+
+// -- Assets for Plant 2 ----------------------------------------------
+import plant_2_level_1 from '@assets/garden-assets/plant_2/plant_2_level_1.png';
+import plant_2_level_2 from '@assets/garden-assets/plant_2/plant_2_level_2.png';
+import plant_2_level_3 from '@assets/garden-assets/plant_2/plant_2_level_3.png';
+
+import plant_2_level_1_locked from '@assets/garden-assets/plant_2/plant_2_level_1.png';
+import plant_2_level_2_locked from '@assets/garden-assets/plant_2/plant_2_level_2.png';
+import plant_2_level_3_locked from '@assets/garden-assets/plant_2/plant_2_level_3.png';
+
+
+// -- Assets for Plant 3 ----------------------------------------------
+import plant_3_level_1 from '@assets/garden-assets/plant_3/plant_3_level_1.png';
+import plant_3_level_2 from '@assets/garden-assets/plant_3/plant_3_level_2.png';
+import plant_3_level_3 from '@assets/garden-assets/plant_3/plant_3_level_3.png';
+
+import plant_3_level_1_locked from '@assets/garden-assets/plant_3/plant_3_level_1.png';
+import plant_3_level_2_locked from '@assets/garden-assets/plant_3/plant_3_level_2.png';
+import plant_3_level_3_locked from '@assets/garden-assets/plant_3/plant_3_level_3.png';
 
 export default function NurseryScreen() {
   const [collapsed, setCollapsed] = useState({
@@ -73,9 +101,9 @@ export default function NurseryScreen() {
             collapsed={collapsed.starters}
             onToggle={() => toggle('starters')}
             plants={[
-              { id: 1, img: sprout,            unlocked: true },
-              { id: 2, img: plant_1_level_1,   unlocked: true, selected: true },
-              { id: 3, img: sprout,            unlocked: true },
+              { id: 1, img: plant_1_level_1,            unlocked: true },
+              { id: 2, img: plant_2_level_1,   unlocked: true, selected: true },
+              { id: 3, img: plant_3_level_1,            unlocked: true },
             ]}
           />
 
@@ -87,9 +115,9 @@ export default function NurseryScreen() {
             collapsed={collapsed.spring}
             onToggle={() => toggle('spring')}
             plants={[
-              { id: 4, img: sprout,    unlocked: false },
-              { id: 5, img: dandelion, unlocked: false },
-              { id: 6, img: sprout,    unlocked: false },
+              { id: 4, img: plant_1_level_1,    unlocked: false },
+              { id: 5, img: plant_2_level_1, unlocked: false },
+              { id: 6, img: plant_3_level_1,    unlocked: false },
             ]}
           />
 
@@ -101,9 +129,9 @@ export default function NurseryScreen() {
             collapsed={collapsed.special}
             onToggle={() => toggle('special')}
             plants={[
-              { id: 7, img: sprout,          unlocked: false },
-              { id: 8, img: plant_1_level_1, unlocked: false },
-              { id: 9, img: sprout,          unlocked: false },
+              { id: 7, img: plant_1_level_1,          unlocked: false },
+              { id: 8, img: plant_2_level_1, unlocked: false },
+              { id: 9, img: plant_3_level_1,          unlocked: false },
             ]}
           />
         </ScrollView>
@@ -203,7 +231,7 @@ const styles = StyleSheet.create({
 
   /* White rounded panel (scroll-view) */
   card: {
-    width: '90%',
+    width: '95%',
     backgroundColor: '#ffffff',
     borderRadius: 25,
     paddingHorizontal: 24,

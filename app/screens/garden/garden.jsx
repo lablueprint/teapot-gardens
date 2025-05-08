@@ -8,101 +8,68 @@ import {
   Pressable,
   Modal,
   TouchableOpacity,
-  TouchableWithoutFeedback,  
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-
-// ─── Assets ──────────────────────────────────────────────────────
-import gardenBg     from '@assets/garden-assets/garden-background.png';
-
-// -- Assets for Plant 1 ---------------------------------------------
-import plant_1_level_1 from '@assets/garden-assets/plant_1/plant_1_level_1.png';
-import plant_1_level_2 from '@assets/garden-assets/plant_1/plant_1_level_2.png';
-import plant_1_level_3 from '@assets/garden-assets/plant_1/plant_1_level_3.png';
-
-import plant_1_level_1_locked from "@assets/garden-assets/plant_1/plant_1_level_2_locked.png";
-import plant_1_level_2_locked from "@assets/garden-assets/plant_1/plant_1_level_2_locked.png";
-import plant_1_level_3_locked from "@assets/garden-assets/plant_1/plant_1_level_3_locked.png";
-
-
-// -- Assets for Plant 2 ----------------------------------------------
-import plant_2_level_1 from '@assets/garden-assets/plant_2/plant_2_level_1.png';
-import plant_2_level_2 from '@assets/garden-assets/plant_2/plant_2_level_2.png';
-import plant_2_level_3 from '@assets/garden-assets/plant_2/plant_2_level_3.png';
-
-import plant_2_level_1_locked from '@assets/garden-assets/plant_2/plant_2_level_1.png';
-import plant_2_level_2_locked from '@assets/garden-assets/plant_2/plant_2_level_2.png';
-import plant_2_level_3_locked from '@assets/garden-assets/plant_2/plant_2_level_3.png';
-
-
-// -- Assets for Plant 3 ----------------------------------------------
-import plant_3_level_1 from '@assets/garden-assets/plant_3/plant_3_level_1.png';
-import plant_3_level_2 from '@assets/garden-assets/plant_3/plant_3_level_2.png';
-import plant_3_level_3 from '@assets/garden-assets/plant_3/plant_3_level_3.png';
-
-import plant_3_level_1_locked from '@assets/garden-assets/plant_3/plant_3_level_1.png';
-import plant_3_level_2_locked from '@assets/garden-assets/plant_3/plant_3_level_2.png';
-import plant_3_level_3_locked from '@assets/garden-assets/plant_3/plant_3_level_3.png';
-
-
-
-// -------------------------------------------------
 import { BlurView } from 'expo-blur';
 
-
+// ─── Assets ──────────────────────────────────────────────────────
+import gardenBg from '@assets/garden-assets/garden-background.png';
+import plant_1_level_1 from '@assets/garden-assets/plant_1/plant_1_level_1.png';
+import plant_1_level_2_locked from '@assets/garden-assets/plant_1/plant_1_level_2_locked.png';
+import plant_1_level_3_locked from '@assets/garden-assets/plant_1/plant_1_level_3_locked.png';
 
 export default function GardenScreen() {
-  const [popupVisible, setPopupVisible] = useState(false);  
+  const [popupVisible, setPopupVisible] = useState(false);
   const navigation = useNavigation();
 
   return (
     <View style={{ flex: 1, overflow: 'hidden' }}>
       <ImageBackground source={gardenBg} style={styles.bg} resizeMode="cover">
-        {/* ─── Header ───────────────────────────────────────────── */}
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Your Garden</Text>
-          <View style={styles.iconBox}>
-            <TouchableOpacity onPress={() => navigation.navigate("Nursery")}>
-                <Text style={styles.icon}>🌱</Text>
-            </TouchableOpacity>
-            </View>
-        </View>
+        
+        
+{/* ─── Combined Header Container ───────────────────────────── */}
+<View style={styles.headerContainer}>
+  {/* Top Header Row */}
+  <View style={styles.topHeader}>
+    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.drawerBtn}>
+      <Text style={styles.drawerIcon}>☰</Text>
+    </TouchableOpacity>
+
+    <TouchableOpacity onPress={() => navigation.navigate("Nursery")} style={styles.nurseryBtn}>
+      <Text style={styles.nurseryIcon}>🌱</Text>
+    </TouchableOpacity>
+  </View>
+
+  {/* Garden Title Header */}
+  <View style={styles.headerBelow}>
+    <Text style={styles.headerText}>Your Garden</Text>
+  </View>
+</View>
 
         {/* ─── Greeting Bubble ─────────────────────────────────── */}
         <View style={styles.speechWrapper}>
-        <View style={styles.speechBubble}>
+          <View style={styles.speechBubble}>
             <Text style={styles.speechText}>
-            <Text style={{ fontStyle: 'italic' }}>Welcome Henry!</Text>
+              <Text style={{ fontStyle: 'italic' }}>Welcome Henry!</Text>
             </Text>
+          </View>
+          <View style={styles.speechTail} />
         </View>
-
-        {/* little triangle tail */}
-        <View style={styles.speechTail} />
-        </View>
-
 
         {/* ─── Flower ──────────────────────────────────────────── */}
-        <Image 
-            source={plant_1_level_1} 
-            style={styles.flower} 
-            resizeMode="contain" 
-        />
-
+        <Image source={plant_1_level_1} style={styles.flower} resizeMode="contain" />
 
         {/* ─── Info Panel ──────────────────────────────────────── */}
         <Pressable style={styles.infoPanel} onPress={() => setPopupVisible(true)}>
-            <Text style={styles.nameText}>Gary</Text>
-            <Text style={styles.subText}>Yellow Dandelion</Text>
-
-            <View style={styles.progressBar}>
-                <View style={[styles.progressFill, { width: '66%' }]} />
-            </View>
-
-            <Text style={styles.levelText}>LVL 2/3     400/600 XP</Text>
+          <Text style={styles.nameText}>Gary</Text>
+          <Text style={styles.subText}>Yellow Dandelion</Text>
+          <View style={styles.progressBar}>
+            <View style={[styles.progressFill, { width: '66%' }]} />
+          </View>
+          <Text style={styles.levelText}>LVL 2/3     400/600 XP</Text>
         </Pressable>
       </ImageBackground>
-
 
       {/* ─── Popup ─────────────────────────────────────────────── */}
       <Modal
@@ -111,50 +78,45 @@ export default function GardenScreen() {
         visible={popupVisible}
         onRequestClose={() => setPopupVisible(false)}
       >
-    <TouchableWithoutFeedback onPress={() => setPopupVisible(false)}>
-        <BlurView intensity={25} tint="dark" style={styles.modalBackdrop}>
+        <TouchableWithoutFeedback onPress={() => setPopupVisible(false)}>
+          <BlurView intensity={25} tint="dark" style={styles.modalBackdrop}>
             <View style={styles.popupCard}>
-            {/* Header */}
-            <View style={styles.popupHeader}>
-              <Text style={styles.popupTitle}>Gary</Text>
-              <TouchableOpacity onPress={() => setPopupVisible(false)}>
-                <Text style={styles.closeIcon}>✕</Text>
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.popupSubtitle}>Starters</Text>
+              <View style={styles.popupHeader}>
+                <Text style={styles.popupTitle}>Gary</Text>
+                <TouchableOpacity onPress={() => setPopupVisible(false)}>
+                  <Text style={styles.closeIcon}>✕</Text>
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.popupSubtitle}>Starters</Text>
 
-            {/* Description */}
-            <Text style={styles.plantTitle}>Orchid Seedling</Text>
-            <Text style={styles.plantDescription}>
-              Description of what the plant is – lorem ipsum lalalalala hello my name is Daniel!
-            </Text>
-
-            {/* Level images */}
-            <View style={styles.popupLevels}>
-              <Image source={plant_1_level_1} style={styles.popupLevelIcon} />
-              <Image source={plant_1_level_2_locked} style={[styles.popupLevelIcon, { opacity: 0.3 }]} />
-              <Image source={plant_1_level_3_locked} style={[styles.popupLevelIcon, { opacity: 0.15 }]} />
-            </View>
-            <View style={styles.popupLevelsLabel}>
-              <Text style={styles.popupLevelText}>LV1</Text>
-              <Text style={styles.popupLevelText}>LV2</Text>
-              <Text style={styles.popupLevelText}>LV3</Text>
-            </View>
-
-            {/* Popup progress bar */}
-            <View style={styles.popupProgressBar}>
-              <View style={[styles.popupProgressFill, { width: '33%' }]} />
-            </View>
-
-            {/* Fun fact */}
-            <View style={styles.popupFunFact}>
-              <Text style={styles.funFactIcon}>🌱</Text>
-              <Text style={styles.funFactText}>
-                Fun fact: Your plant is an orchid. It survives in sunny and windy environments.
+              <Text style={styles.plantTitle}>Orchid Seedling</Text>
+              <Text style={styles.plantDescription}>
+                Description of what the plant is – lorem ipsum lalalalala hello my name is Daniel!
               </Text>
+
+              <View style={styles.popupLevels}>
+                <Image source={plant_1_level_1} style={styles.popupLevelIcon} />
+                <Image source={plant_1_level_2_locked} style={[styles.popupLevelIcon, { opacity: 0.3 }]} />
+                <Image source={plant_1_level_3_locked} style={[styles.popupLevelIcon, { opacity: 0.15 }]} />
+              </View>
+              <View style={styles.popupLevelsLabel}>
+                <Text style={styles.popupLevelText}>LV1</Text>
+                <Text style={styles.popupLevelText}>LV2</Text>
+                <Text style={styles.popupLevelText}>LV3</Text>
+              </View>
+
+              <View style={styles.popupProgressBar}>
+                <View style={[styles.popupProgressFill, { width: '33%' }]} />
+              </View>
+
+              <View style={styles.popupFunFact}>
+                <Text style={styles.funFactIcon}>🌱</Text>
+                <Text style={styles.funFactText}>
+                  Fun fact: Your plant is an orchid. It survives in sunny and windy environments.
+                </Text>
+              </View>
             </View>
-          </View>
-        </BlurView>
+          </BlurView>
         </TouchableWithoutFeedback>
       </Modal>
     </View>
@@ -166,31 +128,53 @@ export default function GardenScreen() {
 // ───────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   bg: { flex: 1, paddingTop: 60, alignItems: 'center' },
-  /* Header */
-  header: {
-    position: 'absolute',
-    top: 20,
+  headerContainer: {
+    marginTop: 30, // or any value you want
     width: '90%',
+    position: 'absolute',
+    top: 30,
+  },  
+  // Top Menu/Nursery Row
+  topHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-
-    marginTop: '50'
   },
-  headerText: { fontSize: 24, fontWeight: '600', color: '#000' },
-  iconBox: { backgroundColor: '#fff', borderRadius: 10, padding: 5 },
-  icon: { fontSize: 18 },
+  drawerBtn: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 8,
+  },
+  drawerIcon: {
+    fontSize: 20,
+    color: '#000',
+  },
+  nurseryBtn: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 8,
+  },
+  nurseryIcon: {
+    fontSize: 20,
+  },
 
-  /*Header
+  headerBelow: {
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 36,
+    fontWeight: '600',
+    color: '#000',
+  },
 
-/* ---------- Speech bubble ---------- */
-speechWrapper: {
+  // Speech bubble
+  speechWrapper: {
     position: 'absolute',
-    top: 470,            // tune these two numbers so the
-    left:  160,           // bubble sits where you want it
+    top: 470,
+    left: 160,
     maxWidth: '70%',
   },
-  
   speechBubble: {
     backgroundColor: '#fff',
     paddingVertical: 8,
@@ -200,24 +184,23 @@ speechWrapper: {
     shadowOpacity: 0.12,
     shadowOffset: { width: 0, height: 1 },
   },
-  
   speechTail: {
     position: 'absolute',
-    bottom: -6,          // pulls the tail just under the bubble
-    left:   30,          // moves tail horizontally – tweak as needed
-    width:  14,
+    bottom: -6,
+    left: 30,
+    width: 14,
     height: 14,
     backgroundColor: '#fff',
-    transform: [{ rotate: '45deg' }],   // makes the square a ♦
+    transform: [{ rotate: '45deg' }],
   },
-  
-  speechText: { fontSize: 16, color: '#000' },
-  
-  speechText: { fontSize: 16, color: '#000' },
+  speechText: {
+    fontSize: 16,
+    color: '#000',
+  },
 
-  /* Flower */
+  // Flower
   flower: {
-    width: 250,  
+    width: 250,
     height: 180,
     position: 'absolute',
     top: 490,
@@ -225,7 +208,7 @@ speechWrapper: {
     transform: [{ rotate: '-1.85deg' }],
   },
 
-  /* Info panel */
+  // Info panel
   infoPanel: {
     position: 'absolute',
     bottom: 30,
@@ -237,7 +220,7 @@ speechWrapper: {
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
   },
-  nameText: { fontSize: 20, fontWeight: 'bold'},
+  nameText: { fontSize: 20, fontWeight: 'bold' },
   subText: { color: 'gray', marginBottom: 10 },
   progressBar: {
     width: '100%',
@@ -250,7 +233,7 @@ speechWrapper: {
   progressFill: { height: '100%', backgroundColor: '#708238' },
   levelText: { fontSize: 12, color: 'gray', marginTop: 4 },
 
-  /* Popup */
+  // Modal
   modalBackdrop: {
     flex: 1,
     alignItems: 'center',
@@ -270,25 +253,23 @@ speechWrapper: {
     fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
-    color: '#101828'
-  },  
-  popupSubtitle: { 
-    color: '#10182880', 
+    color: '#101828',
+  },
+  popupSubtitle: {
+    color: '#10182880',
     marginBottom: 12,
     fontSize: 14,
-    textAlign: 'center', 
-    fontWeight: 400          
-
-   },
-  closeIcon: { fontSize: 22,
+    textAlign: 'center',
+    fontWeight: '400',
+  },
+  closeIcon: {
+    fontSize: 22,
     position: 'absolute',
-    right: -120,                      // parks ✕ on the far right without
-    top: 10,                        // disturbing the centered title
-   },
-
+    right: -120,
+    top: 10,
+  },
   plantTitle: { fontWeight: '600', marginBottom: 4 },
   plantDescription: { color: 'gray', marginBottom: 12 },
-
   popupLevels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -301,7 +282,6 @@ speechWrapper: {
     marginBottom: 8,
   },
   popupLevelText: { fontSize: 12, color: 'gray', width: 48, textAlign: 'center' },
-
   popupProgressBar: {
     width: '100%',
     height: 6,
@@ -311,7 +291,6 @@ speechWrapper: {
     marginBottom: 12,
   },
   popupProgressFill: { height: '100%', backgroundColor: '#8DC53F' },
-
   popupFunFact: { flexDirection: 'row', alignItems: 'flex-start', gap: 6 },
   funFactIcon: { fontSize: 16 },
   funFactText: { flex: 1, fontSize: 12 },

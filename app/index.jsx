@@ -1,51 +1,37 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Pressable } from "react-native";
-import { Link, useNavigation } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+
 export default function App() {
   const navigation = useNavigation();
+
+  const buttons = [
+    { label: "Go to Homepage", route: "Home" },
+    { label: "Go to Login", route: "Login" },
+    { label: "Go to Profile", route: "Profile" },
+    { label: "Go to Program Page", route: "ProgramPage" },
+    { label: "Go to Admin Dashboard", route: "AdminDashboard" },
+    { label: "Go to Discover", route: "Discover" },
+    { label: "Go to Plants", route: "View Plant" },
+    { label: "Go to Events Page", route: "EventPage" },
+    { label: "Go to Garden", route: "Garden" },
+    { label: "Go to Nursery", route: "Nursery" },
+  ];
+
   return (
     <View style={styles.container}>
-      <Text>Welcome to the Garden Gangggggggg</Text>
+      <Text>Use this to navigate to any screen, add a new screen navigation thingy in hamburger then add that button here - daniel</Text>
       <StatusBar style="auto" />
-      <Link href="/screens/page1/page1" style={{ color: "blue" }}>
-        Go to Page1
-      </Link>
-      <Link href="/screens/homepage/homepage" style={{ color: "blue" }}>
-        Go to Homepage
-      </Link>
-      <Link href="/screens/login/login" style={{ color: "blue" }}>
-        Go to Login
-      </Link>
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.navigate('Login')}
+
+      {buttons.map((btn, idx) => (
+        <Pressable
+          key={idx}
+          style={styles.button}
+          onPress={() => navigation.navigate(btn.route)}
         >
-        <Text style={{ color: "black "}}>Login</Text>
-      </Pressable>
-      <Link href="/screens/profile/profile_page" style={{ color: "blue" }}>
-        Go to Profile
-      </Link>
-      <Link href="/screens/program_page/program_page" style={{ color: "blue" }}>
-        Go to Program Page
-      </Link>
-      <Link href="/screens/admin_dashboard/admin_dashboard" style={{ color: "blue" }}>
-        Go to Admin Dashboard
-      </Link>
-      <Link href="/screens/discover/discover" style={{ color: "blue" }}>
-        Go to Discover
-      </Link>
-      <Link href="/screens/plant/plant" style={{ color: "blue" }}>
-        Go to Plants
-      </Link>
-      <Link href="/screens/events" style={{ color: "blue" }}>
-        Go to Events Page
-      </Link>
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.navigate('Garden')}
-        >
-        <Text style={{ color: "green "}}>Garden</Text>
-      </Pressable>
+          <Text style={styles.buttonText}>{btn.label}</Text>
+        </Pressable>
+      ))}
     </View>
   );
 }
@@ -56,5 +42,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginVertical: 5,
+    backgroundColor: "#f0f8ff",
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: "blue",
+    fontSize: 16,
+    fontWeight: "500",
   },
 });

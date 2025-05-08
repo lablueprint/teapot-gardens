@@ -35,6 +35,24 @@ import IntroSlides from "@screens/login/introSlides";
 import AdminScanner from "@screens/event/admin_scanner";
 import { Draw } from "@mui/icons-material";
 
+
+// importing logos here
+import teapotLogo from "@assets/menu_side_bar_assets/teapot_logo.png";
+import iconHome from "@assets/menu_side_bar_assets/home_logo.png"
+import iconGarden from "@assets/menu_side_bar_assets/garden_logo.png"
+import iconDiscover from "@assets/menu_side_bar_assets/discover_logo.png"
+import iconProfile from "@assets/menu_side_bar_assets/profile_logo.png"
+
+const iconMap = {
+    Home: iconHome,
+    Garden: iconGarden,
+    Discover: iconDiscover,
+    Profile: iconProfile,
+    Temp: iconGarden, // fallback if DEBUGGING NAVIGATION maps to Temp
+  };
+
+  
+
 const Drawer = createDrawerNavigator();
 
 // AsyncStorage key constant
@@ -50,32 +68,42 @@ const CustomDrawerContent = (props) => {
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.drawerItemsContainer}>
-                {["Home", "View Plant", "My Events", "Discover", "Garden", "Nursery"].map((screen, index) => {
-                    const routeName = (screen === "My Events") ? "Temp" : screen;
-                    const isActive = props.state.routes[props.state.index].name === routeName;
+            <View style={{ flex: 1 }}>
+                {/* Profile at top */}
+                <View style={styles.profileContainer}>
+                    <DrawerItem
+                        label="Profile"
+                        onPress={() => props.navigation.navigate("Profile")}
+                        icon={() => <Image source={tempIcon} style={styles.drawerIcon} />}
+                        labelStyle={styles.drawerLabel}
+                        style={props.state.routes[props.state.index].name === "Profile" ? styles.activeDrawerItem : styles.inactiveDrawerItem}
+                    />
+                </View>
 
-                    return (
-                        <DrawerItem
-                            key={index}
-                            label={screen}
-                            onPress={() => props.navigation.navigate(routeName)}
-                            icon={() => <Image source={tempIcon} style={styles.drawerIcon} />}
-                            labelStyle={styles.drawerLabel}
-                            style={isActive ? styles.activeDrawerItem : styles.inactiveDrawerItem}
-                        />
-                    );
-                })}
-            </View>
+                {/* centering menu items vertically */}
+                <View style={styles.centeredItemsContainer}>
+                    {["Home", "Garden", "Discover", "Profile", "DEBUG NAV"].map((screen, index) => {
+                        const routeName = (screen === "DEBUG NAV") ? "Temp" : screen;
+                        const isActive = props.state.routes[props.state.index].name === routeName;
 
-            <View style={styles.profileContainer}>
-                <DrawerItem
-                    label="Profile"
-                    onPress={() => props.navigation.navigate("Profile")}
-                    icon={() => <Image source={tempIcon} style={styles.drawerIcon} />}
-                    labelStyle={styles.drawerLabel}
-                    style={props.state.routes[props.state.index].name === "Profile" ? styles.activeDrawerItem : styles.inactiveDrawerItem}
-                />
+                        return (
+                            <DrawerItem
+                                key={index}
+                                label={screen}
+                                onPress={() => props.navigation.navigate(routeName)}
+                                icon={() => (
+                                    <Image source={iconMap[routeName] || tempIcon} style={styles.drawerIcon} />
+                                  )}
+                                labelStyle={styles.drawerLabel}
+                                style={isActive ? styles.activeDrawerItem : styles.inactiveDrawerItem}
+                            />
+                        );
+                    })}
+                </View>
+                {/* Bottom logo */}
+                <View style={styles.logoContainer}>
+                    <Image source={teapotLogo} style={styles.logoImage} />
+                </View>
             </View>
         </DrawerContentScrollView>
     );
@@ -221,7 +249,7 @@ const styles = StyleSheet.create({
     },
     drawerContainer: {
         flex: 1,
-        backgroundColor: "#A8A8A8",
+        backgroundColor: "#C5C9B7",
     },
     drawerHeader: {
         flexDirection: "row",
@@ -267,4 +295,21 @@ const styles = StyleSheet.create({
     inactiveDrawerItem: {
         backgroundColor: "transparent",
     },
+    centeredItemsContainer: {
+        flex: 1,
+        justifyContent: 'center',
+    },    
+    logoContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+        marginTop: 10,
+    },
+    
+    logoImage: {
+        width: 100,
+        height: 100,
+        resizeMode: 'contain',
+        borderRadius: 50,
+    },
+    
 });
