@@ -9,8 +9,8 @@ import upcoming from '@assets/upcoming.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import garden from '@assets/garden.jpg';
 
-// const url = 'https://272a-75-142-52-157.ngrok-free.app'
-const url = 'http://localhost:4000'
+const url = 'https://f191-2607-f010-2a7-1021-30e1-d2bb-114b-1140.ngrok-free.app'
+// const url = 'http://localhost:4000'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();

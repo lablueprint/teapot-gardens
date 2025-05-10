@@ -7,7 +7,7 @@ import eventData from "@screens/program_page/eventData.json";
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 
-const url = 'http://192.168.1.187:4000'
+const url = 'https://f191-2607-f010-2a7-1021-30e1-d2bb-114b-1140.ngrok-free.app'
 
 const AdminDashboard = () => {
     const [subjectLine, setSubjectLine] = useState("");

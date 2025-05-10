@@ -65,6 +65,7 @@ const updateUser = async (req, res) => {
     if (req.body.notifications) {
         updatePayload = {
             $push: { notifications: req.body.notifications },
+            $set: {tamagatchiLevel: req.body.tamagatchiLevel}
         };
     } else {
         updatePayload = { ...req.body };
