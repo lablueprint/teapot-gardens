@@ -216,7 +216,7 @@ const Login = () => {
           <TouchableOpacity style={styles.button} 
             onPress={() => {
               handleSubmit(); // Call handleSubmit first
-              navigation.navigate('Home'); // Navigate to Home only after the form submission
+              // navigation.navigate('Home'); // Navigate to Home only after the form submission
             }} >
             <Text style={{ fontSize: 30, color: 'white'}} >Create Profile</Text>
           </TouchableOpacity>
