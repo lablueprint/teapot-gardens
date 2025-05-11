@@ -48,7 +48,6 @@ export default function DiscoverPage () {
             } finally {
                 setLoading(false);
             }
-            fetchEvents([]);
         };
 
         const fetchPrograms = async () => {
@@ -168,8 +167,12 @@ export default function DiscoverPage () {
                                 grid ? styles.gridProgramContainer : styles.listProgramContainer,
                                 grid ? { width: cardWidth, marginLeft: cardSpacing / 2, marginRight: cardSpacing / 2 } : {}
                             ]}
-                            onPress={() => navigation.navigate('ProgramPage')}
-                        >
+                            onPress={() => {
+                                console.log("Navigating to ProgramPage", program);
+                                navigation.navigate('ProgramPage', {
+                                programData: JSON.stringify(program),
+                                });
+                            }}>
                             {grid ? (
                                 <Image source={discover} style={styles.gridProgramImage} />
                             ) : (
@@ -230,7 +233,6 @@ export default function DiscoverPage () {
                             }}
                         >
                             <View style={styles.imageContainer}>
-                                <Image source={garden} style={styles.image} />
                                 <View style={styles.likeContainer}>
                                     <Ionicons
                                         name={event.liked ? 'heart' : 'heart-outline'}

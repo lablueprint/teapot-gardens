@@ -15,6 +15,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AdminDashboard from "@screens/admin_dashboard/admin_dashboard.jsx";
 import UserCard from "@screens/event/user_card.jsx";
 import ProgramCard from "@screens/event/program_card.jsx";
+import AnalyticsChart from "@screens/event/event-components/AnalyticsChart.jsx";
 
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
 
@@ -26,23 +27,23 @@ import community1 from '@assets/community1.png';
 import community2 from '@assets/community2.png';
 
 const mediaItems = [
-    {
-        id: '1',
-        name: "Japanese Garden",
-        image: community1,
-        type: 'photo',
-    },
-    {
-        id: '2',
-        name: "garden 2",
-        image: community2,
-        type: 'video',
-    },
-    {
-      id: '3',
-      name: "garden 3",
-      image: community1,
-      type: 'photo',
+  {
+    id: '1',
+    name: "Japanese Garden",
+    image: community1,
+    type: 'photo',
+  },
+  {
+    id: '2',
+    name: "garden 2",
+    image: community2,
+    type: 'video',
+  },
+  {
+    id: '3',
+    name: "garden 3",
+    image: community1,
+    type: 'photo',
   },
   {
     id: '4',
@@ -51,8 +52,6 @@ const mediaItems = [
     type: 'photo',
 }
 ];
-// import grapes from "@assets/grapes.jpg"; // Not used, so removed
-
 
 
 const EventPage = () => {
@@ -80,6 +79,9 @@ const EventPage = () => {
 
   const photoCount = mediaItems.filter(item => item.type === 'photo').length;
   const videoCount = mediaItems.filter(item => item.type === 'video').length;
+
+  const [activeTab, setActiveTab] = useState('Gender');
+
 
   // Parse eventData (passed via route params) back into an object
   useEffect(() => {
@@ -386,21 +388,51 @@ const deleteUserEvent = async () => {
             
         {console.log('attendingEvents bor', attendingEvents)}
         <Buttons attending={attendingEvents.includes(event?._id)} />
-  
+            
+        {/* -------- ADMIN SCREEN SECTION-----     */}
         {user?.admin && (
-          <View style={styles.adminSection}>
-            <Text style={styles.adminText}>Admin Panel</Text>
-            {stats?.userStatsList?.length > 0 ? (
-              stats.userStatsList.map((usr, i) => (
-                <Text key={i}>
-                  Income: {usr.incomeLevel}, Gender: {usr.genderIdentification}, Race: {usr.race}
-                </Text>
-              ))
-            ) : (
-              <Text>No attendee stats available</Text>
-            )}
+          <View style={{ marginTop: 32 }}>
+            {/* ────────── header ────────── */}
+            <Text style={styles.adminHeader}>Event Analytics</Text>
+
+            {/* ────────── tab row ───────── */}
+            <View style={styles.tabRow}>
+              {['Gender', 'Ethnicity', 'Income'].map(tab => (
+                <Pressable
+                  key={tab}
+                  style={[
+                    styles.tab,
+                    activeTab === tab && styles.tabActive,
+                  ]}
+                  onPress={() => setActiveTab(tab)}
+                >
+                  <Text style={[
+                    styles.tabLabel,
+                    activeTab === tab && styles.tabLabelActive,
+                  ]}>{tab}</Text>
+                </Pressable>
+              ))}
+            </View>
+
+            {/* ────────── chart ─────────── */}
+            {stats?.userStatsList?.length
+              ? (
+                <AnalyticsChart
+                  list={stats.userStatsList}
+                  field={
+                    activeTab === 'Gender'
+                    ? 'genderIdentification'
+                    : activeTab === 'Ethnicity'
+                    ? 'race'
+                    : 'incomeLevel'
+                  }
+                />
+              )
+              : <Text>No attendee stats available</Text>}
           </View>
         )}
+
+
         <View style={styles.photoContainer}>
           <View style={styles.photoHeading}>
             <Text style={{marginBottom: 5}}>COMMUNITY GALLERY</Text>
@@ -630,7 +662,55 @@ const styles = StyleSheet.create({
     width: 70, 
     height: 70, 
     borderRadius: 5
-  }
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: '#E6E6E6',
+    alignItems: 'center',
+    marginHorizontal: 2,
+  },
+  adminHeader: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  
+  tabRow: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: '#E6E6E6',
+    alignItems: 'center',
+    marginHorizontal: 2,
+  },
+  
+  tabActive: {
+    backgroundColor: 'white',
+    elevation: 2,           // subtle shadow on Android
+    shadowColor: '#000',    // – and iOS
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    shadowOffset: { height: 1, width: 0 },
+  },
+  
+  tabLabel: {
+    fontSize: 14,
+    color: '#6F6F6F',
+  },
+  
+  tabLabelActive: {
+    color: 'black',
+    fontWeight: '500',
+  },
+  
+  
 });
 
 export default EventPage;
