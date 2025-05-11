@@ -75,7 +75,7 @@ export default function Homepage() {
             if (currentYear > eventyear) {
               // event is in the past fs
               //I NEED HELP WITH THIS PART
-              console.log(userResponse.data.attendingEvents, event);
+              // console.log(userResponse.data.attendingEvents, event);
               await axios.patch(`https://${url}/api/users/` + userResponse.data._id, {
                 attendedEvents: [...userResponse.data.attendedEvents, event],
                 attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
@@ -129,15 +129,15 @@ export default function Homepage() {
     }
   }
 
-  console.log(userAttendingEvents);
+  // console.log(userAttendingEvents);
   const populateEvents = async () => {
     try {
       const eventPromises = userAttendingEvents?.map(eventId => axios.get(`${url}/api/events/${eventId}`));
       const eventResponses = await Promise.all(eventPromises);
-      console.log(eventResponses, "EVENTS");
+      // console.log(eventResponses, "EVENTS");
       const events = eventResponses.map(response => response.data);
       setEvents(events);
-      console.log(events, "EVENTS");
+      // console.log(events, "EVENTS");
     } catch (error) {
       console.error('Error fetching events: ', error.message);
     }

@@ -1,4 +1,7 @@
+
 const mongoose = require("mongoose");
+const uniqueValidator = require('mongoose-unique-validator');
+
 const { Schema } = mongoose;
 
 const userSchema = new Schema(
@@ -10,11 +13,13 @@ const userSchema = new Schema(
         name: {
             type: String,
             required: true,
+            unqiue: true,
         },
         email: {
             type: String,
             required: true,
             unique: true,
+            uniqueCaseInsensitive: true,
         },
         password: {
             type: String,
@@ -73,6 +78,8 @@ const userSchema = new Schema(
         }
 
 }, { timestamps: true })
+
+userSchema.plugin(uniqueValidator, { message: 'Error, {PATH} is already taken.' });
 
 
 const User = mongoose.model("User", userSchema);

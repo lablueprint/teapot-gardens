@@ -22,6 +22,20 @@ const getUser = async(req, res) => {
 }
 
 // create a new user
+// const createUser = async (req, res) => {
+//     console.log("create a user")
+//     // add doc to db
+//     try{
+//         console.log(req.body)
+//         const user = await User.create(req.body)
+//         res.status(200).json(user)
+//     } catch (error) {
+//         process.stdout.write(error, "test")
+//         res.status(400).json({error: error.message})
+
+//     }
+// }
+// create a new user
 const createUser = async (req, res) => {
     console.log("create a user")
     // add doc to db
@@ -30,8 +44,37 @@ const createUser = async (req, res) => {
         const user = await User.create(req.body)
         res.status(200).json(user)
     } catch (error) {
-        res.status(400).json({error: error.message})
+        console.log("Error creating user:", error)
+        
+        // Check if it's a validation error
+        if (error.name === 'ValidationError') {
+            // Format validation errors
+            const errors = {};
+            for (let field in error.errors) {
+                errors[field] = error.errors[field].message;
+            }
+            
+            return res.status(400).json({
+                success: false,
+                message: 'Validation error',
+                errors: errors
+            });
+        }
+        
+        // Handle MongoDB duplicate key error (just in case)
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern)[0];
+            return res.status(400).json({
+                success: false,
+                message: `${field} already exists`,
+                errors: { [field]: `${field} already exists` }
+            });
+        }
 
+        res.status(400).json({
+            success: false, 
+            message: error.message
+        })
     }
 }
 

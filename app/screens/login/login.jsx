@@ -14,7 +14,7 @@ import apple from '@assets/apple.png';
 import google from '@assets/google.png'
 import { useFonts } from 'expo-font';
 
-const BACKEND = "https://ee6e-38-73-241-58.ngrok-free.app";
+const BACKEND = "http://localhost:4000";
 
 const Login = () => {
   const navigation = useNavigation();
@@ -73,7 +73,7 @@ const Login = () => {
     } else {
       // Convert age to a number if needed
       const numericAge = Number(age);
-
+  
       const user = {
         name: name,
         email: email,
@@ -85,21 +85,56 @@ const Login = () => {
         age: numericAge,
         genderIdentification: gender
       };
-
+  
       console.log(user);
       try {
-        // Use backticks for template interpolation of BACKEND
         const response = await axios.post(`${BACKEND}/api/users/`, user);
         console.log(response.data);
         Alert.alert("Success", "Form submitted successfully!");
+        // Navigate only after successful registration
+        navigation.navigate('Home');
       } catch (error) {
-        console.log("error", error);
-        Alert.alert("Error", "An error occurred while submitting the form.");
+        // First, log everything to see the full error structure
+        console.log("Full error:", error);
+        console.log("Error response:", error.response);
+        console.log("Error response data:", error.response?.data);
+  
+        // Extract error message
+        let errorMessage = "An error occurred while submitting the form.";
+        
+        if (error.response && error.response.data) {
+          // Check for specific field errors
+          if (error.response.data.errors) {
+            const fieldErrors = error.response.data.errors;
+            if (fieldErrors.email) {
+              errorMessage = fieldErrors.email;
+            } else if (fieldErrors.username) {
+              errorMessage = fieldErrors.username;
+            } else {
+              // Get the first error message if there are multiple
+              const firstErrorField = Object.keys(fieldErrors)[0];
+              if (firstErrorField) {
+                errorMessage = fieldErrors[firstErrorField];
+              }
+            }
+          } 
+          // Check for general message
+          else if (error.response.data.message) {
+            errorMessage = error.response.data.message;
+          }
+          // Check for error property (for backward compatibility)
+          else if (error.response.data.error) {
+            errorMessage = error.response.data.error;
+          }
+        }
+        
+        Alert.alert("Registration Error", errorMessage);
       }
     }
   };
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Register</Text>
@@ -122,7 +157,7 @@ const Login = () => {
         placeholder="Enter your email"
       />
 
-      {/* <Text>Birthday</Text>
+      <Text>Birthday</Text>
       <TextInput
         style={styles.input}
         value={birthday}
@@ -136,7 +171,38 @@ const Login = () => {
           value={username}
           onChangeText={(text) => setUsername(text)}
           placeholder="Create a username"
-        /> */}
+        />
+      <Text>Race</Text>
+        <TextInput
+        style={styles.input}
+        value={race}
+        onChangeText={(text) => setRace(text)}
+        placeholder="Race"
+        />
+      
+      <Text>Income</Text>
+        <TextInput
+        style={styles.input}
+        value={income}
+        onChangeText={(text) => setIncome(text)}
+        placeholder="Income"
+        />
+
+      <Text>Gender</Text>
+        <TextInput
+        style={styles.input}
+        value={gender}
+        onChangeText={(text) => setGender(text)}
+        placeholder="Gender"
+        />
+
+      <Text>Age</Text>
+        <TextInput
+        style={styles.input}
+        value={age}
+        onChangeText={(text) => setAge(text)}
+        placeholder="Age"
+        />
 
       <Text>Password</Text>
         <TextInput
@@ -184,6 +250,7 @@ const Login = () => {
           </Pressable>
         </View>
     </View>
+    </ScrollView>
   );
 };
 
