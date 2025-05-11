@@ -133,6 +133,7 @@ const createMainNavigator = () => {
             initialRouteName="Login"
             screenOptions={({ route, navigation }) => ({
                 headerShown: !noHeaderScreens.includes(route.name),
+                // headerTransparent: true,
                 headerLeft: () => (
                     <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconButton}>
                         <Image source={menuIcon} style={styles.icon} />
@@ -145,7 +146,7 @@ const createMainNavigator = () => {
                 ),
                 headerTitle: "",
                 headerStyle: {
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "transparent",
                     shadowOpacity: 0, 
                 },
                 drawerStyle: {
@@ -161,7 +162,14 @@ const createMainNavigator = () => {
             <Drawer.Screen name="Login" component={Login} />
             <Drawer.Screen name="Home" component={Homepage} />
             <Drawer.Screen name="Discover" component={DiscoverPage} />
-            <Drawer.Screen name="Profile" component={Profile} />
+            <Drawer.Screen name="Profile" component={Profile} options={{
+            headerTransparent: true,
+            headerStyle: {
+                backgroundColor: "transparent",
+                elevation: 0,
+                shadowOpacity: 0,
+            },
+            }}/>
             <Drawer.Screen name="EditProfile" component={EditProfile} />
             <Drawer.Screen name="ProfileQR" component={ProfileQR} />
             <Drawer.Screen name="View Plant" component={Plant} />
