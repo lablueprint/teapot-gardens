@@ -34,7 +34,6 @@ const SignIn = () => {
       
       console.log(user)
       try {
-        const response = await axios.post('https://ea94-38-73-241-58.ngrok-free.app/api/users/', user);
         console.log(response.data)
         return true;
       }
