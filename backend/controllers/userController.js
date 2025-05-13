@@ -28,14 +28,14 @@ const checkUserEmailandPass = async(req, res) => {
         
         // Check if user exists
         if (!user) {
-            return res.status(400).json({ error: "Invalid email or password", user:user, email:email1});
+            return res.status(400).json({ error: "Invalid email or password"});
         }
         
         // Compare passwords (should use bcrypt.compare in production)
         const isMatch = (password === user.password);
 
         if(!isMatch) {
-            return res.status(401).json({ error: "Invalid email or password", user:user });
+            return res.status(401).json({ error: "Invalid email or password"});
         }
         
         // Success case - return minimal user info needed

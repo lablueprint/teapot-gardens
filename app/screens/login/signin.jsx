@@ -30,15 +30,13 @@ const SignIn = () => {
       Alert.alert("Success", "Form submitted successfully!");
 
       const user = {name: name, email: email, password: password, dob: birthday, username: username}
-      console.log("BRUH")
-      console.log(user)
       try {
 
         const response = await axios.post('http://localhost:4000/api/users/login', {email1: email, password: password});
         console.log(response.data)
         navigation.navigate("Home");
       }
-      catch (error) {
+      catch (error) { 
         console.log("error", error)
         console.log(error.response.data)
       }
@@ -56,7 +54,7 @@ const SignIn = () => {
       <TextInput
         style={styles.input}
         value={email}
-        onChangeText={(text) => setEmail(text)}
+        onChangeText={(text) => setEmail(text.toLowerCase())}
         placeholder="Enter your email"
       />
 

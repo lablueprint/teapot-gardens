@@ -153,7 +153,7 @@ const Login = () => {
       <TextInput
         style={styles.input}
         value={email}
-        onChangeText={(text) => setEmail(text)}
+        onChangeText={(text) => setEmail(text.toLowerCase())}
         placeholder="Enter your email"
       />
 
