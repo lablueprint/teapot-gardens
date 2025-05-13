@@ -30,14 +30,17 @@ const SignIn = () => {
       Alert.alert("Success", "Form submitted successfully!");
 
       const user = {name: name, email: email, password: password, dob: birthday, username: username}
-      
+      console.log("BRUH")
       console.log(user)
       try {
-        const response = await axios.post('https://ea94-38-73-241-58.ngrok-free.app/api/users/', user);
+
+        const response = await axios.post('http://localhost:4000/api/users/login', {email1: email, password: password});
         console.log(response.data)
+        navigation.navigate("Home");
       }
       catch (error) {
         console.log("error", error)
+        console.log(error.response.data)
       }
     }
   };
@@ -66,7 +69,7 @@ const SignIn = () => {
           placeholder="Create a password"
         />
         <View style={styles.buttonContainer} >
-          <TouchableOpacity style={styles.button} onPress={() => {handleSubmit; navigation.navigate("Home");}} >
+          <TouchableOpacity style={styles.button} onPress={() => {handleSubmit();}} >
             <Text style={{fontSize: 30, color: 'white'}} >Sign In</Text>
           </TouchableOpacity>
         </View>
