@@ -5,12 +5,12 @@ import { Text, StyleSheet, ScrollView, View, Image, Pressable, Dimensions } from
 import axios from 'axios';
 import defaultPic from '@assets/default.png';
 import discover from '@assets/discover.png';
+import newprogram from '@assets/newprogram.png';
 import upcoming from '@assets/upcoming.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import garden from '@assets/garden.jpg';
 
-// const url = 'https://272a-75-142-52-157.ngrok-free.app'
-const url = 'http://localhost:4000'
+const url = 'https://1e6d-2607-f010-2a7-1021-ad15-f8a2-fc88-5a1b.ngrok-free.app'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();
@@ -25,7 +25,7 @@ export default function DiscoverPage () {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const tempUserId = '678f3a6bc0368a4c717413a8';
-    const API_KEY = 'https://8074-2607-f010-2a7-1021-6412-8d25-cdd7-edf.ngrok-free.app';
+    // const API_KEY = 'https://8074-2607-f010-2a7-1021-6412-8d25-cdd7-edf.ngrok-free.app';
     const [user, setUser] = useState(null);
     const [grid, setGrid] = useState(false);
 
@@ -190,6 +190,28 @@ export default function DiscoverPage () {
                             )}
                         </Pressable>
                     ))}
+                    <Pressable
+                        style={[
+                            grid ? styles.gridProgramContainer : styles.listProgramContainer,
+                            grid ? { width: cardWidth, marginLeft: cardSpacing / 2, marginRight: cardSpacing / 2 } : {}
+                        ]}
+                        onPress={() => {
+                            console.log("Navigating to Create Program");
+                            navigation.navigate('CreateProgram', {
+                            });
+                        }}>
+                        {grid ? (
+                            <Image source={newprogram} style={styles.gridProgramImage} />
+                        ) : (
+                            <>
+                                <Image source={newprogram} style={styles.listProgramImage} />
+                                <View style={styles.listText}>
+                                    <Text style={styles.listName}>Create Program</Text>
+                                </View>
+                                <Ionicons name="arrow-forward-outline" size={20} color="gray" />
+                            </>
+                        )}
+                    </Pressable>
                 </ScrollView>
 
                 {grid && (
@@ -207,7 +229,7 @@ export default function DiscoverPage () {
                     </View>
                 )}
 
-                <View style={styles.createProgramContainer}>
+                {/* <View style={styles.createProgramContainer}>
                     {user?.admin && (
                         <Pressable
                             style={styles.createProgramButton}
@@ -217,7 +239,7 @@ export default function DiscoverPage () {
                         </Pressable>
                     )}
                 </View>
-
+ */}
                 <Text style={styles.mainTitle}>Upcoming Events</Text>
                 <Text style={styles.subHeading}>Explore upcoming events</Text>
                 <ScrollView horizontal={true} style={styles.eventContainer}>

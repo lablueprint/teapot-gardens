@@ -11,7 +11,7 @@ import raichu from '@assets/raichu.jpg';
 import User from 'backend/models/UserModel';
 import garden from '@assets/garden.jpg';
 
-const url = 'http://localhost:4000'
+const url = 'https://f037-2607-fb91-30a-9b2f-40b6-39ac-318a-c444.ngrok-free.app'
 
 export default function Homepage() {
   const [userData, setUserData] = useState(null);
