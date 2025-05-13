@@ -4,9 +4,10 @@ import axios from 'axios';
 import { TitleSharp } from "@mui/icons-material";
 import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AddImage from '@assets/add_image.png'
 import { useNavigation } from '@react-navigation/native';
 
-const url = 'https://92f8-2607-f010-2a7-1021-fd15-b3a4-dc5d-ce7.ngrok-free.app';
+const url = 'https://1e6d-2607-f010-2a7-1021-ad15-f8a2-fc88-5a1b.ngrok-free.app';
 
 const CreateProgram = () => {
     const navigation = useNavigation();
@@ -52,11 +53,14 @@ const CreateProgram = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.navigate('Discover')}>
-                <Ionicons name="chevron-back" size={22} color="#101828" />
-            </TouchableOpacity>
-            <View style={styles.addImage}>
-                <Text>ADD IMAGE HERE</Text>
+            <View style={styles.topContainer}>
+                <TouchableOpacity style={styles.backBtn} onPress={() => navigation.navigate('Discover')}>
+                    <Ionicons name="chevron-back" size={22} color="#101828" />
+                </TouchableOpacity>
+                <View style={styles.addImage}>
+                    <Image source={AddImage}></Image>
+                    <Text style={{color: '#919191'}} >Edit Program Image</Text>
+                </View>
             </View>
             <View style={styles.inputContainer}>
                 <TextInput 
@@ -73,7 +77,6 @@ const CreateProgram = () => {
                     setValue={setHost}
                     setItems={setItems}
                     placeholder="Select a host"
-                    style={styles.dropdown}
                 />
                 <TextInput 
                     style={styles.input}
@@ -84,7 +87,7 @@ const CreateProgram = () => {
                 />
                 <View style={styles.buttonContainer} >
                     <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-                        <Text>Save Changes</Text>
+                        <Text style={{color: 'white'}}>Save Changes</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -97,11 +100,17 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
         borderRadius: 18,
-        backgroundColor: '#ffffffcc',
+        backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
-      },    
+        marginHorizontal: 20,
+    },   
+    topContainer: {
+        paddingTop: 50,
+        height: '35%',
+    },
     container: {
+        backgroundColor: 'rgba(233, 233, 226, 1)',
         flexDirection: 'column',
     }, 
     inputContainer: {
@@ -109,11 +118,15 @@ const styles = StyleSheet.create({
         height: '65%',
         borderTopRightRadius: 32,
         borderTopLeftRadius: 32,
-        padding: 30,
-        marginVertical: 10,
+        paddingHorizontal: 30,
+        justifyContent: 'space-between',
+        paddingVertical: 70,
     },
     addImage: {
-        height: '35%',
+        backgroundColor: 'rgba(233, 233, 226, 1)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: '10%',
     },
     title: {
         fontSize: 25, 
@@ -121,32 +134,40 @@ const styles = StyleSheet.create({
         borderColor: "gray",
         borderWidth: 1,
         borderRadius: 8,
-        marginVertical: 10,
-        paddingHorizontal: 10,
-        height: '20%',
+        height: '25%',
         textAlign: 'center',
+        backgroundColor: 'white',
     }, 
     button: {
-        padding: 10,
+        padding: 0,
         justifyContent: "center",
         alignItems: "center", 
-        borderRadius: 30,
-        borderColor: 'black',
-        borderWidth: 1,
-        width: "50%",
-        marginVertical: 5, 
+        borderRadius: 18,
+        // borderColor: 'rgba(157, 76, 106, 0.51)',
+        // borderStyle: 'dashed',
+        // borderWidth: 1,
+        margin: 0,
+        height: '100%',
+        width: "100%",
+        backgroundColor: '#9D4C6A',
     },
     buttonContainer: {
+        padding: 0,
+        margin: 0,
         alignItems: "center",
         justifyContent: 'center',
+        height: '12%',
     },
     input: {
-        height: '25%',
+        height: '30%',
         borderColor: "gray",
         borderWidth: 1,
         borderRadius: 8,
-        marginVertical: 10, 
+        backgroundColor: 'white',
         padding: 10,
+    },
+    dropdown: {
+        dropDownContainerStyle: 'gray',
     },
 })
 

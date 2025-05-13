@@ -10,7 +10,7 @@ import upcoming from '@assets/upcoming.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import garden from '@assets/garden.jpg';
 
-const url = 'https://92f8-2607-f010-2a7-1021-fd15-b3a4-dc5d-ce7.ngrok-free.app'
+const url = 'https://1e6d-2607-f010-2a7-1021-ad15-f8a2-fc88-5a1b.ngrok-free.app'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();
@@ -191,7 +191,6 @@ export default function DiscoverPage () {
                         </Pressable>
                     ))}
                     <Pressable
-                        // key={index}
                         style={[
                             grid ? styles.gridProgramContainer : styles.listProgramContainer,
                             grid ? { width: cardWidth, marginLeft: cardSpacing / 2, marginRight: cardSpacing / 2 } : {}
@@ -199,7 +198,6 @@ export default function DiscoverPage () {
                         onPress={() => {
                             console.log("Navigating to Create Program");
                             navigation.navigate('CreateProgram', {
-                            // programData: JSON.stringify(program),
                             });
                         }}>
                         {grid ? (
@@ -209,11 +207,7 @@ export default function DiscoverPage () {
                                 <Image source={newprogram} style={styles.listProgramImage} />
                                 <View style={styles.listText}>
                                     <Text style={styles.listName}>Create Program</Text>
-                                    {/* <Text style={styles.listDescription}>{program.description}</Text> */}
                                 </View>
-                                {/* <Pressable style={styles.followButton}>
-                                    <Text style={{ color: 'darkgreen' }}>Follow</Text>
-                                </Pressable> */}
                                 <Ionicons name="arrow-forward-outline" size={20} color="gray" />
                             </>
                         )}
@@ -235,7 +229,7 @@ export default function DiscoverPage () {
                     </View>
                 )}
 
-                <View style={styles.createProgramContainer}>
+                {/* <View style={styles.createProgramContainer}>
                     {user?.admin && (
                         <Pressable
                             style={styles.createProgramButton}
@@ -245,7 +239,7 @@ export default function DiscoverPage () {
                         </Pressable>
                     )}
                 </View>
-
+ */}
                 <Text style={styles.mainTitle}>Upcoming Events</Text>
                 <Text style={styles.subHeading}>Explore upcoming events</Text>
                 <ScrollView horizontal={true} style={styles.eventContainer}>
