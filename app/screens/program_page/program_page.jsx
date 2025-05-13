@@ -10,7 +10,6 @@ import garden from '@assets/garden.jpg';
 import garden2 from '@assets/garden2.jpg';
 import Collapsible from 'react-native-collapsible';
 import ProgramCard from "@screens/event/program_card";
-import eventData from './eventData.json';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 
@@ -42,6 +41,9 @@ const ProgramPage = () => {
   const [program, setProgram] = useState(null);
   const [pastEvents, setPastEvents] = useState();
   const [pastPictures, setPastPictures] = useState([]); 
+
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+
 
   const route = useRoute();
   const programData = route.params?.programData;
@@ -100,6 +102,27 @@ const ProgramPage = () => {
       setProgram(null);
     }
   }, [programData]);
+
+  useEffect(() => {
+    const fetchUpcomingEvents = async () => {
+      if (!program || !program.upcomingEvents) return;
+  
+      try {
+        const responses = await Promise.all(
+          program.upcomingEvents.map(id =>
+            axios.get(`${url}/api/events/${id}`)
+          )
+        );
+        const events = responses.map(res => res.data);
+        setUpcomingEvents(events);
+      } catch (err) {
+        console.error("Error fetching upcoming events:", err);
+      }
+    };
+  
+    fetchUpcomingEvents();
+  }, [program]);
+  
   
   // get program's pastEvent array
   useEffect(() => {
@@ -188,9 +211,9 @@ const ProgramPage = () => {
       {/*  Upcoming Events Carousel  */}
       <Text style={ styles.header }>Upcoming Events</Text>
         <View>
-          <ScrollView horizontal={true} styles={styles.upcomingBox}>
-          {eventData.events.map((event, index) => (
-              <Event {...event} key={index}/>
+          <ScrollView horizontal={true} style={styles.upcomingBox}>
+            {upcomingEvents.map((event, index) => (
+              <Event {...event} key={index} />
             ))}
           </ScrollView>
           {/* create new event if admin */}
@@ -207,42 +230,6 @@ const ProgramPage = () => {
             }
           </View>
         </View>
-        
-      {/* We no longer have past event carousel and goals/activities}
-      {/* <Text style={ styles.header }>Past Events</Text>
-        <View style={ styles.carouselContainer }>
-          {pastEvents?.map((eventId, index) => (
-              <View key={index}>
-                {pastPictures[eventId] === "garden" ? (
-                  <Image
-                    style = {styles.image}
-                    source={garden}
-                    />
-                ): (
-                  <Image 
-                  style={styles.image}
-                  source={garden2} />
-                )}
-              </View>
-              ))}
-        </View>
-
-      <View style={ styles.collapsible }>
-          <Pressable onPress={ toggleCollapsedGoals } >
-            <Text style={ styles.header }>Goals</Text>
-          </Pressable>
-          <Collapsible collapsed={ isCollapsedGoals } >
-            <BulletPoints items={ goals } ></BulletPoints>
-          </Collapsible>
-        </View>
-      <View style={ styles.collapsible }>
-        <Pressable onPress={ toggleCollapsedActivities } >
-          <Text style={ styles.header }>Activities</Text>
-        </Pressable>
-        <Collapsible collapsed={ isCollapsedActivities } >
-          <BulletPoints items={ activities } ></BulletPoints>
-        </Collapsible>
-      </View> */}
       </View>
     </ScrollView>
   );
