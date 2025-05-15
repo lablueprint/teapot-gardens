@@ -32,7 +32,6 @@ const SignIn = () => {
 
       const user = { name: name, email: email, password: password, dob: birthday, username: username }
       try {
-
         const response = await axios.post('http://localhost:4000/api/users/login', { email1: email, password: password });
         console.log(response.data)
         return true;

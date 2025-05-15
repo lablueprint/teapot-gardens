@@ -62,6 +62,7 @@ const Login = () => {
     }
   };
   const handleSubmit = async () => {
+    console.log("OOOOO");
     if (
       !name ||
       !email ||
@@ -101,7 +102,6 @@ const Login = () => {
         await SecureStore.setItemAsync('user', JSON.stringify({ userId, token }));
         // update context
         setUser({ userId, token });
-
         Alert.alert("Success", "Form submitted successfully!");
         return true;
       } catch (error) {
@@ -226,6 +226,7 @@ const Login = () => {
         <View style={styles.buttonContainer} >
           <TouchableOpacity style={styles.button}
             onPress={async () => {
+              console.log("here");
               const success = await handleSubmit();
               if (success) {
                 navigation.navigate('Home');
