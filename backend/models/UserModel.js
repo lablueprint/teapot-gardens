@@ -1,5 +1,8 @@
 
 const mongoose = require("mongoose");
+const bcrypt = require('react-native-bcrypt');
+const SALT_WORK_FACTOR = 10;
+
 const uniqueValidator = require('mongoose-unique-validator');
 
 const { Schema } = mongoose;
@@ -13,7 +16,7 @@ const userSchema = new Schema(
         name: {
             type: String,
             required: true,
-            unqiue: true,
+            unique: true,
         },
         email: {
             type: String,
@@ -77,7 +80,49 @@ const userSchema = new Schema(
             default: "Unknown",
         }
 
-}, { timestamps: true })
+    }, { timestamps: true })
+
+
+userSchema.pre('save', function (next) {
+    var user = this;
+
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) return next();
+
+    // generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+        if (err) return next(err);
+
+        // hash the password using our new salt
+        bcrypt.hash(user.password, salt, function (err, hash) {
+            if (err) return next(err);
+            // override the cleartext password with the hashed one
+            user.password = hash;
+            next();
+        });
+    });
+});
+
+userSchema.methods.comparePassword = function (candidatePassword) {
+    const user = this;
+
+    // If callback is provided, use it
+    // if (typeof cb === 'function') {
+    //     bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+    //         if (err) return cb(err);
+    //         cb(null, isMatch);
+    //     });
+    //     return;
+    // } a
+
+    // Otherwise return a Promise
+    return new Promise((resolve, reject) => {
+        bcrypt.compare(candidatePassword, user.password, function (err, isMatch) {
+            if (err) return reject(err);
+            resolve(isMatch);
+        });
+    });
+};
 
 userSchema.plugin(uniqueValidator, { message: 'Error, {PATH} is already taken.' });
 

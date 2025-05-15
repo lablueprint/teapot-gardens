@@ -24,25 +24,30 @@ const checkUserEmailandPass = async(req, res) => {
     const { email1, password } = req.body;
     try {
         // Use findOne to get a single document, not an array
-        const user = await User.findOne({ email:email1 });
+        const user = await User.findOne({ email: email1 });
         
         // Check if user exists
         if (!user) {
             return res.status(400).json({ error: "Invalid email or password"});
         }
         
-        // Compare passwords (should use bcrypt.compare in production)
-        const isMatch = (password === user.password);
-
-        if(!isMatch) {
-            return res.status(401).json({ error: "Invalid email or password"});
+        try {
+            // Use the Promise-based version we implemented
+            const isMatch = await user.comparePassword(password);
+            
+            if(!isMatch) {
+                return res.status(401).json({ error: "Invalid email or password"});
+            }
+            
+            // Success case - return minimal user info needed
+            res.status(200).json({
+                _id: user._id,
+                email: user.email
+            });
+        } catch (err) {
+            console.error("Password comparison error:", err);
+            res.status(500).json({ error: "Server error occurred" });
         }
-        
-        // Success case - return minimal user info needed
-        res.status(200).json({
-            _id: user._id,
-            email: user.email
-        });
     } catch(error) {
         console.error("Login error:", error);
         // Never expose credentials in error responses
