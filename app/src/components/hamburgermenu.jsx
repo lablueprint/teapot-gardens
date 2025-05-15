@@ -70,7 +70,7 @@ const CustomDrawerContent = (props) => {
 
             <View style={{ flex: 1 }}>
                 {/* Profile at top */}
-                <View style={styles.profileContainer}>
+                {/* <View style={styles.profileContainer}>
                     <DrawerItem
                         label="Profile"
                         onPress={() => props.navigation.navigate("Profile")}
@@ -78,7 +78,7 @@ const CustomDrawerContent = (props) => {
                         labelStyle={styles.drawerLabel}
                         style={props.state.routes[props.state.index].name === "Profile" ? styles.activeDrawerItem : styles.inactiveDrawerItem}
                     />
-                </View>
+                </View> */}
 
                 {/* centering menu items vertically */}
                 <View style={styles.centeredItemsContainer}>
@@ -125,7 +125,7 @@ const createOnboardingNavigator = () => (
 );
 
 const createMainNavigator = () => {
-    const noHeaderScreens = ["IntroSlides", "Login", "SignIn", "Nursery", "Garden"];
+    const noHeaderScreens = ["IntroSlides", "Login", "SignIn", "Nursery", "Garden", "CreateEvent"];
     
     return (
         <Drawer.Navigator
