@@ -1,188 +1,230 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Image,
+  Dimensions,
+} from 'react-native';
 import axios from 'axios';
-import Placeholder from './homepage_components/mainimage';
-import Event from '@screens/program_page/event';
-import { programPages, upcomingEvents } from './homepage_components/data';
-import sample_logo from '@assets/sample.png';
-import pichu from '@assets/pichu.jpg';
-import pikachu from '@assets/pikachu.jpg';
-import raichu from '@assets/raichu.jpg';
-import User from 'backend/models/UserModel';
-import garden from '@assets/garden.jpg';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const url = 'http://localhost:4000'
+import Placeholder from './homepage_components/mainimage';
+import Event       from '@screens/program_page/event';
+
+import sample_logo from '@assets/sample.png';
+import pichu       from '@assets/pichu.jpg';
+import pikachu     from '@assets/pikachu.jpg';
+import raichu      from '@assets/raichu.jpg';
+import gardenBG    from '@assets/garden-assets/garden-background.png';
+
+const url        = 'http://localhost:4000';
+const tempUserId = '6789f49f8e0a009647312c7a';
+
+const SCREEN_WIDTH  = Dimensions.get('window').width;
+const CARD_WIDTH    = SCREEN_WIDTH * 0.8;   // single-card width
+const CARD_SPACING  = 16;                   // space between cards
+const SIDE_PADDING  = (SCREEN_WIDTH - CARD_WIDTH) / 2; // keeps first/last centred
 
 export default function Homepage() {
-  const [userData, setUserData] = useState(null);
+  const [userData,            setUserData]            = useState(null);
   const [userAttendingEvents, setUserAttendingEvents] = useState([]);
+  const [events,              setEvents]              = useState([]);
+  const [loading,             setLoading]             = useState(true);
 
-  const [testEvent, setTestEvent] = useState(null);
-
-  const [loading, setLoading] = useState(true);
+  /* ---------- Avatar level image ---------- */
   let level_img = sample_logo;
-  const tempUserId = '6789f49f8e0a009647312c7a';
-  const tempEventId = '678f315b8d423da67c615e95';
-  const [events, setEvents] = useState([]);
-  const today = new Date();
-  const currentDate = today.toISOString().split('T')[0];
-  const currentYear = today.getFullYear();
-  const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0');
-  const currentDay = today.getDate().toString().padStart(2, '0'); 
-  const currentTime = today.toTimeString().split(' ')[0].slice(0, 5).split(':')[0] + today.toTimeString().split(' ')[0].slice(0, 5).split(':')[1];
-  const months = {
-    January: '01',
-    February: '02',
-    March: '03',
-    April: '04',
-    May: '05',
-    June: '06',
-    July: '07',
-    August: '08',
-    September: '09',
-    October: '10',
-    November: '11',
-    December: '12',
+  if (userData?.tamagatchiXP !== undefined) {
+    if      (userData.tamagatchiXP < 1000)  level_img = pichu;
+    else if (userData.tamagatchiXP <= 2000) level_img = pikachu;
+    else                                    level_img = raichu;
   }
-  // console.log(currentYear, currentMonth, currentDay, currentTime); 
-  let eventdate, eventtime, eventmonth, eventday, eventyear, eventAMPM;
 
+  /* ---------- Fetch user + attending event IDs ---------- */
   useEffect(() => {
-    const fetchUserData = async () => {
+    (async () => {
       try {
-        // fetching user data here
-        const userResponse = await axios.get(`${url}/api/users/${tempUserId}`);
-        const testResponse = await axios.get(`${url}/api/events/${tempEventId}`);
-        setTestEvent(testResponse);
-  
-        if (userResponse.status === 200) {
-          setUserData(userResponse.data);
-          setUserAttendingEvents(userResponse.data.attendingEvents);
-          for (let event of userResponse.data.attendingEvents) {
-            const eventDate = await axios.get(`${url}/api/events/` + event);
-            // event date formatted like "February 20th 2024"
-            // event time formatted like "3:00 PM"
-            eventAMPM = eventDate.data.time.split(' ')[1];
-            eventtime = eventDate.data.time.split(' ')[0].split(':')[0] + eventDate.data.time.split(' ')[0].split(':')[1];
-            if (eventAMPM === 'PM') {
-              eventtime = parseInt(eventtime) + 1200;
-            }
-            eventdate = eventDate.data.date;
-            eventmonth = months[eventDate.data.date.split(' ')[0]];
-            eventday = eventDate.data.date.split(' ')[1].replace(/\D/g, '');
-            eventyear = eventDate.data.date.split(' ')[2];
-            // console.log(eventDate.data.title, eventdate, eventtime, eventmonth, eventday, eventyear, eventAMPM);
-            if (currentYear > eventyear) {
-              // event is in the past fs
-              //I NEED HELP WITH THIS PART
-              console.log(userResponse.data.attendingEvents, event);
-              await axios.patch(`https://${url}/api/users/` + userResponse.data._id, {
-                attendedEvents: [...userResponse.data.attendedEvents, event],
-                attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
-              });
-              console.log("DONE");
-            }
-            else if (currentYear === eventyear) {
-              if (currentMonth > eventmonth) {
-                // event is in the past fs
-              }
-              else if (currentMonth === eventmonth) {
-                if (currentDay > eventday) {
-                  // event is in the past fs
-                }
-                else if (currentDay === eventDay) {
-                  if (currentTime > eventtime) {
-                    // event is in the past fs
-                  }
-                  else {
-                    //its a future event
-                  }
-                }
-              }
-            }
-          }
-        } else {
-          console.warn("No attending events found for the user");
-          setUserAttendingEvents([]);
-        }
-      } catch (error) {
-        console.error('Error fetching user or events: ', error.message);
+        const { data } = await axios.get(`${url}/api/users/${tempUserId}`);
+        setUserData(data);
+        setUserAttendingEvents(data.attendingEvents || []);
+      } catch (err) {
+        console.error('Error fetching user:', err.message);
       } finally {
         setLoading(false);
       }
-    };
-    fetchUserData();
+    })();
   }, []);
-  useEffect (() => {
-    if (userAttendingEvents.length > 0) {
-      populateEvents();
-    }
+
+  /* ---------- Fetch full event objects ---------- */
+  useEffect(() => {
+    if (!userAttendingEvents.length) return;
+
+    (async () => {
+      try {
+        // prevent duplicate calls
+        const uniqueIds = Array.from(new Set(userAttendingEvents));
+        const res = await Promise.all(
+          uniqueIds.map(id => axios.get(`${url}/api/events/${id}`))
+        );
+        setEvents(res.map(r => r.data));
+      } catch (err) {
+        console.error('Error fetching events:', err.message);
+      }
+    })();
   }, [userAttendingEvents]);
 
-  if (userData && userData.tamagatchiXP !== undefined) {
-    if (userData.tamagatchiXP < 1000) {
-      level_img = pichu;
-    } else if (userData.tamagatchiXP <= 2000) {
-      level_img = pikachu;
-    } else {
-      level_img = raichu;
-    }
-  }
-
-  console.log(userAttendingEvents);
-  const populateEvents = async () => {
-    try {
-      const eventPromises = userAttendingEvents?.map(eventId => axios.get(`${url}/api/events/${eventId}`));
-      const eventResponses = await Promise.all(eventPromises);
-      console.log(eventResponses, "EVENTS");
-      const events = eventResponses.map(response => response.data);
-      setEvents(events);
-      console.log(events, "EVENTS");
-    } catch (error) {
-      console.error('Error fetching events: ', error.message);
-    }
-  }
-
+  /* ========================= Render ========================= */
   return (
-    <ScrollView style={styles.main_container}>
-      <Text style = {styles.title}> Your Teapot Garden </Text>
-      <Placeholder imageSource={level_img} />
-      <Text style = {styles.subtitle}> Upcoming Events </Text>
-      <View style={styles.events_container}>
-        {events?.map((event, index) => (
-          <Event {...event} key={index}  />
-        ))}
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* ---------- Pet card ---------- */}
+        <View style={styles.petCard}>
+          <Image source={gardenBG} style={styles.petImg} resizeMode="cover" />
+          <View style={styles.petOverlay}>
+            <Text style={styles.petTitle}>Grey is looking good!</Text>
+            <Text style={styles.petSub}>
+              You're 100 pts away{'\n'}from leveling up!
+            </Text>
+            <Text style={styles.petLvl}>LVL 2/3</Text>
+          </View>
+        </View>
+
+        <Pressable style={styles.enterBtn}>
+          <Text style={styles.enterTxt}>Enter My Garden</Text>
+        </Pressable>
+
+        {/* ---------- My Events ---------- */}
+        <Text style={styles.sectionHdr}>My Events</Text>
+
+        {events.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Text style={styles.emptyTitle}>
+              Looks like you don't have any events yet!
+            </Text>
+            <Text style={styles.emptySub}>
+              Come back here to view registered events
+            </Text>
+            <Ionicons
+              name="leaf-outline"
+              size={28}
+              color="#8d9282"
+              style={{ marginTop: 12 }}
+            />
+          </View>
+        ) : (
+          <ScrollView
+            horizontal
+            decelerationRate="fast"
+            snapToInterval={CARD_WIDTH + CARD_SPACING}
+            snapToAlignment="center"
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.carouselWrap}
+          >
+            {events.map((ev, i) => (
+              <View key={i} style={styles.carouselCard}>
+                <Event {...ev} />
+              </View>
+            ))}
+          </ScrollView>
+        )}
+
+        {/* ---------- Subscriptions ---------- */}
+        <Text style={styles.sectionHdr}>Subscriptions</Text>
+        <View style={styles.subRow}>
+          <View style={styles.subIconWrap}>
+            <Ionicons name="star-outline" size={22} color="#8d9282" />
+          </View>
+          <View style={{ flex: 1, marginLeft: 12 }}>
+            <Text style={styles.subTitle}>Keep track of your programs!</Text>
+            <Text style={styles.subDesc}>
+              Follow programs to stay up to date.
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
+/* ========================= Styles ========================= */
+const LIGHT_BG   = '#F7F9F2';
+const ACCENT     = '#9AA96D';
+const SCREEN_PAD = 20;
+
 const styles = StyleSheet.create({
-  title: {
-    fontFamily: 'Inter',
-    fontSize: 18,
-    fontWeight: 600,
-    marginVertical: 40,
-    textAlign: 'center',
-    color: '#737373',
-    marginBottom: 50
-  },
-  subtitle: {
-    fontFamily: 'Inter',
-    fontSize: 24,
-    fontWeight: 600,
-    marginTop: 40,
-    margin: 20,
-    textAlign: 'left',
-    color: '#000000'
-  },
-  main_container: {
+  container: {
     flex: 1,
-    backgroundColor: '#FCFCFC'
+    backgroundColor: LIGHT_BG,
+    padding: SCREEN_PAD,
   },
-  events_container: {
-    marginTop: 20,
-    paddingHorizontal: 20,
+
+  /* ----- Pet card ----- */
+  petCard: {
+    height: 300,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 24,
   },
-  
+  petImg: { ...StyleSheet.absoluteFillObject },
+  petOverlay: { flex: 1, padding: 14, justifyContent: 'space-between' },
+  petTitle:   { color: '#fff', fontSize: 20, fontWeight: '600' },
+  petSub:     { color: '#fff', fontSize: 12, lineHeight: 18 },
+  petLvl:     { color: '#fff', fontSize: 12, alignSelf: 'flex-start' },
+
+  /* ----- Buttons / headings ----- */
+  enterBtn: {
+    backgroundColor: ACCENT,
+    borderRadius: 8,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  enterTxt: { color: '#fff', fontSize: 18, fontWeight: '600' },
+  sectionHdr: {
+    fontSize: 24,
+    fontWeight: '600',
+    fontStyle: 'italic',
+    marginBottom: 16,
+    color: '#000',
+  },
+
+  /* ----- Empty state ----- */
+  emptyCard: {
+    backgroundColor: '#E8E9D8',
+    borderColor: '#D0D4B6',
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingVertical: 32,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+  },
+  emptyTitle: { fontSize: 16, color: '#5c5c5c', textAlign: 'center' },
+  emptySub:   { fontSize: 12, color: '#7c7c7c', marginTop: 4, textAlign: 'center' },
+
+  /* ----- Carousel ----- */
+  carouselWrap: {
+    paddingHorizontal: SIDE_PADDING,
+    flexDirection: 'row',
+  },
+  carouselCard: {
+    width: CARD_WIDTH,
+    marginHorizontal: CARD_SPACING / 2,
+  },
+
+  /* ----- Subscriptions ----- */
+  subRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12 },
+  subIconWrap: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 1.5,
+    borderColor: ACCENT,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  subTitle: { fontSize: 14, color: '#444' },
+  subDesc:  { fontSize: 12, color: '#888' },
 });
