@@ -310,11 +310,10 @@ const deleteUserEvent = async () => {
   //buttons for registration/cancel registration/view ticket
   // const [showDynamicButtons, setShowDynamicButtons] = useState(true);
   const Buttons = ({ attending }) => {
-    // console.log(modalVisible)
     return (
       <View>
         <DynamicButtons attending={attending}/>
-        <RegisterModal modalVisible={modalVisible} setModalVisible={setModalVisible} addUserEvent={addUserEvent}/>
+        <RegisterModal modalVisible={modalVisible} setModalVisible={setModalVisible} addUserEvent={addUserEvent} xp={event?.XP}/>
       </View>
     );
   };
