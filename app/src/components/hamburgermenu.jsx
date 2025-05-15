@@ -69,17 +69,6 @@ const CustomDrawerContent = (props) => {
             </View>
 
             <View style={{ flex: 1 }}>
-                {/* Profile at top */}
-                {/* <View style={styles.profileContainer}>
-                    <DrawerItem
-                        label="Profile"
-                        onPress={() => props.navigation.navigate("Profile")}
-                        icon={() => <Image source={tempIcon} style={styles.drawerIcon} />}
-                        labelStyle={styles.drawerLabel}
-                        style={props.state.routes[props.state.index].name === "Profile" ? styles.activeDrawerItem : styles.inactiveDrawerItem}
-                    />
-                </View> */}
-
                 {/* centering menu items vertically */}
                 <View style={styles.centeredItemsContainer}>
                     {["Home", "Garden", "Discover", "Profile", "DEBUG NAV"].map((screen, index) => {
@@ -133,7 +122,7 @@ const createMainNavigator = () => {
             initialRouteName="Login"
             screenOptions={({ route, navigation }) => ({
                 headerShown: !noHeaderScreens.includes(route.name),
-                // headerTransparent: true,
+                headerTransparent: true,
                 headerLeft: () => (
                     <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconButton}>
                         <Image source={menuIcon} style={styles.icon} />

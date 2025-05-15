@@ -228,18 +228,6 @@ export default function DiscoverPage () {
                         ))}
                     </View>
                 )}
-
-                {/* <View style={styles.createProgramContainer}>
-                    {user?.admin && (
-                        <Pressable
-                            style={styles.createProgramButton}
-                            onPress={() => navigation.navigate('CreateProgram')}
-                        >
-                            <Text style={styles.plusButton}>+</Text>
-                        </Pressable>
-                    )}
-                </View>
- */}
                 <Text style={styles.mainTitle}>Upcoming Events</Text>
                 <Text style={styles.subHeading}>Explore upcoming events</Text>
                 <ScrollView horizontal={true} style={styles.eventContainer}>
@@ -287,7 +275,8 @@ const styles = StyleSheet.create({
     pageContainer: {
         padding: 16,
         gap: 10,
-        fontFamily: 'IMFell'
+        fontFamily: 'IMFell',
+        marginTop: 100
     },
     mainTitle: {
         fontSize: 25,

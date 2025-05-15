@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     marginBottom: 24,
+    marginTop: 80
   },
   petImg: { ...StyleSheet.absoluteFillObject },
   petOverlay: { flex: 1, padding: 14, justifyContent: 'space-between' },
