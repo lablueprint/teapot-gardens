@@ -10,10 +10,16 @@ import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
 import User from 'backend/models/UserModel';
 import garden from '@assets/garden.jpg';
+import * as SecureStore from 'expo-secure-store';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
-const url = 'http://localhost:4000'
+const url = 'https://33cb-2607-f010-2a7-103f-f14e-a839-5723-9e40.ngrok-free.app'
 
 export default function Homepage() {
+  const { user } = useContext(AuthContext);
+  const userId = user?.userId;
+
   const [userData, setUserData] = useState(null);
   const [userAttendingEvents, setUserAttendingEvents] = useState([]);
 
@@ -49,11 +55,24 @@ export default function Homepage() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!userId) {
+        console.log("Waiting for userId...");
+        return;
+      }
       try {
         // fetching user data here
-        const userResponse = await axios.get(`${url}/api/users/${tempUserId}`);
-        const testResponse = await axios.get(`${url}/api/events/${tempEventId}`);
-        setTestEvent(testResponse);
+        // first get the current user id
+        // const userData = await SecureStore.getItemAsync('user');
+        // if (!userData) {
+        //   console.warn('No user stored');
+        //   return;
+        // }
+
+        // const { userId, token } = JSON.parse(userData);
+
+        const userResponse = await axios.get(`${url}/api/users/${userId}`);
+        // const testResponse = await axios.get(`${url}/api/events/${userId}`);
+        // setTestEvent(testResponse);
   
         if (userResponse.status === 200) {
           setUserData(userResponse.data);
@@ -75,8 +94,8 @@ export default function Homepage() {
             if (currentYear > eventyear) {
               // event is in the past fs
               //I NEED HELP WITH THIS PART
-              // console.log(userResponse.data.attendingEvents, event);
-              await axios.patch(`https://${url}/api/users/` + userResponse.data._id, {
+              console.log(userResponse.data.attendingEvents, event);
+              await axios.patch(`${url}/api/users/` + userResponse.data._id, {
                 attendedEvents: [...userResponse.data.attendedEvents, event],
                 attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
               });
@@ -117,7 +136,7 @@ export default function Homepage() {
     if (userAttendingEvents.length > 0) {
       populateEvents();
     }
-  }, [userAttendingEvents]);
+  }, [userAttendingEvents, userId]);
 
   if (userData && userData.tamagatchiXP !== undefined) {
     if (userData.tamagatchiXP < 1000) {
@@ -145,7 +164,7 @@ export default function Homepage() {
 
   return (
     <ScrollView style={styles.main_container}>
-      <Text style = {styles.title}> Your Teapot Garden </Text>
+      <Text style = {styles.title}> {userData.name} Teapot Garden </Text>
       <Placeholder imageSource={level_img} />
       <Text style = {styles.subtitle}> Upcoming Events </Text>
       <View style={styles.events_container}>
