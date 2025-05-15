@@ -1,4 +1,4 @@
-import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image, Pressable} from "react-native";
+import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image, Pressable } from "react-native";
 import React, { useState } from "react";
 import axios from 'axios';
 import planticon from '@assets/planticon.png';
@@ -26,17 +26,18 @@ const SignIn = () => {
       !password
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
+      return false;
     } else {
       Alert.alert("Success", "Form submitted successfully!");
 
-      const user = {name: name, email: email, password: password, dob: birthday, username: username}
+      const user = { name: name, email: email, password: password, dob: birthday, username: username }
       try {
 
-        const response = await axios.post('http://localhost:4000/api/users/login', {email1: email, password: password});
+        const response = await axios.post('http://localhost:4000/api/users/login', { email1: email, password: password });
         console.log(response.data)
-        navigation.navigate("Home");
+        return true;
       }
-      catch (error) { 
+      catch (error) {
         console.log("error", error)
         console.log(error.response.data)
       }
@@ -47,7 +48,7 @@ const SignIn = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Sign In</Text>
-        <Image style={styles.logo }source={logo} />
+        <Image style={styles.logo} source={logo} />
       </View>
 
       <Text>Email</Text>
@@ -59,49 +60,54 @@ const SignIn = () => {
       />
 
       <Text>Password</Text>
-        <TextInput
-          style={styles.input}
-          value={password}
-          secureTextEntry
-          onChangeText={(text) => setPassword(text)}
-          placeholder="Create a password"
-        />
-        <View style={styles.buttonContainer} >
-          <TouchableOpacity style={styles.button} onPress={() => {handleSubmit();}} >
-            <Text style={{fontSize: 30, color: 'white'}} >Sign In</Text>
-          </TouchableOpacity>
-        </View>
+      <TextInput
+        style={styles.input}
+        value={password}
+        secureTextEntry
+        onChangeText={(text) => setPassword(text)}
+        placeholder="Create a password"
+      />
+      <View style={styles.buttonContainer} >
+        <TouchableOpacity style={styles.button} onPress={async () => {
+          const success = await handleSubmit();
+          if (success) {
+            navigation.navigate('Home');
+          }
+        }} >
+          <Text style={{ fontSize: 30, color: 'white' }} >Sign In</Text>
+        </TouchableOpacity>
+      </View>
 
-        <View style={styles.orContainer}>
-          <View style={styles.orline} />
-          <Text style={styles.orText}>Or</Text>
-          <View style={styles.orline} />
-        </View>
-
-        
-        
-        <View style={styles.customSignInContainer}>
-          <TouchableOpacity style={styles.customSignIn}>
-            <Image style={styles.goog} source={google} />
-            <Text>Sign in with Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.customSignIn}>
-            <Image style={styles.goog} source={apple} />
-            <Text>Sign in with Apple</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.orContainer}>
+        <View style={styles.orline} />
+        <Text style={styles.orText}>Or</Text>
+        <View style={styles.orline} />
+      </View>
 
 
-       <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-          <TouchableOpacity>
-              <Text>Have an account? </Text>
-          </TouchableOpacity>
-          <Pressable
-            onPress={() => navigation.navigate('ProgramPage')}
-          >
-            <Text style={{color: 'blue'}}>Sign in </Text>
-          </Pressable>
-        </View>
+
+      <View style={styles.customSignInContainer}>
+        <TouchableOpacity style={styles.customSignIn}>
+          <Image style={styles.goog} source={google} />
+          <Text>Sign in with Google</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.customSignIn}>
+          <Image style={styles.goog} source={apple} />
+          <Text>Sign in with Apple</Text>
+        </TouchableOpacity>
+      </View>
+
+
+      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+        <TouchableOpacity>
+          <Text>Have an account? </Text>
+        </TouchableOpacity>
+        <Pressable
+          onPress={() => navigation.navigate('ProgramPage')}
+        >
+          <Text style={{ color: 'blue' }}>Sign in </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -116,31 +122,31 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: 'absolute',
-    right: 20, 
+    right: 20,
     bottom: 1,
   },
   goog: {
-    width: 15, 
+    width: 15,
     height: 15,
   },
   customSignInContainer: {
-    display: 'flex', 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 20,
   },
   customSignIn: {
     display: 'flex',
     flexDirection: 'row',
     gap: 5,
-    borderColor: "white", 
+    borderColor: "white",
     borderWidth: 0.5,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
   },
   goog: {
-    width: 15, 
+    width: 15,
     height: 15,
   },
   input: {
@@ -155,12 +161,12 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   title: {
-    fontSize: 50, 
+    fontSize: 50,
     fontWeight: 'bold',
     fontFamily: 'CooperLtBT',
-  }, 
+  },
   header: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     fontSize: 40,
     marginTop: 90,
     marginBottom: 40,
@@ -168,7 +174,7 @@ const styles = StyleSheet.create({
   button: {
     padding: 10,
     justifyContent: "center",
-    alignItems: "center", 
+    alignItems: "center",
     borderRadius: 16,
     width: '300',
     borderColor: 'black',
@@ -190,7 +196,7 @@ const styles = StyleSheet.create({
   },
   orContainer: {
     marginVertical: 20,
-    display: 'flex', 
+    display: 'flex',
     alignItems: 'center',
     flexDirection: 'row',
   },

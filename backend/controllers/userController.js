@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/UserModel')
 const mongoose = require('mongoose')
 
@@ -96,7 +97,8 @@ const createUser = async (req, res) => {
     try{
         console.log(req.body)
         const user = await User.create(req.body)
-        res.status(200).json(user)
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+        res.status(200).json({userId: user._id, token})
     } catch (error) {
         console.log("Error creating user:", error)
         
