@@ -11,7 +11,7 @@ import raichu from '@assets/raichu.jpg';
 import User from 'backend/models/UserModel';
 import garden from '@assets/garden.jpg';
 
-const url = 'https://f037-2607-fb91-30a-9b2f-40b6-39ac-318a-c444.ngrok-free.app'
+const url = 'http://172.26.127.25:4000'
 
 export default function Homepage() {
   const [userData, setUserData] = useState(null);
@@ -25,11 +25,10 @@ export default function Homepage() {
   const tempEventId = '678f315b8d423da67c615e95';
   const [events, setEvents] = useState([]);
   const today = new Date();
-  const currentDate = today.toISOString().split('T')[0];
-  const currentYear = today.getFullYear();
-  const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0');
-  const currentDay = today.getDate().toString().padStart(2, '0'); 
-  const currentTime = today.toTimeString().split(' ')[0].slice(0, 5).split(':')[0] + today.toTimeString().split(' ')[0].slice(0, 5).split(':')[1];
+  const currentYear = parseInt(today.getFullYear());
+  const currentMonth = parseInt((today.getMonth() + 1).toString().padStart(2, '0'));
+  const currentDay = parseInt(today.getDate().toString().padStart(2, '0')); 
+  const currentTime = parseInt(today.toTimeString().split(' ')[0].slice(0, 5).split(':')[0] + today.toTimeString().split(' ')[0].slice(0, 5).split(':')[1]);
   const months = {
     January: '01',
     February: '02',
@@ -44,18 +43,18 @@ export default function Homepage() {
     November: '11',
     December: '12',
   }
-  // console.log(currentYear, currentMonth, currentDay, currentTime); 
   let eventdate, eventtime, eventmonth, eventday, eventyear, eventAMPM;
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // fetching user data here
+        // fetching user data here   
         const userResponse = await axios.get(`${url}/api/users/${tempUserId}`);
         const testResponse = await axios.get(`${url}/api/events/${tempEventId}`);
         setTestEvent(testResponse);
   
         if (userResponse.status === 200) {
+          
           setUserData(userResponse.data);
           setUserAttendingEvents(userResponse.data.attendingEvents);
           for (let event of userResponse.data.attendingEvents) {
@@ -63,36 +62,44 @@ export default function Homepage() {
             // event date formatted like "February 20th 2024"
             // event time formatted like "3:00 PM"
             eventAMPM = eventDate.data.time.split(' ')[1];
-            eventtime = eventDate.data.time.split(' ')[0].split(':')[0] + eventDate.data.time.split(' ')[0].split(':')[1];
+            eventtime = parseInt(eventDate.data.time.split(' ')[0].split(':')[0] + eventDate.data.time.split(' ')[0].split(':')[1]);
             if (eventAMPM === 'PM') {
               eventtime = parseInt(eventtime) + 1200;
             }
             eventdate = eventDate.data.date;
-            eventmonth = months[eventDate.data.date.split(' ')[0]];
-            eventday = eventDate.data.date.split(' ')[1].replace(/\D/g, '');
-            eventyear = eventDate.data.date.split(' ')[2];
-            // console.log(eventDate.data.title, eventdate, eventtime, eventmonth, eventday, eventyear, eventAMPM);
-            if (currentYear > eventyear) {
-              // event is in the past fs
-              //I NEED HELP WITH THIS PART
+            eventmonth = parseInt(months[eventDate.data.date.split(' ')[0]]);
+            eventday = parseInt(eventDate.data.date.split(' ')[1].replace(/\D/g, ''));
+            eventyear = parseInt(eventDate.data.date.split(' ')[2]);
+            if (currentYear > (eventyear)) {
               console.log(userResponse.data.attendingEvents, event);
-              await axios.patch(`https://${url}/api/users/` + userResponse.data._id, {
+              await axios.patch(`${url}/api/users/` + userResponse.data._id, {
                 attendedEvents: [...userResponse.data.attendedEvents, event],
                 attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
               });
-              console.log("DONE");
             }
             else if (currentYear === eventyear) {
               if (currentMonth > eventmonth) {
                 // event is in the past fs
+                await axios.patch(`${url}/api/users/` + userResponse.data._id, {
+                attendedEvents: [...userResponse.data.attendedEvents, event],
+                attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
+                });
               }
               else if (currentMonth === eventmonth) {
                 if (currentDay > eventday) {
                   // event is in the past fs
+                  await axios.patch(`${url}/api/users/` + userResponse.data._id, {
+                    attendedEvents: [...userResponse.data.attendedEvents, event],
+                    attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
+                  });
                 }
                 else if (currentDay === eventDay) {
                   if (currentTime > eventtime) {
                     // event is in the past fs
+                    await axios.patch(`${url}/api/users/` + userResponse.data._id, {
+                      attendedEvents: [...userResponse.data.attendedEvents, event],
+                      attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
+                    });
                   }
                   else {
                     //its a future event
@@ -134,10 +141,10 @@ export default function Homepage() {
     try {
       const eventPromises = userAttendingEvents?.map(eventId => axios.get(`${url}/api/events/${eventId}`));
       const eventResponses = await Promise.all(eventPromises);
-      console.log(eventResponses, "EVENTS");
+      // console.log(eventResponses, "EVENTS");
       const events = eventResponses.map(response => response.data);
       setEvents(events);
-      console.log(events, "EVENTS");
+      // console.log(events, "EVENTS");
     } catch (error) {
       console.error('Error fetching events: ', error.message);
     }
