@@ -16,6 +16,7 @@ export default function App() {
     { label: "Go to Events Page", route: "EventPage" },
     { label: "Go to Garden", route: "Garden" },
     { label: "Go to Nursery", route: "Nursery" },
+    { label: "Go to Create Program", route: "CreateProgram" },
   ];
 
   return (

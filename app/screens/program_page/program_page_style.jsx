@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     upcomingBox: {
-        height: 500,
+        height: 250,
         borderWidth: 1,
-        borderColor: 'red',
+        borderColor: 'transparent',
     },
     createEventContainer: {
         padding: 10,
