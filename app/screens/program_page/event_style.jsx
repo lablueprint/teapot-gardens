@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         marginRight: 15, 
         height: '200',
-        width: '300',
+        width: '350',
         backgroundColor: '#D0D4C2',
     },
     eventInfoContainer: {
