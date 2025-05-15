@@ -183,6 +183,6 @@ const styles = StyleSheet.create({
   events_container: {
     marginTop: 20,
     paddingHorizontal: 20,
+    justifyContent: 'center',
   },
-  
 });
