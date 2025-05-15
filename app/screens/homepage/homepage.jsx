@@ -7,6 +7,7 @@ import {
   Pressable,
   Image,
   Dimensions,
+  FlatList,           // NEW – use FlatList for horizontal paging
 } from 'react-native';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -23,10 +24,7 @@ import gardenBG    from '@assets/garden-assets/garden-background.png';
 const url        = 'http://localhost:4000';
 const tempUserId = '6789f49f8e0a009647312c7a';
 
-const SCREEN_WIDTH  = Dimensions.get('window').width;
-const CARD_WIDTH    = SCREEN_WIDTH * 0.8;   // single-card width
-const CARD_SPACING  = 16;                   // space between cards
-const SIDE_PADDING  = (SCREEN_WIDTH - CARD_WIDTH) / 2; // keeps first/last centred
+/* ─── Layout constants ──────────────────────────────────────────── */                      
 
 export default function Homepage() {
   const [userData,            setUserData]            = useState(null);
@@ -42,7 +40,7 @@ export default function Homepage() {
     else                                    level_img = raichu;
   }
 
-  /* ---------- Fetch user + attending event IDs ---------- */
+  /* ---------- Fetch user ---------- */
   useEffect(() => {
     (async () => {
       try {
@@ -57,13 +55,11 @@ export default function Homepage() {
     })();
   }, []);
 
-  /* ---------- Fetch full event objects ---------- */
+  /* ---------- Fetch attending events ---------- */
   useEffect(() => {
     if (!userAttendingEvents.length) return;
-
     (async () => {
       try {
-        // prevent duplicate calls
         const uniqueIds = Array.from(new Set(userAttendingEvents));
         const res = await Promise.all(
           uniqueIds.map(id => axios.get(`${url}/api/events/${id}`))
@@ -114,20 +110,19 @@ export default function Homepage() {
             />
           </View>
         ) : (
-          <ScrollView
+          /* -------------- Carousel (exactly one card per swipe) -------------- */
+          <FlatList
+            data={events}
             horizontal
-            decelerationRate="fast"
-            snapToInterval={CARD_WIDTH + CARD_SPACING}
-            snapToAlignment="center"
+            pagingEnabled                /* ⬅️ snap full-width pages */
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.carouselWrap}
-          >
-            {events.map((ev, i) => (
-              <View key={i} style={styles.carouselCard}>
-                <Event {...ev} />
+            keyExtractor={(item) => item._id ?? String(item.id)}
+            renderItem={({ item }) => (
+              <View style={styles.carouselCard}>
+                <Event {...item} />
               </View>
-            ))}
-          </ScrollView>
+            )}
+          />
         )}
 
         {/* ---------- Subscriptions ---------- */}
@@ -149,15 +144,14 @@ export default function Homepage() {
 }
 
 /* ========================= Styles ========================= */
-const LIGHT_BG   = '#F7F9F2';
-const ACCENT     = '#9AA96D';
-const SCREEN_PAD = 20;
+const LIGHT_BG = '#F7F9F2';
+const ACCENT   = '#9AA96D';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: LIGHT_BG,
-    padding: SCREEN_PAD,
+    padding: 20,           
   },
 
   /* ----- Pet card ----- */
@@ -171,7 +165,7 @@ const styles = StyleSheet.create({
   petOverlay: { flex: 1, padding: 14, justifyContent: 'space-between' },
   petTitle:   { color: '#fff', fontSize: 20, fontWeight: '600' },
   petSub:     { color: '#fff', fontSize: 12, lineHeight: 18 },
-  petLvl:     { color: '#fff', fontSize: 12, alignSelf: 'flex-start' },
+  petLvl:     { color: '#fff', fontSize: 12 },
 
   /* ----- Buttons / headings ----- */
   enterBtn: {
@@ -182,49 +176,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
   },
-  enterTxt: { color: '#fff', fontSize: 18, fontWeight: '600' },
-  sectionHdr: {
-    fontSize: 24,
-    fontWeight: '600',
-    fontStyle: 'italic',
-    marginBottom: 16,
-    color: '#000',
-  },
+  enterTxt:  { color: '#fff', fontSize: 18, fontWeight: '600' },
+  sectionHdr:{ fontSize: 24, fontWeight: '600', fontStyle: 'italic',
+               marginBottom: 16, color: '#000' },
 
   /* ----- Empty state ----- */
   emptyCard: {
     backgroundColor: '#E8E9D8',
-    borderColor: '#D0D4B6',
+    borderColor:     '#D0D4B6',
     borderWidth: 1,
     borderRadius: 6,
-    paddingVertical: 32,
+    paddingVertical:   32,
     paddingHorizontal: 12,
     alignItems: 'center',
   },
-  emptyTitle: { fontSize: 16, color: '#5c5c5c', textAlign: 'center' },
-  emptySub:   { fontSize: 12, color: '#7c7c7c', marginTop: 4, textAlign: 'center' },
+  emptyTitle:{ fontSize: 16, color: '#5c5c5c', textAlign: 'center' },
+  emptySub:  { fontSize: 12, color: '#7c7c7c', marginTop: 4, textAlign: 'center' },
 
-  /* ----- Carousel ----- */
-  carouselWrap: {
-    paddingHorizontal: SIDE_PADDING,
-    flexDirection: 'row',
-  },
+  /* ----- Carousel card ----- */
   carouselCard: {
-    width: CARD_WIDTH,
-    marginHorizontal: CARD_SPACING / 2,
+    marginLeft: "20"            
   },
 
   /* ----- Subscriptions ----- */
   subRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12 },
   subIconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    borderWidth: 1.5,
-    borderColor: ACCENT,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 56, height: 56, borderRadius: 28,
+    borderWidth: 1.5, borderColor: ACCENT,
+    justifyContent: 'center', alignItems: 'center',
   },
-  subTitle: { fontSize: 14, color: '#444' },
-  subDesc:  { fontSize: 12, color: '#888' },
+  subTitle:{ fontSize: 14, color: '#444' },
+  subDesc: { fontSize: 12, color: '#888' },
 });
