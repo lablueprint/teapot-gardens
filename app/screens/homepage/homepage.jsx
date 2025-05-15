@@ -16,7 +16,7 @@ const url = 'http://172.26.127.25:4000'
 export default function Homepage() {
   const [userData, setUserData] = useState(null);
   const [userAttendingEvents, setUserAttendingEvents] = useState([]);
-
+  const [thisMonthEvents, setThisMonthEvents] = useState([]);
   const [testEvent, setTestEvent] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -66,7 +66,6 @@ export default function Homepage() {
             if (eventAMPM === 'PM') {
               eventtime = parseInt(eventtime) + 1200;
             }
-            eventdate = eventDate.data.date;
             eventmonth = parseInt(months[eventDate.data.date.split(' ')[0]]);
             eventday = parseInt(eventDate.data.date.split(' ')[1].replace(/\D/g, ''));
             eventyear = parseInt(eventDate.data.date.split(' ')[2]);
@@ -86,14 +85,17 @@ export default function Homepage() {
                 });
               }
               else if (currentMonth === eventmonth) {
+                // if event is in the same month then it is in this months events
+
                 if (currentDay > eventday) {
                   // event is in the past fs
                   await axios.patch(`${url}/api/users/` + userResponse.data._id, {
                     attendedEvents: [...userResponse.data.attendedEvents, event],
                     attendingEvents: userResponse.data.attendingEvents.filter(e => e !== event)
                   });
+                  console.log("HELLO");
                 }
-                else if (currentDay === eventDay) {
+                else if (currentDay === eventday) {
                   if (currentTime > eventtime) {
                     // event is in the past fs
                     await axios.patch(`${url}/api/users/` + userResponse.data._id, {
@@ -145,6 +147,13 @@ export default function Homepage() {
       const events = eventResponses.map(response => response.data);
       setEvents(events);
       // console.log(events, "EVENTS");
+      const monthEvents = events.filter(event => {
+        const [monthStr, dayStr, yearStr] = event.date.split(' ');
+        const eventMonth = parseInt(months[monthStr]);
+        const eventYear = parseInt(yearStr);
+        return eventMonth === currentMonth && eventYear === currentYear;
+      });
+      setThisMonthEvents(monthEvents);
     } catch (error) {
       console.error('Error fetching events: ', error.message);
     }
@@ -156,9 +165,19 @@ export default function Homepage() {
       <Placeholder imageSource={level_img} />
       <Text style = {styles.subtitle}> Upcoming Events </Text>
       <View style={styles.events_container}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {events?.map((event, index) => (
           <Event {...event} key={index}  />
         ))}
+        </ScrollView>
+      </View>
+      <Text style = {styles.subtitle}> This Month's Events </Text>
+      <View style={styles.events_container}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {thisMonthEvents?.map((event, index) => (
+          <Event {...event} key={index}  />
+        ))}
+        </ScrollView>
       </View>
     </ScrollView>
   );
