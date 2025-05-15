@@ -13,7 +13,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
-const url = 'https://33cb-2607-f010-2a7-103f-f14e-a839-5723-9e40.ngrok-free.app'
+const url = 'https://c9c4-2607-f010-2a7-103f-5470-a9bd-543a-ae8b.ngrok-free.app'
 
 export default function Homepage() {
   const { user } = useContext(AuthContext);
@@ -148,7 +148,7 @@ export default function Homepage() {
 
   return (
     <ScrollView style={styles.main_container}>
-      <Text style = {styles.title}> {userData.name} Teapot Garden </Text>
+      <Text style = {styles.title}> {userData?.name ?? "Loading"} Teapot Garden </Text>
       <Placeholder imageSource={level_img} />
       <Text style = {styles.subtitle}> Upcoming Events </Text>
       <View style={styles.events_container}>
