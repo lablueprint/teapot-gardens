@@ -346,6 +346,7 @@ const deleteUserEvent = async () => {
         <Image style={{ width: '100%', height: '500', resizeMode: "cover" }} source={Paradise} />
       </View>
       
+
       <View style={{borderRadius: 10}}>
       <View style={styles.container}>
         <Text style={styles.eventHeader}>{event?.name}</Text>

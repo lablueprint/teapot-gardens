@@ -298,7 +298,6 @@ const styles = StyleSheet.create({
     },
     eventContainer: {
         flexDirection: "row",
-        width: '100%',
         marginBottom: 20,
     },
     eventBox: {
@@ -383,7 +382,7 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderRadius: 10,
         width: '125%',
-        height: '18%',
+        height: '130',
         marginBottom: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -393,7 +392,7 @@ const styles = StyleSheet.create({
         gap: 20,
     },
     listProgramImage: {
-        height: '100%',
+        height: '125',
         width: 130,
         borderTopRightRadius: 10, 
         borderBottomRightRadius: 10,
