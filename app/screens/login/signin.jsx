@@ -71,6 +71,12 @@ const SignIn = () => {
           </TouchableOpacity>
         </View>
 
+        <View>
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={{ color: 'blue', textAlign: 'center' }}>Forgot Password?</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.orContainer}>
           <View style={styles.orline} />
           <Text style={styles.orText}>Or</Text>
