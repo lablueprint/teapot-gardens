@@ -3,14 +3,21 @@ import { View, Text, StyleSheet, ScrollView, Pressable, TouchableOpacity, TextIn
 import { useNavigation } from 'expo-router';
 import AnalyticsChart from "@screens/event/event-components/AnalyticsChart.jsx";
 import { useRoute } from '@react-navigation/native';
+import {useFonts} from 'expo-font';
 
 const EventAnalytics = () => {
     const navigation = useNavigation();
 
     const route = useRoute();
     const eventData = JSON.parse(route.params?.eventData) || null;
-    
     const stats = JSON.parse(route.params?.stats) || null;
+
+    const [fontsLoaded] = useFonts({
+        'IMFell': require('../../../../assets/fonts/IMFellGreatPrimer-Regular.ttf'),
+        'IMFellItalic': require('../../../../assets/fonts/IMFellGreatPrimer-Italic.ttf')
+    });
+
+    if (!fontsLoaded) return null;
 
     return (
         <View style={styles.container}>
@@ -71,9 +78,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     title: {
-        fontSize: 25,
-        fontWeight: 'bold',
-        marginVertical: 20,
+        fontSize: 30,
+        margin: 20,
+        fontFamily: 'IMFell',
         textAlign: 'left',
     },
     chartContainer: {
@@ -90,8 +97,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     }, 
     chartTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 16,
         marginBottom: 10,
         textAlign: 'center',
     },
