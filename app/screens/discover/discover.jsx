@@ -25,7 +25,6 @@ export default function DiscoverPage () {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const tempUserId = '678f3a6bc0368a4c717413a8';
-    // const API_KEY = 'https://8074-2607-f010-2a7-1021-6412-8d25-cdd7-edf.ngrok-free.app';
     const [user, setUser] = useState(null);
     const [grid, setGrid] = useState(false);
 
@@ -135,14 +134,14 @@ export default function DiscoverPage () {
     if (!fontsLoaded) return null;
 
     return (
-        // <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.pageContainer}>
                 <View style={styles.toggleIcon}>
-                    <Pressable onPress={toggleGrid}>
+                    <Pressable onPress={toggleGrid} style={styles.iconButton}>
                         <Ionicons 
-                            name={grid ? "grid" : "tablet-portrait"}
-                            size={40} 
-                            color="#D2D0D0" 
+                            name={grid ? "list-outline" : "tablet-portrait"}
+                            size={30} 
+                            color="#F9F5F5" 
                         />
                     </Pressable>
                 </View>
@@ -187,7 +186,9 @@ export default function DiscoverPage () {
                             });
                         }}>
                         {grid ? (
-                            <Image source={newprogram} style={styles.gridProgramImage} />
+                            <View>
+                                <Image source={newprogram} style={styles.gridProgramImage} />
+                            </View>
                         ) : (
                             <>
                                 <View style={styles.listText}>
@@ -211,7 +212,9 @@ export default function DiscoverPage () {
                                 });
                             }}>
                             {grid ? (
-                                <Image source={discover} style={styles.gridProgramImage} />
+                                <View> 
+                                    <Image source={discover} style={styles.gridProgramImage} />
+                                </View>
                             ) : (
                                 <>
                                     <View style={styles.listText}>
@@ -230,7 +233,7 @@ export default function DiscoverPage () {
                         </Pressable>
                     ))}
                 </ScrollView>
-                {/* <Text style={styles.mainTitle}>Upcoming Events</Text>
+                <Text style={styles.mainTitle}>Spotlight Events</Text>
                 <Text style={styles.subHeading}>Explore upcoming events</Text>
                 <ScrollView horizontal={true} style={styles.eventContainer}>
                     {events.map((event, index) => (
@@ -267,9 +270,9 @@ export default function DiscoverPage () {
                             </View>
                         </Pressable>
                     ))}
-                </ScrollView> */}
+                </ScrollView>
             </View>
-        // </ScrollView>
+        </ScrollView>
     );
 }
 
@@ -290,6 +293,11 @@ const styles = StyleSheet.create({
         top: 10,
         right: 10,
         zIndex: 10,
+    },
+    iconButton: {
+        backgroundColor: '#757B4580',
+        borderRadius: 8,
+        padding: 10,
     },
     subHeading: {
         fontSize: 15,
@@ -354,9 +362,10 @@ const styles = StyleSheet.create({
         width: 200,
         marginVertical: 5,
     },
-    gridProgramImage: {
-        height: 390,
-        width: 250,
+    gridProgramContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        margin: 20,
     },
     indicatorContainer: {
         flexDirection: 'row',
@@ -403,6 +412,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'flex-start',
         height: '100%',
+        width: 150,
     },
     listName: {
         fontFamily: 'IMFell',

@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AddImage from '@assets/add_image.png'
 import { useNavigation } from '@react-navigation/native';
 
-const url = 'https://1e6d-2607-f010-2a7-1021-ad15-f8a2-fc88-5a1b.ngrok-free.app';
+const url = 'http://localhost:4000'
 
 const CreateProgram = () => {
     const navigation = useNavigation();
