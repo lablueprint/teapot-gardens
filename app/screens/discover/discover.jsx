@@ -8,9 +8,10 @@ import discover from '@assets/discover.png';
 import newprogram from '@assets/newprogram.png';
 import upcoming from '@assets/upcoming.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import upcomingevent from '@assets/upcomingevent-1.png';
 import garden from '@assets/garden.jpg';
 
-const url = 'https://1e6d-2607-f010-2a7-1021-ad15-f8a2-fc88-5a1b.ngrok-free.app'
+const url = 'http://localhost:4000'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();
@@ -18,7 +19,6 @@ export default function DiscoverPage () {
     const [activeIndex, setActiveIndex] = useState(0);
     const windowWidth = Dimensions.get('window').width;
     const cardWidth = windowWidth * 0.7;
-    const cardSpacing = 10;
 
     const [events, setEvents] = useState([]);
     const [programs, setPrograms] = useState([]);
@@ -115,13 +115,13 @@ export default function DiscoverPage () {
 
     const handleScroll = (event) => {
         const contentOffsetX = event.nativeEvent.contentOffset.x;
-        const currentIndex = Math.round(contentOffsetX / (cardWidth + cardSpacing));
+        const currentIndex = Math.round(contentOffsetX / (cardWidth));
         setActiveIndex(currentIndex);
     };
 
     const scrollToIndex = (index) => {
         scrollViewRef.current?.scrollTo({
-            x: index * (cardWidth + cardSpacing),
+            x: index * (cardWidth),
             animated: true,
         });
         setActiveIndex(index);
@@ -135,7 +135,7 @@ export default function DiscoverPage () {
     if (!fontsLoaded) return null;
 
     return (
-        <ScrollView>
+        // <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.pageContainer}>
                 <View style={styles.toggleIcon}>
                     <Pressable onPress={toggleGrid}>
@@ -149,71 +149,7 @@ export default function DiscoverPage () {
 
                 <Text style={styles.mainTitle}>Discover</Text>
                 <Text style={styles.subHeading}>Explore Program Pages</Text>
-
-                <ScrollView
-                    ref={scrollViewRef}
-                    horizontal={grid}
-                    showsHorizontalScrollIndicator={false}
-                    onScroll={handleScroll}
-                    scrollEventThrottle={16}
-                    decelerationRate="fast"
-                    snapToInterval={cardWidth}
-                    style={styles.eventContainer}
-                >
-                    {programs.map((program, index) => (
-                        <Pressable
-                            key={index}
-                            style={[
-                                grid ? styles.gridProgramContainer : styles.listProgramContainer,
-                                grid ? { width: cardWidth, marginLeft: cardSpacing / 2, marginRight: cardSpacing / 2 } : {}
-                            ]}
-                            onPress={() => {
-                                console.log("Navigating to ProgramPage", program);
-                                navigation.navigate('ProgramPage', {
-                                programData: JSON.stringify(program),
-                                });
-                            }}>
-                            {grid ? (
-                                <Image source={discover} style={styles.gridProgramImage} />
-                            ) : (
-                                <>
-                                    <Image source={discover} style={styles.listProgramImage} />
-                                    <View style={styles.listText}>
-                                        <Text style={styles.listName}>{program.name}</Text>
-                                        <Text style={styles.listDescription}>{program.description}</Text>
-                                    </View>
-                                    <Pressable style={styles.followButton}>
-                                        <Text style={{ color: 'darkgreen' }}>Follow</Text>
-                                    </Pressable>
-                                    <Ionicons name="arrow-forward-outline" size={20} color="gray" />
-                                </>
-                            )}
-                        </Pressable>
-                    ))}
-                    <Pressable
-                        style={[
-                            grid ? styles.gridProgramContainer : styles.listProgramContainer,
-                            grid ? { width: cardWidth, marginLeft: cardSpacing / 2, marginRight: cardSpacing / 2 } : {}
-                        ]}
-                        onPress={() => {
-                            console.log("Navigating to Create Program");
-                            navigation.navigate('CreateProgram', {
-                            });
-                        }}>
-                        {grid ? (
-                            <Image source={newprogram} style={styles.gridProgramImage} />
-                        ) : (
-                            <>
-                                <Image source={newprogram} style={styles.listProgramImage} />
-                                <View style={styles.listText}>
-                                    <Text style={styles.listName}>Create Program</Text>
-                                </View>
-                                <Ionicons name="arrow-forward-outline" size={20} color="gray" />
-                            </>
-                        )}
-                    </Pressable>
-                </ScrollView>
-
+                
                 {grid && (
                     <View style={styles.indicatorContainer}>
                         {programs.map((_, index) => (
@@ -229,18 +165,72 @@ export default function DiscoverPage () {
                     </View>
                 )}
 
-                {/* <View style={styles.createProgramContainer}>
-                    {user?.admin && (
+                <ScrollView
+                    ref={scrollViewRef}
+                    horizontal={grid}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    onScroll={handleScroll}
+                    scrollEventThrottle={16}
+                    decelerationRate="fast"
+                    snapToInterval={cardWidth}
+                    style={styles.eventContainer}
+                >
+                    <Pressable
+                        style={[
+                            grid ? styles.gridProgramContainer : styles.listProgramContainer,
+                            grid ? { width: cardWidth} : {}
+                        ]}
+                        onPress={() => {
+                            console.log("Navigating to Create Program");
+                            navigation.navigate('CreateProgram', {
+                            });
+                        }}>
+                        {grid ? (
+                            <Image source={newprogram} style={styles.gridProgramImage} />
+                        ) : (
+                            <>
+                                <View style={styles.listText}>
+                                    <Text style={styles.listName}>Create Program</Text>
+                                </View>
+                                <Image source={newprogram} style={styles.listProgramImage} />
+                            </>
+                        )}
+                    </Pressable>
+                    {programs.map((program, index) => (
                         <Pressable
-                            style={styles.createProgramButton}
-                            onPress={() => navigation.navigate('CreateProgram')}
-                        >
-                            <Text style={styles.plusButton}>+</Text>
+                            key={index}
+                            style={[
+                                grid ? styles.gridProgramContainer : styles.listProgramContainer,
+                                grid ? { width: cardWidth} : {}
+                            ]}
+                            onPress={() => {
+                                console.log("Navigating to ProgramPage", program);
+                                navigation.navigate('ProgramPage', {
+                                programData: JSON.stringify(program),
+                                });
+                            }}>
+                            {grid ? (
+                                <Image source={discover} style={styles.gridProgramImage} />
+                            ) : (
+                                <>
+                                    <View style={styles.listText}>
+                                        <Text style={styles.listName}>{program.name}</Text>
+                                        <Text style={styles.listDescription}>{program.description}</Text>
+                                    </View>
+                                    <View>
+                                        <Image source={upcomingevent} style={styles.listProgramImage} />
+                                        {/* <Pressable style={styles.followButton}>
+                                            <Text style={{ color: 'darkgreen' }}>Follow</Text>
+                                        </Pressable>
+                                        <Ionicons name="arrow-forward-outline" size={20} color="gray" /> */}
+                                    </View>
+                                </>
+                            )}
                         </Pressable>
-                    )}
-                </View>
- */}
-                <Text style={styles.mainTitle}>Upcoming Events</Text>
+                    ))}
+                </ScrollView>
+                {/* <Text style={styles.mainTitle}>Upcoming Events</Text>
                 <Text style={styles.subHeading}>Explore upcoming events</Text>
                 <ScrollView horizontal={true} style={styles.eventContainer}>
                     {events.map((event, index) => (
@@ -277,9 +267,9 @@ export default function DiscoverPage () {
                             </View>
                         </Pressable>
                     ))}
-                </ScrollView>
+                </ScrollView> */}
             </View>
-        </ScrollView>
+        // </ScrollView>
     );
 }
 
@@ -287,7 +277,9 @@ const styles = StyleSheet.create({
     pageContainer: {
         padding: 16,
         gap: 10,
-        fontFamily: 'IMFell'
+        fontFamily: 'IMFell',
+        marginTop: 100, 
+        width: '100%',
     },
     mainTitle: {
         fontSize: 25,
@@ -389,23 +381,32 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'gray',
         borderRadius: 10,
-        height: 80,
+        width: '125%',
+        height: '130',
         marginBottom: 15,
         flexDirection: 'row',
-        padding: 10,
+        justifyContent: 'space-between',
         alignItems: 'center',
+        paddingLeft: 10, 
+        padding: 2,
+        gap: 20,
     },
     listProgramImage: {
-        height: 60,
-        width: 60,
-        marginRight: 10,
+        height: '125',
+        width: 130,
+        borderTopRightRadius: 10, 
+        borderBottomRightRadius: 10,
     },
     listText: {
-        width: 140,
+        flex: 1,
+        paddingVertical: 20,
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        height: '100%',
     },
     listName: {
         fontFamily: 'IMFell',
-        fontSize: 18,
+        fontSize: 20,
     },
     listDescription: {
         fontFamily: 'IMFell',

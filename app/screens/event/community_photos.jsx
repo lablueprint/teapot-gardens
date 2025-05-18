@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 32,
   },
   backButton: {
+    marginTop: 50,
     backgroundColor: 'white', 
     display: 'flex',
     borderRadius: 50,

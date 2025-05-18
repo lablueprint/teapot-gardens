@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, Image, Pressable, Dimensions, FlatList} from 'react-native';
 import axios from 'axios';
-import Placeholder from './homepage_components/mainimage';
 import Event from '@screens/program_page/event';
-import { programPages, upcomingEvents } from './homepage_components/data';
 import sample_logo from '@assets/sample.png';
 import pichu from '@assets/pichu.jpg';
 import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
-import User from 'backend/models/UserModel';
-import garden from '@assets/garden.jpg';
+import gardenBG    from '@assets/garden-assets/garden-background.png';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
-const url = 'http://172.26.127.25:4000'
+
+const url = 'http://localhost:4000'
 
 export default function Homepage() {
   const [userData, setUserData] = useState(null);
@@ -45,6 +45,8 @@ export default function Homepage() {
   }
   let eventdate, eventtime, eventmonth, eventday, eventyear, eventAMPM;
 
+  const navigation = useNavigation();
+  
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -143,10 +145,8 @@ export default function Homepage() {
     try {
       const eventPromises = userAttendingEvents?.map(eventId => axios.get(`${url}/api/events/${eventId}`));
       const eventResponses = await Promise.all(eventPromises);
-      // console.log(eventResponses, "EVENTS");
       const events = eventResponses.map(response => response.data);
       setEvents(events);
-      // console.log(events, "EVENTS");
       const monthEvents = events.filter(event => {
         const [monthStr, dayStr, yearStr] = event.date.split(' ');
         const eventMonth = parseInt(months[monthStr]);
@@ -159,19 +159,36 @@ export default function Homepage() {
     }
   }
 
-  return (
-    <ScrollView style={styles.main_container}>
-      <Text style = {styles.title}> Your Teapot Garden </Text>
-      <Placeholder imageSource={level_img} />
-      <Text style = {styles.subtitle}> Upcoming Events </Text>
-      <View style={styles.events_container}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {events?.map((event, index) => (
+return (
+  <View style={styles.container}>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      {/* ---------- Pet card ---------- */}
+      <View style={styles.petCard}>
+        <Image source={gardenBG} style={styles.petImg} resizeMode="cover" />
+        <View style={styles.petOverlay}>
+          <Text style={styles.petTitle}>Grey is looking good!</Text>
+          <Text style={styles.petSub}>
+            You're 100 pts away{'\n'}from leveling up!
+          </Text>
+          <Text style={styles.petLvl}>LVL 2/3</Text>
+        </View>
+      </View>
+
+      <Pressable style={styles.enterBtn} onPress={() => navigation.navigate('Garden')}>
+        <Text style={styles.enterTxt}>Enter My Garden</Text>
+      </Pressable>
+
+      {/* ---------- My Events ---------- */}
+      <Text style = {styles.sectionHdr}> My Upcoming Events </Text>
+       <View style={styles.events_container}>
+         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+         {events?.map((event, index) => (
           <Event {...event} key={index}  />
         ))}
         </ScrollView>
       </View>
-      <Text style = {styles.subtitle}> This Month's Events </Text>
+
+      <Text style = {styles.sectionHdr}> This Month's Events </Text>
       <View style={styles.events_container}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {thisMonthEvents?.map((event, index) => (
@@ -179,36 +196,95 @@ export default function Homepage() {
         ))}
         </ScrollView>
       </View>
+
+
+      {/* ---------- Subscriptions ---------- */}
+      <Text style={styles.sectionHdr}>Subscriptions</Text>
+      <View style={styles.subRow}>
+        <View style={styles.subIconWrap}>
+          <Ionicons name="star-outline" size={22} color="#8d9282" />
+        </View>
+        <View style={{ flex: 1, marginLeft: 12 }}>
+          <Text style={styles.subTitle}>Keep track of your programs!</Text>
+          <Text style={styles.subDesc}>
+            Follow programs to stay up to date.
+          </Text>
+        </View>
+      </View>
     </ScrollView>
-  );
+  </View>
+);
 }
 
+/* ========================= Styles ========================= */
+const LIGHT_BG = '#F7F9F2';
+const ACCENT   = '#9AA96D';
+
 const styles = StyleSheet.create({
-  title: {
-    fontFamily: 'Inter',
-    fontSize: 18,
-    fontWeight: 600,
-    marginVertical: 40,
-    textAlign: 'center',
-    color: '#737373',
-    marginBottom: 50
-  },
-  subtitle: {
-    fontFamily: 'Inter',
-    fontSize: 24,
-    fontWeight: 600,
-    marginTop: 40,
-    margin: 20,
-    textAlign: 'left',
-    color: '#000000'
-  },
-  main_container: {
-    flex: 1,
-    backgroundColor: '#FCFCFC'
-  },
-  events_container: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
-  
+container: {
+  flex: 1,
+  backgroundColor: LIGHT_BG,
+  padding: 20,           
+},
+
+/* ----- Pet card ----- */
+petCard: {
+  height: 300,
+  borderRadius: 12,
+  overflow: 'hidden',
+  marginBottom: 24,
+  marginTop: 80
+},
+petImg: { ...StyleSheet.absoluteFillObject },
+petOverlay: { flex: 1, padding: 14, justifyContent: 'space-between' },
+petTitle:   { color: '#fff', fontSize: 20, fontWeight: '600' },
+petSub:     { color: '#fff', fontSize: 12, lineHeight: 18 },
+petLvl:     { color: '#fff', fontSize: 12 },
+
+/* ----- Buttons / headings ----- */
+enterBtn: {
+  backgroundColor: ACCENT,
+  borderRadius: 8,
+  height: 48,
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginBottom: 40,
+},
+enterTxt:  { color: '#fff', fontSize: 18, fontWeight: '600' },
+sectionHdr:{ fontSize: 24, fontWeight: '600', fontStyle: 'italic',
+             marginTop: 20, color: '#000' },
+
+/* ----- Empty state ----- */
+emptyCard: {
+  backgroundColor: '#E8E9D8',
+  borderColor:     '#D0D4B6',
+  borderWidth: 1,
+  borderRadius: 6,
+  paddingVertical:   32,
+  paddingHorizontal: 12,
+  alignItems: 'center',
+},
+emptyTitle:{ fontSize: 16, color: '#5c5c5c', textAlign: 'center' },
+emptySub:  { fontSize: 12, color: '#7c7c7c', marginTop: 4, textAlign: 'center' },
+
+/* ----- Carousel card ----- */
+carouselCard: {
+  marginLeft: "20"            
+},
+events_container: {
+  flexDirection: 'row',
+  marginBottom: 20,
+  paddingVertical: 10,
+  marginLeft: 3,
+},
+
+/* ----- Subscriptions ----- */
+subRow: { flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 50},
+subIconWrap: {
+  width: 56, height: 56, borderRadius: 28,
+  borderWidth: 1.5, borderColor: ACCENT,
+  justifyContent: 'center', alignItems: 'center',
+},
+subTitle:{ fontSize: 14, color: '#444' },
+subDesc: { fontSize: 12, color: '#888' },
 });

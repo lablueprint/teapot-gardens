@@ -222,7 +222,9 @@ const ProgramPage = () => {
               user?.admin && (
                 <Pressable 
                   style={styles.createEventButton}
-                  onPress={() => navigation.navigate('CreateEvent')}
+                  onPress={() => navigation.navigate('CreateEvent', {
+                    programData: JSON.stringify(program),
+                  })}
                   >
                   <Text style={styles.plusButton}>+</Text>
                 </Pressable>
