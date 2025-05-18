@@ -17,6 +17,7 @@ import ProgramPage from "@screens/program_page/program_page";
 import CreateEvent from "@screens/program_page/create_event";
 import CreateProgram from "@screens/discover/create_program";
 import SignIn from "@screens/login/signin";
+import EventAnalytics from "@screens/event/event-components/event_analytics";
 
 import NotificationPage from "@screens/notification/notification_page";
 import AdminDashboard from "@screens/admin_dashboard/admin_dashboard"
@@ -69,17 +70,6 @@ const CustomDrawerContent = (props) => {
             </View>
 
             <View style={{ flex: 1 }}>
-                {/* Profile at top */}
-                <View style={styles.profileContainer}>
-                    <DrawerItem
-                        label="Profile"
-                        onPress={() => props.navigation.navigate("Profile")}
-                        icon={() => <Image source={tempIcon} style={styles.drawerIcon} />}
-                        labelStyle={styles.drawerLabel}
-                        style={props.state.routes[props.state.index].name === "Profile" ? styles.activeDrawerItem : styles.inactiveDrawerItem}
-                    />
-                </View>
-
                 {/* centering menu items vertically */}
                 <View style={styles.centeredItemsContainer}>
                     {["Home", "Garden", "Discover", "Profile", "DEBUG NAV"].map((screen, index) => {
@@ -125,7 +115,7 @@ const createOnboardingNavigator = () => (
 );
 
 const createMainNavigator = () => {
-    const noHeaderScreens = ["IntroSlides", "Login", "SignIn", "Nursery", "Garden"];
+    const noHeaderScreens = ["IntroSlides", "Login", "SignIn", "Nursery", "Garden", "CreateEvent", "CreateProgram", "CommunityPhotos", "EventAnalytics"];
     
     return (
         <Drawer.Navigator
@@ -133,6 +123,7 @@ const createMainNavigator = () => {
             initialRouteName="Login"
             screenOptions={({ route, navigation }) => ({
                 headerShown: !noHeaderScreens.includes(route.name),
+                headerTransparent: true,
                 headerLeft: () => (
                     <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconButton}>
                         <Image source={menuIcon} style={styles.icon} />
@@ -145,7 +136,7 @@ const createMainNavigator = () => {
                 ),
                 headerTitle: "",
                 headerStyle: {
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "transparent",
                     shadowOpacity: 0, 
                 },
                 drawerStyle: {
@@ -161,7 +152,14 @@ const createMainNavigator = () => {
             <Drawer.Screen name="Login" component={Login} />
             <Drawer.Screen name="Home" component={Homepage} />
             <Drawer.Screen name="Discover" component={DiscoverPage} />
-            <Drawer.Screen name="Profile" component={Profile} />
+            <Drawer.Screen name="Profile" component={Profile} options={{
+            headerTransparent: true,
+            headerStyle: {
+                backgroundColor: "transparent",
+                elevation: 0,
+                shadowOpacity: 0,
+            },
+            }}/>
             <Drawer.Screen name="EditProfile" component={EditProfile} />
             <Drawer.Screen name="ProfileQR" component={ProfileQR} />
             <Drawer.Screen name="View Plant" component={Plant} />
@@ -178,6 +176,7 @@ const createMainNavigator = () => {
             <Drawer.Screen name="CommunityPhotos" component={CommunityPhotos} />
             <Drawer.Screen name="Garden" component={Garden} />
             <Drawer.Screen name="Nursery" component={Nursery} />
+            <Drawer.Screen name="EventAnalytics" component={EventAnalytics} />
         </Drawer.Navigator>
     );
 };

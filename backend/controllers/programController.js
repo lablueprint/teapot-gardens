@@ -40,14 +40,14 @@ const getPastEvents = async(req, res) => {
 
 // create a new program
 const createProgram = async (req, res) => {
-    const {upcomingEvents, pastEvents, followList, description} = req.body
+    const {name, upcomingEvents, pastEvents, followList, description, host} = req.body
 
     // add doc to db
     try{
-        const program = await Program.create({upcomingEvents, pastEvents, followList, description})
+        const program = await Program.create({name, upcomingEvents, pastEvents, followList, description, host})
         res.status(200).json(program)
     } catch (error) {
-        res.status(400).json({error: error.essage})
+        res.status(400).json({error: error.message})
 
     }
 }

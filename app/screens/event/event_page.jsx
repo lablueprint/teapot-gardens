@@ -15,12 +15,15 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AdminDashboard from "@screens/admin_dashboard/admin_dashboard.jsx";
 import UserCard from "@screens/event/user_card.jsx";
 import ProgramCard from "@screens/event/program_card.jsx";
+import AnalyticsChart from "@screens/event/event-components/AnalyticsChart.jsx";
+import AttendeePopup from "@screens/event/attendeePopup.jsx";
 
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
+import sprout from "@assets/sprout.png";
 
 // const url = " https://272a-75-142-52-157.ngrok-free.app";
 const tempUserId = "678f3a6bc0368a4c717413a8";
-const url = "http://localhost:4000";
+const url = "http://172.23.82.140:4000";
 
 import community1 from '@assets/community1.png';
 import community2 from '@assets/community2.png';
@@ -51,7 +54,7 @@ const mediaItems = [
     type: 'photo',
 }
 ];
-// import grapes from "@assets/grapes.jpg"; // Not used, so removed
+
 
 const EventPage = () => {
   const navigation = useNavigation();
@@ -69,7 +72,7 @@ const EventPage = () => {
   const [loading, setLoading] = useState(true);
   // const [showDynamicButtons, setShowDynamicButtons] = useState(true); //change based on if user is registered or not
   const [modalVisible, setModalVisible] = useState(false);
-  const [uploadVisible, setUploadVisible] = useState(false);
+  const [popupVisible, setPopupVisible] = useState(false);
   const [stats, setStats] = useState({ userStatsList: [] }); // { userStatsList: [...] }
 
   const route = useRoute();
@@ -78,6 +81,9 @@ const EventPage = () => {
 
   const photoCount = mediaItems.filter(item => item.type === 'photo').length;
   const videoCount = mediaItems.filter(item => item.type === 'video').length;
+
+  const [activeTab, setActiveTab] = useState('Gender');
+
 
   // Parse eventData (passed via route params) back into an object
   useEffect(() => {
@@ -104,6 +110,9 @@ const EventPage = () => {
         const response = await axios.get(`${url}/api/users/${userId}`);
         if (response.status === 200) {
           console.log("Fetched user:", response.data);
+          console.log('attendingEvents', response.data.attendingEvents);
+          console.log('attendedEvents', response.data.attendedEvents);
+
           setUser(response.data);
           setAttendingEvents(response.data.attendingEvents || []);
           setAttendedEvents(response.data.attendedEvents || []);
@@ -184,6 +193,7 @@ useEffect(() => {
     return;
   }
 
+  // get attendee names and their xp count
   const fetchAttendeeNames = async () => {
     try {
       if (!event.attendeeList || event.attendeeList.length === 0) {
@@ -193,8 +203,14 @@ useEffect(() => {
       const responses = await Promise.all(
         event.attendeeList.map((id) => axios.get(`${url}/api/users/${id}`))
       );
-      const names = responses.map((res) => res.data.name);
-      setAttendeeNames(names);
+      const attendeeData = responses.map((res) => ({
+        name: res.data.name,
+        username: res.data.username,
+        tamagatchiXP: res.data.tamagatchiXP, 
+        attendedEvents: res.data.attendedEvents,
+      }));      
+      setAttendeeNames(attendeeData);
+      console.log("Attendee names:", attendeeData);
     } catch (error) {
       console.error("Error fetching attendee names:", error);
     }
@@ -299,11 +315,10 @@ const deleteUserEvent = async () => {
   //buttons for registration/cancel registration/view ticket
   // const [showDynamicButtons, setShowDynamicButtons] = useState(true);
   const Buttons = ({ attending }) => {
-    // console.log(modalVisible)
     return (
       <View>
         <DynamicButtons attending={attending}/>
-        <RegisterModal modalVisible={modalVisible} setModalVisible={setModalVisible} addUserEvent={addUserEvent}/>
+        <RegisterModal modalVisible={modalVisible} setModalVisible={setModalVisible} addUserEvent={addUserEvent} xp={event?.XP}/>
       </View>
     );
   };
@@ -336,9 +351,9 @@ const deleteUserEvent = async () => {
         <Image style={{ width: '100%', height: '500', resizeMode: "cover" }} source={Paradise} />
       </View>
       
+
       <View style={{borderRadius: 10}}>
       <View style={styles.container}>
-        <ProgramCard name={user?.name} profilePicture={garden} style={styles.hostCard} />
         <Text style={styles.eventHeader}>{event?.name}</Text>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           <Image style={styles.dateIcon} source={dateIcon}/>
@@ -348,57 +363,133 @@ const deleteUserEvent = async () => {
           <Image style={styles.locationIcon} source={locationIcon}/>
           <Text style={styles.dateText}>{event?.location}</Text>
         </View>
+
+        {user?.admin &&(
+          <Pressable style={styles.shareButton} 
+            onPress={() => navigation.navigate(
+              {name: 'EventAnalytics', 
+              params: 
+                {eventData: JSON.stringify(event),stats: JSON.stringify(stats), 
+                  attendeeNames: JSON.stringify(attendeeNames), attendeeCount: attendeeCount,
+                }})}>
+            <Text style={styles.shareButtonText}>Event Analytics</Text>
+          </Pressable>
+          )
+        } 
+
         <Text style={styles.subtext}>ABOUT EVENT</Text>
         <Text style={styles.description}>{event?.eventDescription}</Text>
         <View style={{margin: 10}}></View>
 
         <Text style={styles.subtext}>HOSTED BY</Text>
-        <Text style={styles.description}>{event?.hostDescription}</Text>
+        <ProgramCard name={user?.name} profilePicture={garden} style={styles.hostCard} />
+        {/* <Text style={styles.description}>{event?.hostDescription}</Text> */}
         <View style={{margin: 10}}></View>
 
         <Text style={styles.subtext}>ATTENDEES</Text>
+        {/* this is for the attendee count */}
         {attendeeCount !== null ? (
-          <>
-            {newAttendeeCount !== null && newAttendeeCount > 0 && (
-              <Text>{newAttendeeCount}+ new attendees!</Text>
-            )}
-            <Text>{attendeeCount} total attendees</Text>
-          </>
+          <TouchableOpacity onPress={() => setPopupVisible(true)}>
+            <View style={{flexDirection: 'row', gap: 10, alignItems: 'center', marginVertical:'8'}}>
+              <View style={styles.attendeePhotoContainer}>
+                {attendeeNames.slice(0, 4).map((attendee, index) => (
+                  <Image
+                    key={index}
+                    source={attendee.photo || garden}
+                    style={[styles.attendeePhoto, { marginLeft: index === 0 ? 0 : -15 }]}
+                  />
+                ))}
+                {attendeeCount > 4 && (
+                  <View style={styles.attendeeAdditionalCount}>
+                    <Text>+{attendeeCount - 4}</Text>
+                  </View>
+                )}
+                {attendeeCount > 2 ? (
+                  <View style={{flex: 1, flexShrink: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', marginLeft: 5}}>
+                  {attendeeNames.slice(0, 2).map((attendee, index) => (
+                    <Text key={index}>{attendee.name}, </Text>
+                  ))}
+                  <Text style={{flexShrink: 1, flexWrap: 'wrap'}}>and {attendeeCount-2} others are going!</Text>
+                  </View>
+                ) : (
+                  <View style={{flex: 1, flexShrink: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', marginLeft: 5}}>
+                  {attendeeNames.slice(0, 2).map((attendee, index) => (
+                    <Text key={index}>{attendee.name} </Text>
+                  ))}
+                  <Text style={{flexShrink: 1, flexWrap: 'wrap'}}>is going!</Text>
+                  </View>
+                )} 
+              </View>
+            </View>
+              {/* this is for new attendee count */}
+              {attendeeCount > 0 && newAttendeeCount > 0 && (
+                <View style={{flexDirection: 'row', gap:10, alignItems: 'center'}}>
+                  <Image source={sprout} style={{ width: 20, height: 20, marginLeft: 8 }} />
+                  <Text style={{fontSize: 14}}>{newAttendeeCount}+ new Teapot goers are attending!</Text>
+                </View>
+              )}
+              <AttendeePopup visible={popupVisible} setPopupVisible={setPopupVisible} attendeeInfo={attendeeNames}/>
+            </TouchableOpacity>
         ) : (
           <Text>No attendees yet!</Text>
         )}
-  
-        <View style={styles.attendeesList}>
-          <Pressable onPress={() => setIsCollapsed(!isCollapsed)} style={styles.attendeesButton}>
-            <Text style={styles.attendeesButtonText}>Attendees</Text>
-            <AntDesign name={isCollapsed ? "down" : "up"} size={13} />
-          </Pressable>
-          <Collapsible collapsed={isCollapsed}>
-            {attendeeNames.length > 0 ? (
-              attendeeNames.map((name, index) => <UserCard key={index} name={name} />)
-            ) : (
-              <Text>No attendees yet</Text>
-            )}
-          </Collapsible>
-        </View>
-            
+        <View style={{margin: 10}}></View>
+
+
+       <Text style={styles.subtext}>VOLUNTEER NOTES</Text>
+       <Text style={styles.description}>{event?.volunteerNotes || 'N/A'}</Text>
+
+        
         {console.log('attendingEvents bor', attendingEvents)}
-        <Buttons attending={attendingEvents.includes(event?._id)} />
-  
+        {!user?.admin ? (
+          <Buttons attending={attendingEvents.includes(event?._id)} />
+        ) : (
+          <View style={{marginBottom: 30}} />
+        )}
+            
+        {/* -------- ADMIN SCREEN SECTION-----     */}
         {user?.admin && (
-          <View style={styles.adminSection}>
-            <Text style={styles.adminText}>Admin Panel</Text>
-            {stats?.userStatsList?.length > 0 ? (
-              stats.userStatsList.map((usr, i) => (
-                <Text key={i}>
-                  Income: {usr.incomeLevel}, Gender: {usr.genderIdentification}, Race: {usr.race}
-                </Text>
-              ))
-            ) : (
-              <Text>No attendee stats available</Text>
-            )}
+          <View style={{ marginTop: 10 }}>
+            {/* ────────── header ────────── */}
+            <Text style={styles.adminHeader}>Event Analytics</Text>
+            {/* ────────── tab row ───────── */}
+            <View style={styles.tabRow}>
+              {['Gender', 'Ethnicity', 'Income'].map(tab => (
+                <Pressable
+                  key={tab}
+                  style={[
+                    styles.tab,
+                    activeTab === tab && styles.tabActive,
+                  ]}
+                  onPress={() => setActiveTab(tab)}
+                >
+                  <Text style={[
+                    styles.tabLabel,
+                    activeTab === tab && styles.tabLabelActive,
+                  ]}>{tab}</Text>
+                </Pressable>
+              ))}
+            </View>
+
+            {/* ────────── chart ─────────── */}
+            {stats?.userStatsList?.length
+              ? (
+                <AnalyticsChart
+                  list={stats.userStatsList}
+                  field={
+                    activeTab === 'Gender'
+                    ? 'genderIdentification'
+                    : activeTab === 'Ethnicity'
+                    ? 'race'
+                    : 'incomeLevel'
+                  }
+                />
+              )
+              : <Text>No attendee stats available</Text>}
           </View>
         )}
+
+
         <View style={styles.photoContainer}>
           <View style={styles.photoHeading}>
             <Text style={{marginBottom: 5}}>COMMUNITY GALLERY</Text>
@@ -436,6 +527,10 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: "relative",
+  },
+  hostCard: {
+    display: "flex",
+    justifyContent: "left",
   },
   image: {
     width: 340,
@@ -476,6 +571,29 @@ const styles = StyleSheet.create({
   attendeesList: {
     marginTop: 8,
   },
+  attendeePhotoContainer: {
+    marginLeft: 5,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  attendeePhoto: { 
+    height: 40, 
+    width: 40,
+    borderRadius: 50,
+    borderColor: "#F0EBD4",
+    borderWidth: 1,
+  },
+  attendeeAdditionalCount: {
+    marginLeft: -15, 
+    height: 40, 
+    width: 40, 
+    backgroundColor: "#D7D7D7",
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   attendeesButton: {
     padding: 8,
     backgroundColor: "lightgray",
@@ -490,8 +608,9 @@ const styles = StyleSheet.create({
   shareButton: {
     marginTop: 16,
     padding: 12,
-    borderRadius: 20,
-    backgroundColor: "#9D4C6A"
+    borderRadius: 16,
+    backgroundColor: "#9D4C6A", 
+    marginBottom: 20,
   },
   shareButtonText: {
     textAlign: "center",
@@ -628,7 +747,55 @@ const styles = StyleSheet.create({
     width: 70, 
     height: 70, 
     borderRadius: 5
-  }
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: '#E6E6E6',
+    alignItems: 'center',
+    marginHorizontal: 2,
+  },
+  adminHeader: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  
+  tabRow: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: '#E6E6E6',
+    alignItems: 'center',
+    marginHorizontal: 2,
+  },
+  
+  tabActive: {
+    backgroundColor: 'white',
+    elevation: 2,           // subtle shadow on Android
+    shadowColor: '#000',    // – and iOS
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    shadowOffset: { height: 1, width: 0 },
+  },
+  
+  tabLabel: {
+    fontSize: 14,
+    color: '#6F6F6F',
+  },
+  
+  tabLabelActive: {
+    color: 'black',
+    fontWeight: '500',
+  },
+  
+  
 });
 
 export default EventPage;

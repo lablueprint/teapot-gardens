@@ -39,6 +39,10 @@ const userSchema = new Schema(
             type: String,
             default: "",
         },
+        profilePicture: {
+            type: String,
+            default: "",
+        },
         tamagatchiType: {
             type: String,
             default: "",
