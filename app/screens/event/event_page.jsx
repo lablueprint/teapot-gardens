@@ -110,6 +110,9 @@ const EventPage = () => {
         const response = await axios.get(`${url}/api/users/${userId}`);
         if (response.status === 200) {
           console.log("Fetched user:", response.data);
+          console.log('attendingEvents', response.data.attendingEvents);
+          console.log('attendedEvents', response.data.attendedEvents);
+
           setUser(response.data);
           setAttendingEvents(response.data.attendingEvents || []);
           setAttendedEvents(response.data.attendedEvents || []);
@@ -203,9 +206,11 @@ useEffect(() => {
       const attendeeData = responses.map((res) => ({
         name: res.data.name,
         username: res.data.username,
-        tamagatchiXP: res.data.tamagatchiXP
+        tamagatchiXP: res.data.tamagatchiXP, 
+        attendedEvents: res.data.attendedEvents,
       }));      
       setAttendeeNames(attendeeData);
+      console.log("Attendee names:", attendeeData);
     } catch (error) {
       console.error("Error fetching attendee names:", error);
     }
@@ -358,9 +363,20 @@ const deleteUserEvent = async () => {
           <Image style={styles.locationIcon} source={locationIcon}/>
           <Text style={styles.dateText}>{event?.location}</Text>
         </View>
-        <Pressable style={styles.shareButton} onPress={() => navigation.navigate({name: 'EventAnalytics', params: {eventData: JSON.stringify(event),stats: JSON.stringify(stats)}})}>
-          <Text style={styles.shareButtonText}>Event Analytics</Text>
-        </Pressable>
+
+        {user?.admin &&(
+          <Pressable style={styles.shareButton} 
+            onPress={() => navigation.navigate(
+              {name: 'EventAnalytics', 
+              params: 
+                {eventData: JSON.stringify(event),stats: JSON.stringify(stats), 
+                  attendeeNames: JSON.stringify(attendeeNames), attendeeCount: attendeeCount,
+                }})}>
+            <Text style={styles.shareButtonText}>Event Analytics</Text>
+          </Pressable>
+          )
+        } 
+
         <Text style={styles.subtext}>ABOUT EVENT</Text>
         <Text style={styles.description}>{event?.eventDescription}</Text>
         <View style={{margin: 10}}></View>
@@ -423,16 +439,19 @@ const deleteUserEvent = async () => {
        <Text style={styles.subtext}>VOLUNTEER NOTES</Text>
        <Text style={styles.description}>{event?.volunteerNotes || 'N/A'}</Text>
 
-            
+        
         {console.log('attendingEvents bor', attendingEvents)}
-        <Buttons attending={attendingEvents.includes(event?._id)} />
+        {!user?.admin ? (
+          <Buttons attending={attendingEvents.includes(event?._id)} />
+        ) : (
+          <View style={{marginBottom: 30}} />
+        )}
             
         {/* -------- ADMIN SCREEN SECTION-----     */}
         {user?.admin && (
           <View style={{ marginTop: 10 }}>
             {/* ────────── header ────────── */}
             <Text style={styles.adminHeader}>Event Analytics</Text>
-
             {/* ────────── tab row ───────── */}
             <View style={styles.tabRow}>
               {['Gender', 'Ethnicity', 'Income'].map(tab => (

@@ -11,6 +11,10 @@ const EventAnalytics = () => {
     const route = useRoute();
     const eventData = JSON.parse(route.params?.eventData) || null;
     const stats = JSON.parse(route.params?.stats) || null;
+    const attendeeNames = JSON.parse(route.params?.attendeeNames) || null;
+    const attendeeCount = JSON.parse(route.params?.attendeeCount) || null;
+
+    console.log('Event Data on Analytics:', eventData);
 
     const [fontsLoaded] = useFonts({
         'IMFell': require('../../../../assets/fonts/IMFellGreatPrimer-Regular.ttf'),
@@ -28,7 +32,7 @@ const EventAnalytics = () => {
             <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
 
-            <Text style={styles.title}>Event Analytics</Text>
+            <Text style={styles.title}>Event Analytics</Text>            
                                     
             <View style={styles.chartContainer}>
             {stats?.userStatsList?.length
@@ -39,12 +43,20 @@ const EventAnalytics = () => {
                         <AnalyticsChart list={stats.userStatsList} field={'genderIdentification'}/>
                     </View>
                     <View style={styles.chart}>
-                        <Text style={styles.chartTitle}>Race Insights</Text>
+                        <Text style={styles.chartTitle}>Ethnicty Insights</Text>
                         <AnalyticsChart list={stats.userStatsList} field={'race'}/>
+                    </View>
+                    <View style={styles.chart}>
+                        <Text style={styles.chartTitle}>Age Insights</Text>
+                        <AnalyticsChart list={stats.userStatsList} field={'age'}/>
                     </View>
                     <View style={styles.chart}> 
                         <Text style={styles.chartTitle}>Income Insights</Text>
                         <AnalyticsChart list={stats.userStatsList} field={'incomeLevel'}/>
+                    </View>
+                    <View style={styles.chart}>
+                        <Text style={styles.chartTitle}>Attendance</Text>
+                        <Text style={styles.chartDetails}>{attendeeNames.filter(attendee => attendee.attendedEvents?.includes(eventData._id)).length / attendeeCount * 100}%</Text>            
                     </View>
                 </ScrollView>
                 )
@@ -99,6 +111,10 @@ const styles = StyleSheet.create({
     chartTitle: {
         fontSize: 16,
         marginBottom: 10,
+        textAlign: 'center',
+    },
+    chartDetails: {
+        fontSize: 16,
         textAlign: 'center',
     },
 });
