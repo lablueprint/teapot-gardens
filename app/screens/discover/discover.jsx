@@ -11,7 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import upcomingevent from '@assets/upcomingevent-1.png';
 import garden from '@assets/garden.jpg';
 
-const url = 'http://172.23.82.140:4000'
+const url = 'http://localhost:4000'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();

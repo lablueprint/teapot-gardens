@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image, Pressable, Dimensions, FlatList} from 'react-native';
 import axios from 'axios';
 import Event from '@screens/program_page/event';
@@ -9,11 +9,15 @@ import raichu from '@assets/raichu.jpg';
 import gardenBG    from '@assets/garden-assets/garden-background.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '@app/context/AuthContext';
 
 
 const url = 'http://localhost:4000'
 
 export default function Homepage() {
+  const { user } = useContext(AuthContext);
+  const userId = user?.userId;
+
   const [userData, setUserData] = useState(null);
   const [userAttendingEvents, setUserAttendingEvents] = useState([]);
   const [thisMonthEvents, setThisMonthEvents] = useState([]);
@@ -49,6 +53,10 @@ export default function Homepage() {
   
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!userId) {
+        console.log("Waiting for userId...");
+        return;
+      }
       try {
         // fetching user data here   
         const userResponse = await axios.get(`${url}/api/users/${tempUserId}`);
@@ -128,7 +136,7 @@ export default function Homepage() {
     if (userAttendingEvents.length > 0) {
       populateEvents();
     }
-  }, [userAttendingEvents]);
+  }, [userAttendingEvents, userId]);
 
   if (userData && userData.tamagatchiXP !== undefined) {
     if (userData.tamagatchiXP < 1000) {
@@ -140,7 +148,7 @@ export default function Homepage() {
     }
   }
 
-  console.log(userAttendingEvents);
+  // console.log(userAttendingEvents);
   const populateEvents = async () => {
     try {
       const eventPromises = userAttendingEvents?.map(eventId => axios.get(`${url}/api/events/${eventId}`));
