@@ -17,6 +17,7 @@ import ProgramPage from "@screens/program_page/program_page";
 import CreateEvent from "@screens/program_page/create_event";
 import CreateProgram from "@screens/discover/create_program";
 import SignIn from "@screens/login/signin";
+import EventAnalytics from "@screens/event/event-components/event_analytics";
 
 import NotificationPage from "@screens/notification/notification_page";
 import AdminDashboard from "@screens/admin_dashboard/admin_dashboard"
@@ -175,6 +176,7 @@ const createMainNavigator = () => {
             <Drawer.Screen name="CommunityPhotos" component={CommunityPhotos} />
             <Drawer.Screen name="Garden" component={Garden} />
             <Drawer.Screen name="Nursery" component={Nursery} />
+            <Drawer.Screen name="EventAnalytics" component={EventAnalytics} />
         </Drawer.Navigator>
     );
 };

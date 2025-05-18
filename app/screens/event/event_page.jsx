@@ -357,6 +357,9 @@ const deleteUserEvent = async () => {
           <Image style={styles.locationIcon} source={locationIcon}/>
           <Text style={styles.dateText}>{event?.location}</Text>
         </View>
+        <Pressable style={styles.shareButton} onPress={() => navigation.navigate({name: 'EventAnalytics', params: {eventData: JSON.stringify(event),stats: JSON.stringify(stats)}})}>
+          <Text style={styles.shareButtonText}>Event Analytics</Text>
+        </Pressable>
         <Text style={styles.subtext}>ABOUT EVENT</Text>
         <Text style={styles.description}>{event?.eventDescription}</Text>
         <View style={{margin: 10}}></View>
@@ -425,7 +428,7 @@ const deleteUserEvent = async () => {
             
         {/* -------- ADMIN SCREEN SECTION-----     */}
         {user?.admin && (
-          <View style={{ marginTop: 32 }}>
+          <View style={{ marginTop: 10 }}>
             {/* ────────── header ────────── */}
             <Text style={styles.adminHeader}>Event Analytics</Text>
 
@@ -585,8 +588,9 @@ const styles = StyleSheet.create({
   shareButton: {
     marginTop: 16,
     padding: 12,
-    borderRadius: 20,
-    backgroundColor: "#9D4C6A"
+    borderRadius: 16,
+    backgroundColor: "#9D4C6A", 
+    marginBottom: 20,
   },
   shareButtonText: {
     textAlign: "center",
