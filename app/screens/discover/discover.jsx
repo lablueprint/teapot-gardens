@@ -11,7 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import upcomingevent from '@assets/upcomingevent-1.png';
 import garden from '@assets/garden.jpg';
 
-const url = 'http://localhost:4000'
+const url = 'http://172.23.82.140:4000'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();
@@ -19,6 +19,8 @@ export default function DiscoverPage () {
     const [activeIndex, setActiveIndex] = useState(0);
     const windowWidth = Dimensions.get('window').width;
     const cardWidth = windowWidth * 0.7;
+    const cardSpacing = 20; // Consistent spacing between cards
+    const effectiveCardWidth = cardWidth + (cardSpacing * 2); // Total width including margins
 
     const [events, setEvents] = useState([]);
     const [programs, setPrograms] = useState([]);
@@ -110,17 +112,33 @@ export default function DiscoverPage () {
 
     const toggleGrid = () => {
         setGrid(prevGrid => !prevGrid);
+        // Reset active index when toggling view
+        setActiveIndex(0);
+        // Scroll back to beginning
+        scrollViewRef.current?.scrollTo({
+            x: 0,
+            animated: true,
+        });
     };
 
     const handleScroll = (event) => {
+        if (!grid) return; // Only track scrolling in grid mode
+        
         const contentOffsetX = event.nativeEvent.contentOffset.x;
-        const currentIndex = Math.round(contentOffsetX / (cardWidth));
-        setActiveIndex(currentIndex);
+        // Calculate index based on effectiveCardWidth (card + margins)
+        const currentIndex = Math.round(contentOffsetX / effectiveCardWidth);
+        
+        if (currentIndex !== activeIndex) {
+            setActiveIndex(currentIndex);
+        }
     };
 
     const scrollToIndex = (index) => {
-        scrollViewRef.current?.scrollTo({
-            x: index * (cardWidth),
+        if (!scrollViewRef.current) return;
+        
+        // Scroll to the precise position using effectiveCardWidth
+        scrollViewRef.current.scrollTo({
+            x: index * effectiveCardWidth,
             animated: true,
         });
         setActiveIndex(index);
@@ -132,6 +150,9 @@ export default function DiscoverPage () {
     });
 
     if (!fontsLoaded) return null;
+
+    // Calculate total number of items (programs + create program button)
+    const totalItems = programs.length + 1;
 
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -151,7 +172,7 @@ export default function DiscoverPage () {
                 
                 {grid && (
                     <View style={styles.indicatorContainer}>
-                        {programs.map((_, index) => (
+                        {Array.from({ length: totalItems }).map((_, index) => (
                             <Pressable
                                 key={index}
                                 style={[
@@ -172,18 +193,19 @@ export default function DiscoverPage () {
                     onScroll={handleScroll}
                     scrollEventThrottle={16}
                     decelerationRate="fast"
-                    snapToInterval={cardWidth}
+                    snapToInterval={effectiveCardWidth}
+                    contentContainerStyle={grid ? styles.gridContentContainer : {}}
                     style={styles.eventContainer}
+                    pagingEnabled={grid}
                 >
                     <Pressable
                         style={[
                             grid ? styles.gridProgramContainer : styles.listProgramContainer,
-                            grid ? { width: cardWidth} : {}
+                            grid ? { width: cardWidth } : {}
                         ]}
                         onPress={() => {
                             console.log("Navigating to Create Program");
-                            navigation.navigate('CreateProgram', {
-                            });
+                            navigation.navigate('CreateProgram', {});
                         }}>
                         {grid ? (
                             <View>
@@ -203,12 +225,12 @@ export default function DiscoverPage () {
                             key={index}
                             style={[
                                 grid ? styles.gridProgramContainer : styles.listProgramContainer,
-                                grid ? { width: cardWidth} : {}
+                                grid ? { width: cardWidth } : {}
                             ]}
                             onPress={() => {
                                 console.log("Navigating to ProgramPage", program);
                                 navigation.navigate('ProgramPage', {
-                                programData: JSON.stringify(program),
+                                    programData: JSON.stringify(program),
                                 });
                             }}>
                             {grid ? (
@@ -223,10 +245,6 @@ export default function DiscoverPage () {
                                     </View>
                                     <View>
                                         <Image source={upcomingevent} style={styles.listProgramImage} />
-                                        {/* <Pressable style={styles.followButton}>
-                                            <Text style={{ color: 'darkgreen' }}>Follow</Text>
-                                        </Pressable>
-                                        <Ionicons name="arrow-forward-outline" size={20} color="gray" /> */}
                                     </View>
                                 </>
                             )}
@@ -308,6 +326,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginBottom: 20,
     },
+    gridContentContainer: {
+        paddingHorizontal: 20, // Consistent padding
+    },
     eventBox: {
         marginTop: 10,
         borderWidth: 1,
@@ -367,6 +388,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         margin: 20,
     },
+    gridProgramImage: {
+        width: '100%',
+        height: 500,
+        borderRadius: 10,
+    },
     indicatorContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -391,7 +417,7 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderRadius: 10,
         width: '125%',
-        height: '130',
+        height: 130,
         marginBottom: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -401,7 +427,7 @@ const styles = StyleSheet.create({
         gap: 20,
     },
     listProgramImage: {
-        height: '125',
+        height: 125,
         width: 130,
         borderTopRightRadius: 10, 
         borderBottomRightRadius: 10,
