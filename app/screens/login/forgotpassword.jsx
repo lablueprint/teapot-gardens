@@ -52,19 +52,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#BFC0A7',
+        padding: 30,
     },
     input: {
-        width: '80%',
-        padding: 10,
+        width: '100%',
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         marginBottom: 10,
     },
     button: {
-        backgroundColor: '#007BFF',
+        backgroundColor: '#757B454D',
         padding: 10,
         borderRadius: 5,
+        width: '100%',
     },
     buttonText: {
         color: '#fff',
