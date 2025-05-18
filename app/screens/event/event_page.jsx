@@ -23,7 +23,7 @@ import sprout from "@assets/sprout.png";
 
 // const url = " https://272a-75-142-52-157.ngrok-free.app";
 const tempUserId = "678f3a6bc0368a4c717413a8";
-const url = "http://localhost:4000";
+const url = "http://172.23.82.140:4000";
 
 import community1 from '@assets/community1.png';
 import community2 from '@assets/community2.png';
