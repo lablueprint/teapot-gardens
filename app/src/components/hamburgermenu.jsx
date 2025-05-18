@@ -17,6 +17,7 @@ import ProgramPage from "@screens/program_page/program_page";
 import CreateEvent from "@screens/program_page/create_event";
 import CreateProgram from "@screens/discover/create_program";
 import SignIn from "@screens/login/signin";
+import ForgotPassword from "@screens/login/forgotpassword";
 import EventAnalytics from "@screens/event/event-components/event_analytics";
 
 import NotificationPage from "@screens/notification/notification_page";
@@ -111,6 +112,8 @@ const createOnboardingNavigator = () => (
         <Drawer.Screen name="IntroSlides" component={IntroSlides} />
         <Drawer.Screen name="Login" component={Login} />
         <Drawer.Screen name="Home" component={Homepage} />
+        <Drawer.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Drawer.Screen name="SignIn" component={SignIn} />
     </Drawer.Navigator>
 );
 
@@ -169,6 +172,7 @@ const createMainNavigator = () => {
             <Drawer.Screen name="CreateEvent" component={CreateEvent} />
             <Drawer.Screen name="CreateProgram" component={CreateProgram} />
             <Drawer.Screen name="SignIn" component={SignIn} />
+            <Drawer.Screen name="ForgotPassword" component={ForgotPassword} />
             <Drawer.Screen name="NotificationPage" component={NotificationPage} />
             <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
             <Drawer.Screen name="AdminScanner" component={AdminScanner} />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image, Pressable} from "react-native";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -22,33 +23,53 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div style={{ maxWidth: 400, margin: '40px auto', padding: 24, border: '1px solid #eee', borderRadius: 8 }}>
-            <h2>Forgot Password</h2>
+        <View style={styles.container}>
+            <Text style={{ fontSize: 24, marginBottom: 20 }}>Forgot Password</Text>
+            <Text style={{ marginBottom: 20 }}>Enter your email address to receive instructions for resetting your password.</Text>
             {submitted ? (
-                <p>
-                    If an account with that email exists, a password reset link has been sent.
-                </p>
+                <Text style={{ color: 'green' }}>Check your email for reset instructions.</Text>
             ) : (
-                <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: 16 }}>
-                        <label htmlFor="email">Email Address</label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            style={{ width: '100%', padding: 8, marginTop: 4 }}
-                            required
-                        />
-                    </div>
-                    {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
-                    <button type="submit" style={{ padding: '8px 16px' }}>
-                        Send Reset Link
-                    </button>
-                </form>
+                <>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                    />
+                    {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
+                    <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+                        <Text style={styles.buttonText}>Send Instructions</Text>
+                    </TouchableOpacity>
+                </>
             )}
-        </div>
+        </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#BFC0A7',
+    },
+    input: {
+        width: '80%',
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        marginBottom: 10,
+    },
+    button: {
+        backgroundColor: '#007BFF',
+        padding: 10,
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: '#fff',
+        textAlign: 'center',
+    },
+});
 
 export default ForgotPassword;
