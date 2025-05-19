@@ -11,6 +11,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import upcomingevent from '@assets/upcomingevent-1.png';
 import garden from '@assets/garden.jpg';
 
+
+// IMPORTING IMAGES FOR DEMO DAY 
+import CinemaSaloon from "@assets/discovery-assets/Cinema-Saloon.png"
+import ArtOasis from "@assets/discovery-assets/Art-Oasis.png"
+import GardenSundaze from "@assets/discovery-assets/Garden-Sundaze.png"
+
 const url = 'http://localhost:4000'
 
 export default function DiscoverPage () {
@@ -243,9 +249,15 @@ export default function DiscoverPage () {
                                         <Text style={styles.listName}>{program.name}</Text>
                                         <Text style={styles.listDescription}>{program.description}</Text>
                                     </View>
-                                    <View>
-                                        <Image source={upcomingevent} style={styles.listProgramImage} />
-                                    </View>
+                                        <Image
+                                        source={
+                                            program.name === 'Cinema Saloon' ? CinemaSaloon :
+                                            program.name === 'Art Oasis' ? ArtOasis :
+                                            program.name === 'Garden Sundaze' ? GardenSundaze :
+                                            upcomingevent
+                                        }
+                                        style={styles.listProgramImage}
+                                        />
                                 </>
                             )}
                         </Pressable>
@@ -299,8 +311,9 @@ const styles = StyleSheet.create({
         padding: 16,
         gap: 10,
         fontFamily: 'IMFell',
-        marginTop: 100, 
         width: '100%',
+        backgroundColor: '#E8E1DD',
+        paddingTop: 100
     },
     mainTitle: {
         fontSize: 25,
@@ -308,7 +321,7 @@ const styles = StyleSheet.create({
     },
     toggleIcon: {
         position: 'absolute',
-        top: 10,
+        top: 100,
         right: 10,
         zIndex: 10,
     },
@@ -413,9 +426,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#d3d3d3',
     },
     listProgramContainer: {
-        borderWidth: 1,
+        borderWidth: 2,
+        borderColor: 'rgba(128, 128, 128, 0.05)', 
         borderColor: 'gray',
-        borderRadius: 10,
+        borderRadius: 20,
         width: '125%',
         height: 130,
         marginBottom: 15,
@@ -425,6 +439,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10, 
         padding: 2,
         gap: 20,
+        backgroundColor:'#E8E7DF'
     },
     listProgramImage: {
         height: 125,
@@ -447,6 +462,8 @@ const styles = StyleSheet.create({
     listDescription: {
         fontFamily: 'IMFell',
         fontSize: 13,
+        color: '#403C3C80',
+        marginTop: 10
     },
     followButton: {
         borderRadius: 15,

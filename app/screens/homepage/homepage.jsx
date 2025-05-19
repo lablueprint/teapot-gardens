@@ -211,7 +211,7 @@ return (
         {events.length === 0 ? (
           <View style={styles.emptyCard}>
             <Text style={styles.emptyTitle}>
-              Looks like you don't have any events yet!
+              Looks like you don't have any upcoming events yet!
             </Text>
             <Text style={styles.emptySub}>
               Come back here to view registered events
