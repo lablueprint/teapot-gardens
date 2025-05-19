@@ -7,7 +7,7 @@ import notif_background from '@assets/notif-background.png';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 
-const url = 'http://192.168.1.187:4000';
+const url = 'https://7b82-2607-f010-2a7-1021-fcf6-2c41-ff88-8c09.ngrok-free.app';
 
 export default function NotificationPage() {
     const [user, setUser] = useState({});

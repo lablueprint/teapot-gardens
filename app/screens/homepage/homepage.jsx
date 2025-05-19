@@ -27,7 +27,7 @@ import plant_3_level_1 from '@assets/garden-assets/plant_3/plant_3_level_1.png';
 import plant_3_level_2 from '@assets/garden-assets/plant_3/plant_3_level_2.png';
 import plant_3_level_3 from '@assets/garden-assets/plant_3/plant_3_level_3.png';
 
-const url = 'http://localhost:4000'
+const url = 'https://7b82-2607-f010-2a7-1021-fcf6-2c41-ff88-8c09.ngrok-free.app'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -149,6 +149,20 @@ export default function Homepage() {
         setLoading(false);
       }
     };
+
+    // if (userData) {
+    //   let XPLevel = Math.floor(userData.tamagatchiXP / 100);
+    //   console.log(`XPLevel: ${XPLevel}`);
+    //   console.log(`tamagatchi level: ${userData.tamagatchiLevel}`);
+    //   if (XPLevel > userData.tamagatchiLevel) {
+    //     const text = `Your plant has reached level ${XPLevel}`;
+    //     return axios.patch(`${url}/api/users/${tempUserId}`, {
+    //       notifications: text,
+    //       tamagatchiLevel: XPLevel
+    //     });
+    //   }
+    // }  
+  
     fetchUserData();
   }, []);
   useEffect (() => {
