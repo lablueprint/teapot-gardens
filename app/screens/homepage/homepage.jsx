@@ -1,22 +1,43 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image, Pressable, Dimensions, FlatList} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import Event from '@screens/program_page/event';
 import sample_logo from '@assets/sample.png';
 import pichu from '@assets/pichu.jpg';
 import pikachu from '@assets/pikachu.jpg';
 import raichu from '@assets/raichu.jpg';
-import gardenBG    from '@assets/garden-assets/garden-background.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '@app/context/AuthContext';
 
+import gardenBG    from '@assets/garden-assets/garden-background.png';
+// -- Assets for Plant 1 ---------------------------------------------
+import plant_1_level_1 from '@assets/garden-assets/plant_1/plant_1_level_1.png';
+import plant_1_level_2 from '@assets/garden-assets/plant_1/plant_1_level_2.png';
+import plant_1_level_3 from '@assets/garden-assets/plant_1/plant_1_level_3.png';
+
+// -- Assets for Plant 2 ----------------------------------------------
+import plant_2_level_1 from '@assets/garden-assets/plant_2/plant_2_level_1.png';
+import plant_2_level_2 from '@assets/garden-assets/plant_2/plant_2_level_2.png';
+import plant_2_level_3 from '@assets/garden-assets/plant_2/plant_2_level_3.png';
+
+// -- Assets for Plant 3 ----------------------------------------------
+import plant_3_level_1 from '@assets/garden-assets/plant_3/plant_3_level_1.png';
+import plant_3_level_2 from '@assets/garden-assets/plant_3/plant_3_level_2.png';
+import plant_3_level_3 from '@assets/garden-assets/plant_3/plant_3_level_3.png';
 
 const url = 'http://localhost:4000'
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 export default function Homepage() {
   const { user } = useContext(AuthContext);
-  const userId = user?.userId;
+
+  // I added this - daniel 
+  const tempUserId = '6789f49f8e0a009647312c7a';
+  const tempEventId = '678f315b8d423da67c615e95';
+  const userId = user?.userId || tempUserId;
 
   const [userData, setUserData] = useState(null);
   const [userAttendingEvents, setUserAttendingEvents] = useState([]);
@@ -25,8 +46,6 @@ export default function Homepage() {
 
   const [loading, setLoading] = useState(true);
   let level_img = sample_logo;
-  const tempUserId = '6789f49f8e0a009647312c7a';
-  const tempEventId = '678f315b8d423da67c615e95';
   const [events, setEvents] = useState([]);
   const today = new Date();
   const currentYear = parseInt(today.getFullYear());
@@ -148,7 +167,6 @@ export default function Homepage() {
     }
   }
 
-  // console.log(userAttendingEvents);
   const populateEvents = async () => {
     try {
       const eventPromises = userAttendingEvents?.map(eventId => axios.get(`${url}/api/events/${eventId}`));
@@ -172,39 +190,88 @@ return (
     <ScrollView showsVerticalScrollIndicator={false}>
       {/* ---------- Pet card ---------- */}
       <View style={styles.petCard}>
-        <Image source={gardenBG} style={styles.petImg} resizeMode="cover" />
-        <View style={styles.petOverlay}>
-          <Text style={styles.petTitle}>Grey is looking good!</Text>
-          <Text style={styles.petSub}>
-            You're 100 pts away{'\n'}from leveling up!
-          </Text>
-          <Text style={styles.petLvl}>LVL 2/3</Text>
-        </View>
+
+        {/* ---------- Garden Background Image ---------- */}
+        <Image source={gardenBG} style={styles.croppedPetImg} resizeMode="cover" />
+
+        {/* ---------- Flower Text ---------- */}
+        <Text style={styles.levelAbove}>Grey is looking good!</Text>
+        {/* ---------- Centered Flower Image ---------- */}
+          <Image
+            source={plant_1_level_1} // ⬅️ use the flower image path
+            style={styles.centeredFlower}
+            resizeMode="contain"
+          />
+        {/* ---------- Flower Level  Text ---------- */}
+          <Text style={styles.levelBelow}>LVL. 1</Text>
       </View>
+        {/* ---------- Upcoming Events ---------- */}
+        <Text style={styles.sectionHdr}>My Upcoming Events</Text>
 
-      <Pressable style={styles.enterBtn} onPress={() => navigation.navigate('Garden')}>
-        <Text style={styles.enterTxt}>Enter My Garden</Text>
-      </Pressable>
+        {events.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Text style={styles.emptyTitle}>
+              Looks like you don't have any events yet!
+            </Text>
+            <Text style={styles.emptySub}>
+              Come back here to view registered events
+            </Text>
+            <Ionicons
+              name="leaf-outline"
+              size={28}
+              color="#8d9282"
+              style={{ marginTop: 12 }}
+            />
+          </View>
+        ) : (
+          /* -------------- Carousel (exactly one card per swipe) -------------- */
+          <FlatList
+            data={events}
+            horizontal
+            pagingEnabled               
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item._id ?? String(item.id)}
+            renderItem={({ item }) => (
+              <View style={styles.carouselCard}>
+                <Event {...item} />
+              </View>
+            )}
+          />
+        )}
 
-      {/* ---------- My Events ---------- */}
-      <Text style = {styles.sectionHdr}> My Upcoming Events </Text>
-       <View style={styles.events_container}>
-         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-         {events?.map((event, index) => (
-          <Event {...event} key={index}  />
-        ))}
-        </ScrollView>
-      </View>
+      {/* ---------- This Month's Events ---------- */}
+        <Text style={styles.sectionHdr}>This Month's Events</Text>
 
-      <Text style = {styles.sectionHdr}> This Month's Events </Text>
-      <View style={styles.events_container}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {thisMonthEvents?.map((event, index) => (
-          <Event {...event} key={index}  />
-        ))}
-        </ScrollView>
-      </View>
-
+        {events.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Text style={styles.emptyTitle}>
+              Looks like you don't have any events yet for this Month!
+            </Text>
+            <Text style={styles.emptySub}>
+              Come back here to view registered events
+            </Text>
+            <Ionicons
+              name="leaf-outline"
+              size={28}
+              color="#8d9282"
+              style={{ marginTop: 12 }}
+            />
+          </View>
+        ) : (
+          /* -------------- Carousel (exactly one card per swipe) -------------- */
+          <FlatList
+            data={thisMonthEvents}
+            horizontal
+            pagingEnabled               
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item._id ?? String(item.id)}
+            renderItem={({ item }) => (
+              <View style={styles.carouselCard}>
+                <Event {...item} />
+              </View>
+            )}
+          />
+        )}
 
       {/* ---------- Subscriptions ---------- */}
       <Text style={styles.sectionHdr}>Subscriptions</Text>
@@ -225,13 +292,12 @@ return (
 }
 
 /* ========================= Styles ========================= */
-const LIGHT_BG = '#F7F9F2';
 const ACCENT   = '#9AA96D';
 
 const styles = StyleSheet.create({
 container: {
   flex: 1,
-  backgroundColor: LIGHT_BG,
+  backgroundColor: '#F1F2E6',
   padding: 20,           
 },
 
@@ -241,9 +307,51 @@ petCard: {
   borderRadius: 12,
   overflow: 'hidden',
   marginBottom: 24,
-  marginTop: 80
+  marginTop: 80, 
+
 },
-petImg: { ...StyleSheet.absoluteFillObject },
+  croppedPetImg: {
+    width: "100%",
+    height: '100%',
+    position: 'absolute',
+    top: 15,     // adjust vertically (negative = show lower)
+    left: -30,    // adjust horizontally (negative = show right)
+    transform: [{ scale: 1.3 }],  // optional zoom for detail
+  },
+    centeredFlower: {
+    position: 'absolute',
+    width: 165,
+    height: 165,
+    top: 30, // same pattern
+    left: 50, // same pattern
+    transform: [{ translateX: 70 }, { translateY: 90 }],
+    zIndex: 2,
+  },
+  levelAbove: {
+  position: 'absolute',
+  top: 130, // same pattern
+  left: 135, // same pattern
+  color: '#000',        // or white if needed
+  fontSize: 14,
+  fontWeight: '600',
+  zIndex: 3,
+  color: "white"
+},
+  levelBelow: {
+  position: 'absolute',
+  top: 270, // same pattern
+  left: 175, // same pattern
+  fontSize: 14,
+  fontWeight: '600',
+  zIndex: 3,
+  color: 'white'
+},
+outsideGradient: {
+  height: 80,
+  width: '100%',
+  marginTop: -40,   // pull it up to overlap the petCard bottom
+  zIndex: 0,
+},
 petOverlay: { flex: 1, padding: 14, justifyContent: 'space-between' },
 petTitle:   { color: '#fff', fontSize: 20, fontWeight: '600' },
 petSub:     { color: '#fff', fontSize: 12, lineHeight: 18 },
@@ -277,7 +385,7 @@ emptySub:  { fontSize: 12, color: '#7c7c7c', marginTop: 4, textAlign: 'center' }
 
 /* ----- Carousel card ----- */
 carouselCard: {
-  marginLeft: "20"            
+  marginLeft: 20            
 },
 events_container: {
   flexDirection: 'row',

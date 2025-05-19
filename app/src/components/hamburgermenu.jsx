@@ -52,7 +52,7 @@ const iconMap = {
     Temp: iconGarden, // fallback if DEBUGGING NAVIGATION maps to Temp
   };
 
-  
+
 
 const Drawer = createDrawerNavigator();
 
@@ -221,8 +221,7 @@ const HamburgerMenu = () => {
     }
     
     // Render the appropriate navigator based on onboarding status
-    return hasCompletedOnboarding ? createMainNavigator() : createOnboardingNavigator();
-};
+return hasCompletedOnboarding ? createMainNavigator() : createOnboardingNavigator();};
 
 export default HamburgerMenu;
 
