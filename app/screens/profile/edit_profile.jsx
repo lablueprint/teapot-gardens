@@ -1,23 +1,38 @@
-import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image } from "react-native";
+import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Pressable, Image } from "react-native";
 import React, { useState } from "react";
+import * as ImagePicker from 'expo-image-picker';
+import { useEffect } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
+import grapes from '@assets/grapes.jpg';
+import { useNavigation } from '@react-navigation/native';
 // import planticon from '../../assets/planticon.png';
 
-const url = 'https://c753-2607-f010-2a7-103f-d156-853f-9990-8831.ngrok-free.app'
+const url = 'http://localhost:4000'
+const tempUserId = '6789f49f8e0a009647312c7a'
 
 const EditProfile = () => {
-  const tempUserId = '6789f49f8e0a009647312c7a'
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      const userData = await getUser();
+    };
+    fetchAll();
+  }, []);
 
   // Define state for each input field
+  const [user, setUser] = useState({});
   const [name, setName] = useState("");
   // const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [profilePicture, setProfilePicture] = useState(user.profilePicture);
   const [password, setPassword] = useState("");
   // const [zipcode, setZipcode] = useState("");
   // const [race, setRace] = useState("");
   const [birthday, setBirthday] = useState("");
   const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
+  const navigation = useNavigation();
   // const [income, setIncome] = useState("");
   // const [gender, setGender] = useState('female')
 
@@ -32,7 +47,7 @@ const EditProfile = () => {
 
   
   const handleSubmit = async () => {
-    if (!name && !email && !password && !birthday && !username) {
+    if (!name && !email && !password && !birthday && !username && !bio && profilePicture === user.profilePicture) {
       Alert.alert("Error", "Please fill out at least one field.");
     }
     else {
@@ -42,17 +57,33 @@ const EditProfile = () => {
       if (name) user.name = name;
       if (email) user.email = email;
       if (password) user.password = password;
+      if (bio) user.bio = bio;
       if (birthday) user.dob = birthday;  // Use 'dob' key for birthday
       if (username) user.username = username;
+      if (profilePicture) user.profilePicture = profilePicture;
       
       try {
         const response = await axios.patch(`${url}/api/users/${tempUserId}`, user);
-        console.log(response.data)
+        setUser(response.data); 
+        setProfilePicture(response.data.profilePicture); 
+        navigation.navigate("Profile");
       }
       catch (error) {
         console.log("error", error)
       }
 
+    }
+  };
+
+  const getUser = async () => {
+    try {
+      const response = await axios.get(`${url}/api/users/${tempUserId}`);
+      setUser(response.data);
+      setProfilePicture(response.data.profilePicture);
+      return response.data;
+    } catch (error) {
+      console.log("Error getting user", error);
+      return null;
     }
   };
 
@@ -63,12 +94,56 @@ const EditProfile = () => {
         {/* <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } /> */}
       </View>
 
+      <Pressable onPress={() => {
+        const pickImage = async () => {
+          const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (permissionResult.granted === false) {
+            Alert.alert("Permission to access camera roll is required!");
+            return;
+          }
+          const result = await ImagePicker.launchImageLibraryAsync();
+          if (result.cancelled) {
+            return;
+          }
+          
+          const uri = result.assets[0].uri;
+
+          // Update local state immediately
+          setProfilePicture(uri);
+
+          // Upload to backend
+          const formData = new FormData();
+          formData.append('profilePicture', {
+            uri,
+            name: 'profile.jpg',
+            type: 'image/jpeg',
+          });
+
+          const response = await axios.patch(`${url}/api/users/${tempUserId}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          
+          if (data.url) {
+            setProfilePicture(data.url);
+          }
+        };
+
+        pickImage();
+      }}>
+        <Image 
+          source={profilePicture ? { uri: profilePicture } : grapes}
+          style={styles.image}
+        />
+      </Pressable>
+
       <Text>Name</Text>
       <TextInput
         style={styles.input}
         value={name}
         onChangeText={(text) => setName(text)}
-        placeholder="Enter your name"
+        placeholder={user.name ? user.name : "Enter your name"}
       />
 
       {/* <Text>Last Name</Text>
@@ -78,12 +153,28 @@ const EditProfile = () => {
         onChangeText={(text) => setLastName(text)}
       /> */}
 
+      <Text>Username</Text>
+      <TextInput
+        style={styles.input}
+        value={username}
+        onChangeText={(text) => setUsername(text)}
+        placeholder={user.username ? user.username : "Enter your username"}
+      />
+
       <Text>Email</Text>
       <TextInput
         style={styles.input}
         value={email}
         onChangeText={(text) => setEmail(text)}
-        placeholder="Enter your email"
+        placeholder={user.email ? user.email : "Enter your email"}
+      />
+
+      <Text>Bio</Text>
+      <TextInput
+        style={styles.input}
+        value={bio}
+        onChangeText={(text) => setBio(text)}
+        placeholder={user.bio ? user.bio : "Enter your bio"}
       />
 
       {/* <Text>Gender</Text>
@@ -118,16 +209,8 @@ const EditProfile = () => {
         style={styles.input}
         value={birthday}
         onChangeText={(text) => setBirthday(text)}
-        placeholder="MM/DD/YYYY"
+        placeholder={user.dob ? user.dob : "Enter your birthday"}
       />
-
-      <Text>Username</Text>
-        <TextInput
-          style={styles.input}
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-          placeholder="Create a username"
-        />
 
       <Text>Password</Text>
         <TextInput
@@ -135,7 +218,7 @@ const EditProfile = () => {
           value={password}
           secureTextEntry
           onChangeText={(text) => setPassword(text)}
-          placeholder="Create a password"
+          placeholder="Enter new password"
         />
 
       {/* <Text>Income Level (optional)</Text>
@@ -151,12 +234,13 @@ const EditProfile = () => {
         <View style={styles.line} />
       </View>
     */}
-
       <View style={styles.buttonContainer} >
         <TouchableOpacity style={styles.button} onPress={handleSubmit} >
           <Text style={{ fontSize: 18,}} >Update</Text>
         </TouchableOpacity>
       </View>
+
+      
     </View>
 
   );
@@ -177,14 +261,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   title: {
-    fontSize: 30, 
+    fontSize: 28,
+    paddingBottom: 20, 
     fontWeight: 'bold',
   }, 
   header: {
     flexDirection: 'row', 
     fontSize: 40,
-    marginTop: 90,
-    marginBottom: 40,
+    marginTop: 20,
+    marginBottom: 20,
   },
   button: {
     padding: 10,
@@ -198,7 +283,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: "center",
-    justifyContent: 'flex-end',
+    marginTop: 20,
     height: '30%',
   },
   lineContainer: {
@@ -214,6 +299,14 @@ const styles = StyleSheet.create({
   },
   text: {
     paddingHorizontal: 10,
+  },
+  image: {
+    width: 155,
+    height: 155,
+    borderRadius: 80, 
+    alignSelf: "center",
+    justifyContent: "center",
+    marginVertical: 15,
   },
 
 });

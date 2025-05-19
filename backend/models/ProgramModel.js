@@ -24,6 +24,9 @@ const programSchema = new Schema({
     },
     description: {
         type: String
+    },
+    host: {
+        type: String
     }
 }, { timestamps: true })
 

@@ -3,17 +3,28 @@ import { Text, View, Pressable, StyleSheet, Modal, Image } from "react-native";
 import { BlurView } from 'expo-blur';
 import volunteer from "@assets/volunteer.png";
 import attendee from "@assets/attendee.png";
+import barsort from "@assets/bar-sort.png";
 
 
-  const VolunteerButton = ({ roleStatus, setRoleStatus }) => {
+  const VolunteerButton = ({ roleStatus, setRoleStatus, xp }) => {
     return (
       <Pressable
         onPress={() => setRoleStatus("v") }
         style={roleStatus === "v" ? styles.buttonDark : styles.roleButtons}
       >
-        <View style={{ marginRight: 0, flex: 1, padding: 10, paddingRight: 0 }}>
+        <View style={{ marginRight: 0, flex: 1, padding: 10, paddingRight: 10}}>
           <Text style={{ textAlign: 'left', color: 'white', fontSize: '30' }}>Volunteer</Text>
-          <Text style={{ textAlign: 'left', color: 'white', fontSize: '15' }}>make an impact as a volunteer!</Text>
+          <Text style={{ textAlign: 'left', color: 'white', fontSize: '13', marginBottom: 10 }}>Make an impact as a volunteer!</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}> 
+            <View style={{textAlign: 'right', backgroundColor: 'white', padding: 10, borderRadius: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 5}}>
+              <Text style={{width: 10, backgroundColor: '#CF7362', height: 10, borderRadius: 10}}>.</Text>
+              <Text>{xp * 2 || 0} xp</Text>
+            </View>
+            <Pressable style={{ padding: 10, backgroundColor: 'white', borderRadius: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 5}}>
+              <Image source={barsort} style={{width: 10, height: 10}}/>
+              <Text>See Volunteer Notes</Text>
+            </Pressable>
+          </View>
         </View>
         <Image style={styles.volunteer} source={volunteer}/>
       </Pressable>
@@ -21,16 +32,30 @@ import attendee from "@assets/attendee.png";
     )
   }
 
-  const AttendeeButton = ({ roleStatus, setRoleStatus }) => {
+  const AttendeeButton = ({ roleStatus, setRoleStatus, xp }) => {
     return (
       <Pressable
         onPress={() => setRoleStatus("a") }
         style={ roleStatus === "a" ? styles.buttonDark : styles.roleButtons}
       >
         <Image style={styles.volunteer} source={attendee}/>
-        <View style={{ marginLeft: 0, flex: 1, padding: 10, paddingLeft: 0 }}>
+        <View style={{ marginLeft: -40, flex: 1, padding: 10, paddingLeft: 10 }}>
           <Text style={{ textAlign: 'right', color: 'white', fontSize: '30' }}>Attendee</Text>
-          <Text style={{ textAlign: 'right', color: 'white', fontSize: '15' }}>enjoy the event and grow your plant!</Text>
+          <Text style={{ textAlign: 'right', color: 'white', fontSize: '13', marginBottom: '8', marginLeft: -10 }}>Enjoy the event and grow your plant!</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}> 
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{textAlign: 'right', backgroundColor: 'white', padding: 10, borderRadius: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 5}}>
+                <Text style={{width: 10, backgroundColor: '#CF7362', height: 10, borderRadius: 10}}>.</Text>
+                <Text>{xp || 0} xp</Text>
+              </View>
+            <View>
+            <View style={{ padding: 10, backgroundColor: 'white', borderRadius: 18, flexDirection: 'row', alignItems: 'center', gap: 5}}>
+              <Image source={barsort} style={{width: 10, height: 10}}/>
+              <Text>See Event Details</Text>
+            </View>
+            </View>
+          </View>
+          </View>
         </View>
 
       </Pressable>
@@ -64,7 +89,7 @@ import attendee from "@assets/attendee.png";
     );
   };
 
-  const RegisterModal = ({ modalVisible, setModalVisible, addUserEvent }) => {
+  const RegisterModal = ({ modalVisible, setModalVisible, addUserEvent, xp }) => {
     const [roleStatus, setRoleStatus] = useState("");
 
     return (
@@ -85,8 +110,8 @@ import attendee from "@assets/attendee.png";
           <View style={styles.modalView}>
             <Text style={{marginTop: 40, color: "white", fontSize: 30,}}>Join the event as a...</Text>
 
-            <VolunteerButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
-            <AttendeeButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} />
+            <VolunteerButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} xp={xp} />
+            <AttendeeButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} xp={xp}/>
             <RegisterButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} setModalVisible={setModalVisible} addUserEvent={addUserEvent}/>
 
             <Pressable style={styles.xButton} onPress={() => {setModalVisible(false); setRoleStatus("") }}>
@@ -186,11 +211,12 @@ const styles = StyleSheet.create({
   },
   unclickableRegisterButton: {
     alignItems: 'center',
+    justifyContent: 'center',
     height: '10%',
     margin: 10,
     padding: 12,
     width: '80%',
-    backgroundColor: "#rgba(157, 76, 106, 1)",
+    backgroundColor: "#716F49",
     borderRadius: 20,
   },
   clickableRegisterButton: {
