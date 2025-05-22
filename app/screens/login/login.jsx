@@ -1,8 +1,8 @@
-import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image, Pressable} from "react-native";
-import { 
-  KeyboardAvoidingView, 
-  Platform,   
-  ScrollView 
+import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Image, Pressable } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -13,20 +13,24 @@ import logo from '@assets/teapot-logo.png';
 import apple from '@assets/apple.png';
 import google from '@assets/google.png'
 import { useFonts } from 'expo-font';
+import * as SecureStore from 'expo-secure-store';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
-const BACKEND = "https://ee6e-38-73-241-58.ngrok-free.app";
+const BACKEND = "http://localhost:4000";
 
 const Login = () => {
   const navigation = useNavigation();
+  const { setUser } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [birthday, setBirthday] = useState("");
   const [username, setUsername] = useState("");
   const [fontsLoaded] = useFonts({
-      'CooperLtBT': require('@assets/Cooper_BT_Font_Family/CooperLtBT-Regular.ttf'),
-    });
-  
+    'CooperLtBT': require('@assets/Cooper_BT_Font_Family/CooperLtBT-Regular.ttf'),
+  });
+
   const [race, setRace] = useState("");
   const [income, setIncome] = useState("");
   const [age, setAge] = useState("");
@@ -58,6 +62,7 @@ const Login = () => {
     }
   };
   const handleSubmit = async () => {
+    console.log("OOOOO");
     if (
       !name ||
       !email ||
@@ -70,6 +75,7 @@ const Login = () => {
       !gender
     ) {
       Alert.alert("Error", "Please fill out all the fields.");
+      return false;
     } else {
       // Convert age to a number if needed
       const numericAge = Number(age);
@@ -88,57 +94,128 @@ const Login = () => {
 
       console.log(user);
       try {
-        // Use backticks for template interpolation of BACKEND
         const response = await axios.post(`${BACKEND}/api/users/`, user);
         console.log(response.data);
+        const { userId, token } = response.data;
+
+        // store user data securely
+        await SecureStore.setItemAsync('user', JSON.stringify({ userId, token }));
+        // update context
+        setUser({ userId, token });
         Alert.alert("Success", "Form submitted successfully!");
+        return true;
       } catch (error) {
-        console.log("error", error);
-        Alert.alert("Error", "An error occurred while submitting the form.");
+        // First, log everything to see the full error structure
+        console.log("Full error:", error);
+        console.log("Error response:", error.response);
+        console.log("Error response data:", error.response?.data);
+
+        // Extract error message
+        let errorMessage = "An error occurred while submitting the form.";
+
+        if (error.response && error.response.data) {
+          // Check for specific field errors
+          if (error.response.data.errors) {
+            const fieldErrors = error.response.data.errors;
+            if (fieldErrors.email) {
+              errorMessage = fieldErrors.email;
+            } else if (fieldErrors.username) {
+              errorMessage = fieldErrors.username;
+            } else {
+              // Get the first error message if there are multiple
+              const firstErrorField = Object.keys(fieldErrors)[0];
+              if (firstErrorField) {
+                errorMessage = fieldErrors[firstErrorField];
+              }
+            }
+          }
+          // Check for general message
+          else if (error.response.data.message) {
+            errorMessage = error.response.data.message;
+          }
+          // Check for error property (for backward compatibility)
+          else if (error.response.data.error) {
+            errorMessage = error.response.data.error;
+          }
+        }
+
+        Alert.alert("Registration Error", errorMessage);
       }
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Register</Text>
-        <Image style={styles.logo} source={ logo } />
-      </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Register</Text>
+          <Image style={styles.logo} source={logo} />
+        </View>
 
-      <Text>Name</Text>
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={(text) => setName(text)}
-        placeholder="Enter your name"
-      />
+        <Text>Name</Text>
+        <TextInput
+          style={styles.input}
+          value={name}
+          onChangeText={(text) => setName(text)}
+          placeholder="Enter your name"
+        />
 
-      <Text>Email</Text>
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        placeholder="Enter your email"
-      />
+        <Text>Email</Text>
+        <TextInput
+          style={styles.input}
+          value={email}
+          onChangeText={(text) => setEmail(text.toLowerCase())}
+          placeholder="Enter your email"
+        />
 
-      {/* <Text>Birthday</Text>
-      <TextInput
-        style={styles.input}
-        value={birthday}
-        onChangeText={(text) => setBirthday(text)}
-        placeholder="MM/DD/YYYY"
-      />
+        <Text>Birthday</Text>
+        <TextInput
+          style={styles.input}
+          value={birthday}
+          onChangeText={(text) => setBirthday(text)}
+          placeholder="MM/DD/YYYY"
+        />
 
-      <Text>Username</Text>
+        <Text>Username</Text>
         <TextInput
           style={styles.input}
           value={username}
           onChangeText={(text) => setUsername(text)}
           placeholder="Create a username"
-        /> */}
+        />
+        <Text>Race</Text>
+        <TextInput
+          style={styles.input}
+          value={race}
+          onChangeText={(text) => setRace(text)}
+          placeholder="Race"
+        />
 
-      <Text>Password</Text>
+        <Text>Income</Text>
+        <TextInput
+          style={styles.input}
+          value={income}
+          onChangeText={(text) => setIncome(text)}
+          placeholder="Income"
+        />
+
+        <Text>Gender</Text>
+        <TextInput
+          style={styles.input}
+          value={gender}
+          onChangeText={(text) => setGender(text)}
+          placeholder="Gender"
+        />
+
+        <Text>Age</Text>
+        <TextInput
+          style={styles.input}
+          value={age}
+          onChangeText={(text) => setAge(text)}
+          placeholder="Age"
+        />
+
+        <Text>Password</Text>
         <TextInput
           style={styles.input}
           value={password}
@@ -147,12 +224,15 @@ const Login = () => {
           placeholder="Enter your password"
         />
         <View style={styles.buttonContainer} >
-          <TouchableOpacity style={styles.button} 
-            onPress={() => {
-              handleSubmit(); // Call handleSubmit first
-              navigation.navigate('Home'); // Navigate to Home only after the form submission
+          <TouchableOpacity style={styles.button}
+            onPress={async () => {
+              console.log("here");
+              const success = await handleSubmit();
+              if (success) {
+                navigation.navigate('Home');
+              }
             }} >
-            <Text style={{ fontSize: 30, color: 'white'}} >Create Profile</Text>
+            <Text style={{ fontSize: 30, color: 'white' }} >Create Profile</Text>
           </TouchableOpacity>
         </View>
 
@@ -173,17 +253,18 @@ const Login = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
           <TouchableOpacity>
-              <Text>Have an account? </Text>
+            <Text>Have an account? </Text>
           </TouchableOpacity>
           <Pressable
             onPress={() => navigation.navigate('SignIn')}
           >
-            <Text style={{color: 'blue'}}>Sign in </Text>
+            <Text style={{ color: 'blue' }}>Sign in </Text>
           </Pressable>
         </View>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -197,11 +278,11 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: 'absolute',
-    right: 20, 
+    right: 20,
     bottom: 1,
   },
   goog: {
-    width: 15, 
+    width: 15,
     height: 15,
   },
   input: {
@@ -211,16 +292,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 8,
-    backgroundColor: "white", 
+    backgroundColor: "white",
     borderColor: "white",
     opacity: 0.5,
     fontSize: 10,
   },
   title: {
-    fontSize: 50, 
+    fontSize: 50,
     fontWeight: 'bold',
     fontFamily: 'CooperLtBT',
-  }, 
+  },
   header: {
     flexDirection: 'row',
     fontSize: 40,
@@ -230,7 +311,7 @@ const styles = StyleSheet.create({
   button: {
     padding: 1,
     justifyContent: "center",
-    alignItems: "center", 
+    alignItems: "center",
     borderRadius: 16,
     width: '330',
     backgroundColor: '#0D0D0D',
@@ -242,7 +323,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: 'flex-end',
     height: 40,
-    marginTop: 30, 
+    marginTop: 30,
   },
   lineContainer: {
     flexDirection: 'row',
@@ -260,7 +341,7 @@ const styles = StyleSheet.create({
   },
   orContainer: {
     marginVertical: 20,
-    display: 'flex', 
+    display: 'flex',
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -275,25 +356,25 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: 'white',
-    display: 'flex', 
+    display: 'flex',
     flexDirection: 'row',
   },
   line: {
-    flex: 1, 
-    height: 0.1, 
+    flex: 1,
+    height: 0.1,
     backgroundColor: 'white',
   },
   customSignInContainer: {
-    display: 'flex', 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 20,
   },
   customSignIn: {
-    display: 'flex', 
+    display: 'flex',
     flexDirection: 'row',
     gap: 5,
-    borderColor: "white", 
+    borderColor: "white",
     borderWidth: 0.5,
     paddingHorizontal: 10,
     paddingVertical: 5,

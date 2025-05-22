@@ -6,6 +6,8 @@ const {
     deleteUser,
     updateUser, 
     updateUserEvents,
+    checkUserEmailandPass,
+    
 } = require('../controllers/userController')
 
 const User = require('../models/UserModel')
@@ -15,6 +17,8 @@ const router = express.Router()
 router.get('/', getUsers)
 
 router.get('/:id', getUser)
+
+router.post('/login', checkUserEmailandPass)
 
 router.post('/', createUser)
 

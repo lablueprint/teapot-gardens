@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
+  TextInput,
   StyleSheet,
   Image,
   ImageBackground,
@@ -12,110 +13,202 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// ─── Assets ──────────────────────────────────────────────────────
+import { PlantContext } from '@app/screens/garden/PlantContext';  
+
+/* ---------- Shared background ---------- */
 import gardenBg from '@assets/garden-assets/garden-background.png';
-import plant_1_level_1 from '@assets/garden-assets/plant_1/plant_1_level_1.png';
-import plant_1_level_2_locked from '@assets/garden-assets/plant_1/plant_1_level_2_locked.png';
-import plant_1_level_3_locked from '@assets/garden-assets/plant_1/plant_1_level_3_locked.png';
+
+/* ---------- Plant-specific assets ---------- */
+// Blue
+import b1 from '@assets/garden-assets/plant_1/plant_1_level_1.png';
+import b2L from '@assets/garden-assets/plant_1/plant_1_level_2_locked.png';
+import b3L from '@assets/garden-assets/plant_1/plant_1_level_3_locked.png';
+// Pink
+import p1 from '@assets/garden-assets/plant_2/plant_2_level_1.png';
+import p2L from '@assets/garden-assets/plant_2/plant_2_level_2_locked.png';
+import p3L from '@assets/garden-assets/plant_2/plant_2_level_3_locked.png';
+// Yellow
+import y1 from '@assets/garden-assets/plant_3/plant_3_level_1.png';
+import y2L from '@assets/garden-assets/plant_3/plant_3_level_2_locked.png';
+import y3L from '@assets/garden-assets/plant_3/plant_3_level_3_locked.png';
+
+/* ---------- Config table: everything the popup needs per flower ---------- */
+const plantInfo = {
+  'Blue Dandelion': {
+    levels: [b1, b2L, b3L],
+    description:
+      'Just a happy little blue dandelion doing its best. Loves sunshine, compliments, and pretending it’s a real flower.',
+    funFact:
+      'Fun fact: Blue dandelions aren’t real in nature—yours is extra special!',
+    speechPos: { top: 470, left: 160 },
+  },
+  'Pink Dandelion': {
+    levels: [p1, p2L, p3L],
+    description:
+      'A bashful pink dandelion that blushes even brighter when watered.',
+    funFact:
+      'Fun fact: Pink dandelions symbolize playfulness and sweet wishes.',
+    speechPos: { top: 440, left: 170 },
+  },
+  'Yellow Dandelion': {
+    levels: [y1, y2L, y3L],
+    description:
+      'Classic, cheerful, powered by optimism and a daily dose of vitamin D.',
+    funFact:
+      'Fun fact: Real yellow dandelions close at night and open with sunrise.',
+    speechPos: { top: 470, left: 175 },
+  },
+};
 
 export default function GardenScreen() {
-  const [popupVisible, setPopupVisible] = useState(false);
-  const navigation = useNavigation();
+  const navigation        = useNavigation();
+  const { heroPlant }     = useContext(PlantContext);      // 💚 chosen in Nursery
+  const {
+    levels,
+    description,
+    funFact,
+    speechPos,
+  } = plantInfo[heroPlant.name] || plantInfo['Blue Dandelion'];
+
+  /* nickname editing */
+  const [nickname,   setNickname]   = useState('Gary');
+  const [editing,    setEditing]    = useState(false);
+  const [draftName,  setDraftName]  = useState('');
+  const [popupOpen,  setPopupOpen]  = useState(false);
+
+  const confirmEdit = () => {
+    const trimmed = draftName.trim();
+    if (trimmed) setNickname(trimmed);
+    setEditing(false);
+  };
 
   return (
-    <View style={{ flex: 1, overflow: 'hidden' }}>
+    <View style={{ flex: 1 }}>
       <ImageBackground source={gardenBg} style={styles.bg} resizeMode="cover">
-        
-        
-{/* ─── Combined Header Container ───────────────────────────── */}
-<View style={styles.headerContainer}>
-  {/* Top Header Row */}
-  <View style={styles.topHeader}>
-    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.drawerBtn}>
-      <Text style={styles.drawerIcon}>☰</Text>
-    </TouchableOpacity>
+        {/* header ----------------------------------------------------------- */}
+        <View style={styles.headerContainer}>
+          <View style={styles.topHeader}>
+            <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.drawerBtn}>
+              <Text style={styles.drawerIcon}>☰</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Nursery')} style={styles.nurseryBtn}>
+              <Text style={styles.nurseryIcon}>🌱</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.headerBelow}>
+            <Text style={styles.headerText}>Your Garden</Text>
+          </View>
+        </View>
 
-    <TouchableOpacity onPress={() => navigation.navigate("Nursery")} style={styles.nurseryBtn}>
-      <Text style={styles.nurseryIcon}>🌱</Text>
-    </TouchableOpacity>
-  </View>
-
-  {/* Garden Title Header */}
-  <View style={styles.headerBelow}>
-    <Text style={styles.headerText}>Your Garden</Text>
-  </View>
-</View>
-
-        {/* ─── Greeting Bubble ─────────────────────────────────── */}
-        <View style={styles.speechWrapper}>
+        {/* greeting bubble -------------------------------------------------- */}
+        <View style={[styles.speechWrapper, speechPos]}>
           <View style={styles.speechBubble}>
             <Text style={styles.speechText}>
-              <Text style={{ fontStyle: 'italic' }}>Welcome Henry!</Text>
+              <Text style={{ fontStyle: 'italic' }}>
+                Welcome&nbsp;{nickname}!
+              </Text>
             </Text>
           </View>
           <View style={styles.speechTail} />
         </View>
 
-        {/* ─── Flower ──────────────────────────────────────────── */}
-        <Image source={plant_1_level_1} style={styles.flower} resizeMode="contain" />
+        {/* main flower ------------------------------------------------------ */}
+        <Image source={heroPlant.img} style={styles.flower} resizeMode="contain" />
 
-        {/* ─── Info Panel ──────────────────────────────────────── */}
-        <Pressable style={styles.infoPanel} onPress={() => setPopupVisible(true)}>
-          <Text style={styles.nameText}>Gary</Text>
-          <Text style={styles.subText}>Yellow Dandelion</Text>
+        {/* info tile -------------------------------------------------------- */}
+        <Pressable style={styles.infoPanel} onPress={() => setPopupOpen(true)}>
+          <Text style={styles.nameText}>{nickname}</Text>
+          <Text style={styles.subText}>{heroPlant.name}</Text>
           <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: '66%' }]} />
+            <View style={[styles.progressFill, { width: '33%' }]} />
           </View>
-          <Text style={styles.levelText}>LVL 2/3     400/600 XP</Text>
+          <Text style={styles.levelText}>LVL 1/3 &nbsp;  200 / 600 XP</Text>
         </Pressable>
       </ImageBackground>
 
-      {/* ─── Popup ─────────────────────────────────────────────── */}
+      {/* popup ------------------------------------------------------------- */}
       <Modal
         animationType="fade"
         transparent
-        visible={popupVisible}
-        onRequestClose={() => setPopupVisible(false)}
+        visible={popupOpen}
+        onRequestClose={() => setPopupOpen(false)}
       >
-        <TouchableWithoutFeedback onPress={() => setPopupVisible(false)}>
+        <TouchableWithoutFeedback onPress={() => setPopupOpen(false)}>
           <BlurView intensity={25} tint="dark" style={styles.modalBackdrop}>
-            <View style={styles.popupCard}>
-              <View style={styles.popupHeader}>
-                <Text style={styles.popupTitle}>Gary</Text>
-                <TouchableOpacity onPress={() => setPopupVisible(false)}>
-                  <Text style={styles.closeIcon}>✕</Text>
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.popupSubtitle}>Starters</Text>
+            <TouchableWithoutFeedback>
+              <View style={styles.popupCard}>
+                {/* header row (nickname) */}
+                <View style={styles.popupHeader}>
+                  {editing ? (
+                    <TextInput
+                      value={draftName}
+                      onChangeText={setDraftName}
+                      style={styles.popupTitleInput}
+                      maxLength={18}
+                      autoFocus
+                      onSubmitEditing={confirmEdit}
+                    />
+                  ) : (
+                    <Text style={styles.popupTitle}>{nickname}</Text>
+                  )}
 
-              <Text style={styles.plantTitle}>Orchid Seedling</Text>
-              <Text style={styles.plantDescription}>
-                Description of what the plant is – lorem ipsum lalalalala hello my name is Daniel!
-              </Text>
+                  {editing ? (
+                    <TouchableOpacity style={styles.headerIcon} onPress={confirmEdit}>
+                      <Ionicons name="checkmark" size={20} color="#101828" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity style={styles.headerIcon} onPress={() => { setDraftName(nickname); setEditing(true); }}>
+                      <Ionicons name="pencil" size={18} color="#101828" />
+                    </TouchableOpacity>
+                  )}
 
-              <View style={styles.popupLevels}>
-                <Image source={plant_1_level_1} style={styles.popupLevelIcon} />
-                <Image source={plant_1_level_2_locked} style={[styles.popupLevelIcon, { opacity: 0.3 }]} />
-                <Image source={plant_1_level_3_locked} style={[styles.popupLevelIcon, { opacity: 0.15 }]} />
-              </View>
-              <View style={styles.popupLevelsLabel}>
-                <Text style={styles.popupLevelText}>LV1</Text>
-                <Text style={styles.popupLevelText}>LV2</Text>
-                <Text style={styles.popupLevelText}>LV3</Text>
-              </View>
+                  <TouchableOpacity
+                    style={[styles.headerIcon, { right: 0 }]}
+                    onPress={() => { setEditing(false); setPopupOpen(false); }}
+                  >
+                    <Ionicons name="close" size={22} color="#101828" />
+                  </TouchableOpacity>
+                </View>
 
-              <View style={styles.popupProgressBar}>
-                <View style={[styles.popupProgressFill, { width: '33%' }]} />
-              </View>
+                <Text style={styles.popupSubtitle}>Starters</Text>
+                <View style={styles.dashedLine} />
 
-              <View style={styles.popupFunFact}>
-                <Text style={styles.funFactIcon}>🌱</Text>
-                <Text style={styles.funFactText}>
-                  Fun fact: Your plant is an orchid. It survives in sunny and windy environments.
-                </Text>
+                {/* description */}
+                <Text style={styles.plantTitle}>{heroPlant.name}</Text>
+                <Text style={styles.plantDescription}>{description}</Text>
+
+                <View style={styles.dashedLine} />
+
+                {/* level row */}
+                <View style={styles.popupLevels}>
+                  <Image source={levels[0]} style={styles.popupLevelIcon} />
+                  <Image source={levels[1]} style={[styles.popupLevelIcon, styles.levelLocked]} />
+                  <Image source={levels[2]} style={[styles.popupLevelIcon, styles.levelLocked]} />
+                </View>
+                <View style={styles.popupLevelsLabel}>
+                  <Text style={styles.popupLevelText}>LV1</Text>
+                  <Text style={styles.popupLevelText}>LV2</Text>
+                  <Text style={styles.popupLevelText}>LV3</Text>
+                </View>
+
+                {/* XP bar */}
+                <View style={styles.levelBarWrapper}>
+                  <View style={[styles.popupProgressFill, { width: '33%' }]} />
+                  <View style={styles.tick} />
+                  <View style={[styles.tick, { left: '66%' }]} />
+                </View>
+
+                <View style={styles.dashedLine} />
+
+                {/* fun fact */}
+                <View style={styles.popupFunFact}>
+                  <Text style={styles.funFactIcon}>🌱</Text>
+                  <Text style={styles.funFactText}>{funFact}</Text>
+                </View>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
           </BlurView>
         </TouchableWithoutFeedback>
       </Modal>
@@ -123,175 +216,104 @@ export default function GardenScreen() {
   );
 }
 
-// ───────────────────────────────────────────────────────────────
-// Styles
-// ───────────────────────────────────────────────────────────────
+/* ─── Styles ─────────────────────────────────────────────── */
 const styles = StyleSheet.create({
   bg: { flex: 1, paddingTop: 60, alignItems: 'center' },
-  headerContainer: {
-    marginTop: 30, // or any value you want
-    width: '90%',
-    position: 'absolute',
-    top: 30,
-  },  
-  // Top Menu/Nursery Row
-  topHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  drawerBtn: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 8,
-  },
-  drawerIcon: {
-    fontSize: 20,
-    color: '#000',
-  },
-  nurseryBtn: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 8,
-  },
-  nurseryIcon: {
-    fontSize: 20,
-  },
 
-  headerBelow: {
-    marginTop: 12,
-    alignItems: 'center',
-  },
-  headerText: {
-    fontSize: 36,
-    fontWeight: '600',
-    color: '#000',
-  },
+  /* Header */
+  headerContainer: { width: '90%', position: 'absolute', top: 60 },
+  topHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  drawerBtn: { backgroundColor: '#fff', borderRadius: 10, padding: 8 },
+  drawerIcon: { fontSize: 20, color: '#000' },
+  nurseryBtn: { backgroundColor: '#fff', borderRadius: 10, padding: 8 },
+  nurseryIcon: { fontSize: 20 },
+  headerBelow: { marginTop: 12, alignItems: 'center' },
+  headerText: { fontSize: 36, fontWeight: '600', color: '#000' },
 
-  // Speech bubble
-  speechWrapper: {
-    position: 'absolute',
-    top: 470,
-    left: 160,
-    maxWidth: '70%',
-  },
+  /* Greeting bubble */
+  speechWrapper: { position: 'absolute', top: 470, left: 160, maxWidth: '70%' },
   speechBubble: {
-    backgroundColor: '#fff',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowOffset: { width: 0, height: 1 },
+    backgroundColor: '#fff', paddingVertical: 8, paddingHorizontal: 16,
+    borderRadius: 10, shadowColor: '#000', shadowOpacity: 0.12, shadowOffset: { width: 0, height: 1 },
   },
   speechTail: {
-    position: 'absolute',
-    bottom: -6,
-    left: 30,
-    width: 14,
-    height: 14,
-    backgroundColor: '#fff',
-    transform: [{ rotate: '45deg' }],
+    position: 'absolute', bottom: -6, left: 30, width: 14, height: 14,
+    backgroundColor: '#fff', transform: [{ rotate: '45deg' }],
   },
-  speechText: {
-    fontSize: 16,
-    color: '#000',
-  },
+  speechText: { fontSize: 16, color: '#000' },
 
-  // Flower
+  /* Main flower */
   flower: {
-    width: 250,
-    height: 180,
-    position: 'absolute',
-    top: 490,
-    left: 80,
+    width: 250, height: 180, position: 'absolute', top: 490, left: 80,
     transform: [{ rotate: '-1.85deg' }],
   },
 
-  // Info panel
+  /* Info panel */
   infoPanel: {
-    position: 'absolute',
-    bottom: 30,
-    width: '90%',
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
+    position: 'absolute', bottom: 30, width: '90%',
+    backgroundColor: '#fff', padding: 20, borderRadius: 20,
+    shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 2 },
   },
   nameText: { fontSize: 20, fontWeight: 'bold' },
   subText: { color: 'gray', marginBottom: 10 },
   progressBar: {
-    width: '100%',
-    height: 6,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 3,
-    overflow: 'hidden',
-    marginVertical: 4,
+    width: '100%', height: 6, backgroundColor: '#e0e0e0',
+    borderRadius: 3, overflow: 'hidden',
   },
   progressFill: { height: '100%', backgroundColor: '#708238' },
   levelText: { fontSize: 12, color: 'gray', marginTop: 4 },
 
-  // Modal
-  modalBackdrop: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  /* Modal backdrop */
+  modalBackdrop: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+
+  /* Popup card */
   popupCard: {
-    width: '80%',
+    width: '85%',
     backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
   },
-  popupHeader: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+
+  /* popup header */
+  popupHeader: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative' },
+  popupTitle:  { fontSize: 24, fontWeight: '700', color: '#101828' },
+  popupTitleInput: {
+    fontSize: 24, fontWeight: '700', color: '#101828',
+    textAlign: 'center', paddingVertical: 0,
+    minWidth: 120,
   },
-  popupTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    textAlign: 'center',
-    color: '#101828',
-  },
-  popupSubtitle: {
-    color: '#10182880',
-    marginBottom: 12,
-    fontSize: 14,
-    textAlign: 'center',
-    fontWeight: '400',
-  },
-  closeIcon: {
-    fontSize: 22,
-    position: 'absolute',
-    right: -120,
-    top: 10,
-  },
-  plantTitle: { fontWeight: '600', marginBottom: 4 },
-  plantDescription: { color: 'gray', marginBottom: 12 },
-  popupLevels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 4,
-  },
-  popupLevelIcon: { width: 48, height: 48 },
-  popupLevelsLabel: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  popupLevelText: { fontSize: 12, color: 'gray', width: 48, textAlign: 'center' },
-  popupProgressBar: {
-    width: '100%',
-    height: 6,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 3,
-    overflow: 'hidden',
-    marginBottom: 12,
+  headerIcon:  { position: 'absolute', right: 36 },
+
+  popupSubtitle: { fontSize: 14, color: '#6b6b6b', textAlign: 'center', marginTop: 2, marginBottom: 12 },
+
+  /* dashed separators */
+  dashedLine: { width: '100%', borderStyle: 'dashed', borderWidth: 1, borderColor: '#d6d6d6', marginVertical: 12 },
+
+  /* description */
+  plantTitle:       { fontSize: 16, fontWeight: '600', marginBottom: 4 },
+  plantDescription: { fontSize: 13, color: '#6b6b6b' },
+
+  /* level row */
+  popupLevels:      { flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 },
+  popupLevelIcon:   { width: 100, height: 100, resizeMode: 'contain' },
+  levelLocked:      { opacity: 0.75 },
+  popupLevelsLabel: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
+  popupLevelText:   { fontSize: 12, width: 64, textAlign: 'center', color: '#6b6b6b' },
+
+  /* progress bar with ticks */
+  levelBarWrapper: {
+    width: '100%', height: 6, backgroundColor: '#e0e0e0',
+    borderRadius: 3, overflow: 'hidden', marginTop: 12, marginBottom: 16,
   },
   popupProgressFill: { height: '100%', backgroundColor: '#8DC53F' },
-  popupFunFact: { flexDirection: 'row', alignItems: 'flex-start', gap: 6 },
-  funFactIcon: { fontSize: 16 },
-  funFactText: { flex: 1, fontSize: 12 },
+  tick: {
+    position: 'absolute', top: -4, left: '33%',
+    width: 1, height: 14, backgroundColor: '#00000055',
+  },
+
+  /* fun fact */
+  popupFunFact: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
+  funFactIcon:  { fontSize: 18, marginTop: 2 },
+  funFactText:  { flex: 1, fontSize: 13, color: '#101828' },
 });

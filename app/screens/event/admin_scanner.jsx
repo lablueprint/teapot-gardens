@@ -17,25 +17,41 @@ const AdminScanner = () => {
 
     try {
       const response = await axios.get(
-        `https://f7f6-38-15-215-20.ngrok-free.app/api/users/${data}`
+        `https://e6b3-131-179-94-72.ngrok-free.app/api/users/${data}`
       );
+      console.log(response.data)
       const currentEvents = response.data.attendedEvents || [];
 
       if (currentEvents.includes(tempEventId)) {
         Alert.alert(`Already scanned ${response.data.name}!`);
       } else {
-        await axios.patch(
-          `https://f7f6-38-15-215-20.ngrok-free.app/api/users/${data}`,
-          { attendedEvents: [...currentEvents, tempEventId] }
-        );
+        const XPLevel = Math.floor(response.data.tamagatchiXP / 100);
+        const updates = {
+          attendedEvents: [...currentEvents, tempEventId],
+        };
+
+        if (XPLevel > response.data.tamagatchiLevel) {
+          updates.notifications = `Your plant has reached level ${XPLevel}`;
+          updates.tamagatchiLevel = XPLevel;
+        }
+        
+        try { 
+          await axios.patch(
+            `https://e6b3-131-179-94-72.ngrok-free.app/api/users/${data}`,
+            updates
+          );
+        } catch (err) {
+          console.log("Error 1", err);
+          Alert.alert("Error", "Failed to update attendance.");
+        }
         Alert.alert("Success", `${response.data.name} marked as attended!`);
       }
     } catch (err) {
-      console.log("Error", err);
+      console.log("Error 2", err);
       Alert.alert("Error", "Failed to update attendance.");
     }
-
   };
+
 
   if (!permission) return <View />;
   if (!permission.granted) {
