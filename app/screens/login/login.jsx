@@ -17,7 +17,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
-const BACKEND = "http://localhost:4000";
+const BACKEND = "https://5253-2607-f010-2a7-1021-9515-5e07-f324-7904.ngrok-free.app";
 
 const Login = () => {
   const navigation = useNavigation();
