@@ -1,96 +1,124 @@
 import React, { useState } from "react";
 import { Text, View, Pressable, StyleSheet, Modal, Image } from "react-native";
 import { BlurView } from 'expo-blur';
-import volunteer from "@assets/volunteer.png";
-import attendee from "@assets/attendee.png";
+import { LinearGradient } from 'expo-linear-gradient';
+import volunteer from "@assets/character-volunteer.png";
+import attendee from "@assets/character-attendee.png";
+import moreInfo from "@assets/more-info.png";
+import expandedInfo from "@assets/expanded-info.png";
 import barsort from "@assets/bar-sort.png";
 
-
-  const VolunteerButton = ({ roleStatus, setRoleStatus, xp }) => {
+  const RoleButton = ({ role, description, img, xp, setInfoStatus, onPress }) => {
     return (
-      <Pressable
-        onPress={() => setRoleStatus("v") }
-        style={roleStatus === "v" ? styles.buttonDark : styles.roleButtons}
-      >
-        <View style={{ marginRight: 0, flex: 1, padding: 10, paddingRight: 10}}>
-          <Text style={{ textAlign: 'left', color: 'white', fontSize: '30' }}>Volunteer</Text>
-          <Text style={{ textAlign: 'left', color: 'white', fontSize: '13', marginBottom: 10 }}>Make an impact as a volunteer!</Text>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}> 
-            <View style={{textAlign: 'right', backgroundColor: 'white', padding: 10, borderRadius: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 5}}>
-              <Text style={{width: 10, backgroundColor: '#CF7362', height: 10, borderRadius: 10}}>.</Text>
-              <Text>{xp * 2 || 0} xp</Text>
-            </View>
-            <Pressable style={{ padding: 10, backgroundColor: 'white', borderRadius: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 5}}>
-              <Image source={barsort} style={{width: 10, height: 10}}/>
-              <Text>See Volunteer Notes</Text>
-            </Pressable>
-          </View>
-        </View>
-        <Image style={styles.volunteer} source={volunteer}/>
-      </Pressable>
+      <View style={styles.roleButtons}>
+        <Pressable 
+            style={styles.moreInfoButton} 
+            onPress={() => setInfoStatus(1)}
+        >
+          <Image style={styles.moreInfo} source={moreInfo}/>
+        </Pressable>
 
+        <Pressable style={styles.roleButtons} onPress={onPress}>
+          <Image style={styles.character} source={img}/>
+          <View style={ styles.buttonText }>
+            <View style={{paddingBottom: 7}}>
+              <Text style={{ textAlign: 'left', color: 'rgba(22, 20, 20, 1)', fontSize: '25' }}>{role}</Text>
+              <Text style={{ textAlign: 'left', color: 'rgba(64, 60, 60, 0.5)', fontSize: '15'}}>{description}</Text>
+            </View>
+            <View style={ styles.XPindicator }>
+              <Text style={{width: 10, backgroundColor: '#CF7362', height: 10, borderRadius: 10, }}>.</Text>
+              <Text style={{color: 'rgba(64, 60, 60, 0.5)',}}> You will earn </Text><Text>{xp || 0} xp </Text><Text style={{color: 'rgba(64, 60, 60, 0.5)',}}>for attending!</Text>
+            </View>
+          </View>
+        </Pressable>
+      </View>
     )
   }
 
-  const AttendeeButton = ({ roleStatus, setRoleStatus, xp }) => {
+  const ExpandedRoleButton = ({ role, description, img, xp, setInfoStatus, onPress }) => {
     return (
-      <Pressable
-        onPress={() => setRoleStatus("a") }
-        style={ roleStatus === "a" ? styles.buttonDark : styles.roleButtons}
-      >
-        <Image style={styles.volunteer} source={attendee}/>
-        <View style={{ marginLeft: -40, flex: 1, padding: 10, paddingLeft: 10 }}>
-          <Text style={{ textAlign: 'right', color: 'white', fontSize: '30' }}>Attendee</Text>
-          <Text style={{ textAlign: 'right', color: 'white', fontSize: '13', marginBottom: '8', marginLeft: -10 }}>Enjoy the event and grow your plant!</Text>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}> 
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <View style={{textAlign: 'right', backgroundColor: 'white', padding: 10, borderRadius: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 5}}>
-                <Text style={{width: 10, backgroundColor: '#CF7362', height: 10, borderRadius: 10}}>.</Text>
-                <Text>{xp || 0} xp</Text>
-              </View>
-            <View>
-            <View style={{ padding: 10, backgroundColor: 'white', borderRadius: 18, flexDirection: 'row', alignItems: 'center', gap: 5}}>
-              <Image source={barsort} style={{width: 10, height: 10}}/>
-              <Text>See Event Details</Text>
+      <View style={styles.roleButtons}>
+        <Pressable 
+          style={styles.moreInfoButton} 
+          onPress={() => setInfoStatus(0)}
+        >
+          <Image style={styles.moreInfo} source={expandedInfo}/>
+        </Pressable>
+        <Pressable style={styles.roleButtons} onPress={onPress}>
+          <View style={ styles.expandedButtonText}>
+            <View style={{paddingBottom: 7}}>
+              <Text style={{ textAlign: 'left', color: 'rgba(22, 20, 20, 1)', fontSize: '25' }}>{role}</Text>
+              <Text style={{ textAlign: 'left', color: 'rgba(64, 60, 60, 0.5)', fontSize: '15'}}>{description}</Text>
             </View>
+            <View style={ styles.XPindicator }>
+              <Text style={{width: 10, backgroundColor: '#CF7362', height: 10, borderRadius: 10, }}>.</Text>
+              <Text style={{color: 'rgba(64, 60, 60, 0.5)',}}> You will earn </Text><Text>{xp || 0} xp </Text><Text style={{color: 'rgba(64, 60, 60, 0.5)',}}>for attending!</Text>
             </View>
           </View>
-          </View>
-        </View>
-
-      </Pressable>
+        </Pressable>
+      </View>
     )
   }
 
-  const RegisterButton = ({ roleStatus, setRoleStatus, setModalVisible, addUserEvent}) => {
-    let buttonText = "Register";
+  const RenderRoleButton = ({ role, xp, infoStatus, setInfoStatus, setModalVisible, addUserEvent }) => {
+    const Component = infoStatus === 0 ? RoleButton : ExpandedRoleButton;
+    let description = "";
+    let img = null;
     let onPressHandler = () => {};
-  
-    if (roleStatus === "v") {
-      buttonText = "Register as a volunteer!";
+
+    if ( role == "Volunteer" ) {
+      img = volunteer
       onPressHandler = () => {
         setModalVisible(false);
-        setRoleStatus("");
+        // NOT ADDING TO USER EVENTS
       };
-    } else if (roleStatus === "a") {
-      buttonText = "Register as an attendee!";
+      if ( infoStatus == 0 ) {
+        description = "Make an impact as a volunteer!"
+      }
+      else {
+        description = "Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices."
+      }
+    }
+    else {
+      img = attendee
       onPressHandler = () => {
         setModalVisible(false);
         addUserEvent();
-        setRoleStatus("");
       };
+      if ( infoStatus == 0 ) {
+        description = "Enjoy the event and grow your plant!"
+      }
+      else {
+        description = "Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices."
+      }
     }
-    const buttonStyle = roleStatus === "v" || roleStatus == "a" ? styles.unclickableRegisterButton : styles.clickableRegisterButton;
-  
     return (
-      <Pressable style={buttonStyle} onPress={onPressHandler}>
-        <Text style={{ color: 'white', fontSize: 15 }}>{buttonText}</Text>
+      <Pressable
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          alignItems: 'center',
+          margin: 10,
+          marginBottom: 0,
+          backgroundColor: "rgba(237, 234, 229, 0.75)",
+          borderRadius: 12,
+        }}
+      >
+        <Component
+          role={role}
+          description={description}
+          img={img}
+          xp={xp}
+          setInfoStatus={setInfoStatus}
+          onPress={onPressHandler}
+        />
       </Pressable>
     );
-  };
+  }
 
   const RegisterModal = ({ modalVisible, setModalVisible, addUserEvent, xp }) => {
-    const [roleStatus, setRoleStatus] = useState("");
+    const [vInfoStatus, setVInfoStatus] = useState(0);
+    const [aInfoStatus, setAInfoStatus] = useState(0);
 
     return (
       <Modal
@@ -100,25 +128,35 @@ import barsort from "@assets/bar-sort.png";
       onRequestClose={() => {
         setModalVisible(false);
       }}>
-        <View style={styles.centeredView}>
-          {/* Background Blur */}
-          <BlurView
-            style={styles.blurContainer}
-            intensity={10}
-          />
-
-          <View style={styles.modalView}>
-            <Text style={{marginTop: 40, color: "white", fontSize: 30,}}>Join the event as a...</Text>
-
-            <VolunteerButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} xp={xp} />
-            <AttendeeButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} xp={xp}/>
-            <RegisterButton roleStatus={roleStatus} setRoleStatus={setRoleStatus} setModalVisible={setModalVisible} addUserEvent={addUserEvent}/>
-
-            <Pressable style={styles.xButton} onPress={() => {setModalVisible(false); setRoleStatus("") }}>
-            <Text style={{ textAlign: 'center', color: 'white' }}>X</Text>
-            </Pressable>
-          </View>
-        </View>
+        {/* Background Blur */}
+        <BlurView
+          style={styles.blurContainer}
+          intensity={10}
+        >
+          <Pressable
+            style={styles.outerPressable}
+            onPress={() => { setModalVisible(false)}}
+          >
+            <LinearGradient style={styles.modalView} colors={['rgba(191, 192, 167, 1)', 'rgba(212, 195, 185, 1)']}>
+                <RenderRoleButton
+                  role="Volunteer"
+                  xp={xp}
+                  infoStatus={vInfoStatus}
+                  setInfoStatus={setVInfoStatus}
+                  setModalVisible={setModalVisible}
+                  addUserEvent={addUserEvent}
+                />
+                <RenderRoleButton
+                  role="Attendee"
+                  xp={xp}
+                  infoStatus={aInfoStatus}
+                  setInfoStatus={setAInfoStatus}
+                  setModalVisible={setModalVisible}
+                  addUserEvent={addUserEvent}
+                />
+            </LinearGradient>
+          </Pressable>
+        </BlurView>
       </Modal>
 
     )
@@ -126,136 +164,53 @@ import barsort from "@assets/bar-sort.png";
 
 
 const styles = StyleSheet.create({ 
-  // container: {
-  //   paddingVertical: 16,
-  //   paddingHorizontal: 30,
-  //   backgroundColor: "#E9E5DA",
-  //   borderTopLeftRadius: 32,
-  //   borderTopRightRadius: 32,
-  //   overflow: "hidden",
-  //   marginTop: -30,
-  // },
-  // eventHeader: {
-  //   textAlign: 'center',
-  //   fontSize: 24,
-  //   fontWeight: "bold",
-  //   marginBottom: 8,
-  // },
-  // subtext: {
-  //   color: "#8B8B8B",
-  //   fontSize: 12,
-  //   marginBottom: 4,
-  // },
-  // description: {
-  //   fontSize: 14,
-  //   marginBottom: 4,
-  // },
-  attendeesButton: {
-    padding: 8,
-    backgroundColor: "lightgray",
-    borderRadius: 8,
-    marginBottom: 8,
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  attendeesButtonText: {
-    marginRight: 5,
-  },
-  // shareButton: {
-  //   marginTop: 16,
-  //   padding: 12,
-  //   borderRadius: 20,
-  //   backgroundColor: "#9D4C6A"
-  // },
-  // shareButtonText: {
-  //   textAlign: "center",
-  //   color: "white",
-  // },
-  // adminSection: {
-  //   marginTop: 24,
-  // },
-  // adminText: {
-  //   fontSize: 18,
-  //   fontWeight: "600",
-  //   marginBottom: 8,
-  // },
-  buttonDark: {
+  XPindicator: {
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    padding: 3,
+    borderRadius: 18,
     flexDirection: 'row',
-    height: '124',
-    margin: 10,
-    padding: 12,
-    width: '80%',
-    backgroundColor: "#rgba(30, 30, 30, 0.25)",
-    color: "white",
-    borderRadius: 20,
-    padding: 0,
+    alignItems: 'center',
+    width: '100%',
+    height: '35',
+  },
+  moreInfo: {
+    resizeMode: 'contain',
+    height: 25,
+    width: 25,
+  },
+  moreInfoButton: {
+    position: 'absolute',
+    top: '5%',
+    right: '4%',
+    zIndex: 2,
+  },
+  expandedButtonText: {
+    flex: 1,
+    padding: 15,
+  },
+  buttonText: {
+    flex: 1,
+    padding: 10,
+    paddingLeft: 0,
+    paddingVertical: '8%',
+    justifyContent: 'space-around',
   },
   roleButtons: {
-    flexDirection: 'row',
-    height: '124',
-    margin: 10,
-    padding: 12,
-    width: '80%',
-    backgroundColor: "#rgba(194, 194, 194, 0.25)",
-    color: "white",
-    borderRadius: 20,
-    padding: 0,
-  },
-  volunteer: {
-    // borderColor: 'red',
-    // borderStyle: 'solid',
-    // borderWidth: '1',
-    height: '124',
-    // resizeMode: 'contain',
-    borderRadius: '15%',
-  },
-  unclickableRegisterButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '10%',
-    margin: 10,
-    padding: 12,
-    width: '80%',
-    backgroundColor: "#716F49",
-    borderRadius: 20,
-  },
-  clickableRegisterButton: {
-    alignItems: 'center',
-    height: '10%',
-    margin: 10,
-    padding: 12,
-    width: '80%',
-    backgroundColor: "#rgba(157, 76, 106, 0.25)",
-    borderRadius: 20,
-  },
-  xButton: {
-    marginTop: 16,
-    padding: 12,
-    width: 40,
-    backgroundColor: "black",
-    borderRadius: 20,
-  },
-  centeredView: {
-    borderColor: 'red',
-    borderWidth: '1px',
     flex: 1,
-    justifyContent: 'flex-end',
+    flexDirection: 'row',
     alignItems: 'center',
+  },
+  character: {
+    width: '25%',
+    margin: 10,
   },
   modalView: {
-    borderColor: 'red',
-    borderWidth: '1px',
-    height: '510',
-    width: '100%',
-    backgroundColor: '#6A7D66',
-    borderRadius: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-      bottom: 0,
-    }
+    height: '50%',
+    backgroundColor: 'linear-gradient(#e66465, #9198e5)',
+    borderRadius: 18,
+    margin: 10,
+    paddingBottom: 10,
   },
   // dateIcon: {
   //   width: 20,
@@ -274,12 +229,15 @@ const styles = StyleSheet.create({
   // },
   blurContainer: {
     flex: 1,
-    // padding: 20,
-    // margin: 16,
-    textAlign: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
     width: "100%",
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
+  outerPressable: {
+    flex: 1,
+    width: "100%",
+    justifyContent: 'flex-end',
   },
 });
 

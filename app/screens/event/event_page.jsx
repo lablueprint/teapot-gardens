@@ -22,8 +22,8 @@ import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's
 import sprout from "@assets/sprout.png";
 
 // const url = " https://272a-75-142-52-157.ngrok-free.app";
-const tempUserId = "678f3a6bc0368a4c717413a8";
-const url = "http://localhost:4000";
+const tempUserId = "68199b9f06fa2e1c7bd3796b";
+const url = "https://5253-2607-f010-2a7-1021-9515-5e07-f324-7904.ngrok-free.app";
 
 import community1 from '@assets/community1.png';
 import community2 from '@assets/community2.png';
@@ -106,7 +106,7 @@ const EventPage = () => {
     const fetchUser = async () => {
       try {
         // ------- CHANGE THE USER ID HERE --------- -> RIGHT NOW THE ID FOR AN ADMIN USER
-        const userId = "6789f49f8e0a009647312c7a"; // Admin user ID
+        const userId = "68199b9f06fa2e1c7bd3796b"; // Admin user ID
         const response = await axios.get(`${url}/api/users/${userId}`);
         if (response.status === 200) {
           console.log("Fetched user:", response.data);

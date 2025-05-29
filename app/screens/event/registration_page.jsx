@@ -15,7 +15,7 @@ const RegistrationPage = () => {
 
     const getUser = async () => {
         try {
-        const response = await axios.get(`https://f7f6-38-15-215-20.ngrok-free.app/api/users/${tempUserId}`)
+        const response = await axios.get(`https://5253-2607-f010-2a7-1021-9515-5e07-f324-7904.ngrok-free.app/api/users/${tempUserId}`)
         setUser(response.data)
         console.log(response.data)
         }

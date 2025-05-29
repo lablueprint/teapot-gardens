@@ -17,7 +17,7 @@ import CinemaSaloon from "@assets/discovery-assets/Cinema-Saloon.png"
 import ArtOasis from "@assets/discovery-assets/Art-Oasis.png"
 import GardenSundaze from "@assets/discovery-assets/Garden-Sundaze.png"
 
-const url = 'http://localhost:4000'
+const url = 'https://5253-2607-f010-2a7-1021-9515-5e07-f324-7904.ngrok-free.app'
 
 export default function DiscoverPage () {
     const navigation = useNavigation();
@@ -32,7 +32,7 @@ export default function DiscoverPage () {
     const [programs, setPrograms] = useState([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
-    const tempUserId = '678f3a6bc0368a4c717413a8';
+    const tempUserId = '68199b9f06fa2e1c7bd3796b';
     const [user, setUser] = useState(null);
     const [grid, setGrid] = useState(false);
 
