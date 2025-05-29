@@ -29,7 +29,7 @@ const ProfileQR = () => {
     
     return (
         <View style={styles.container}>
-            <QRCode style={styles.qr} value={user._id} size={200} />
+            <QRCode value={user._id} size={180} backgroundColor="#DEDBD6" />
         </View>
     );
 };
@@ -78,13 +78,12 @@ const styles = StyleSheet.create({
   hostCard: {
     fontSize: 12,  
   },
-horizontalLine: {
-    height: 1,
-    backgroundColor: 'gray', 
-    width: '80%',
-    marginVertical: 10, 
-},
-
+  horizontalLine: {
+      height: 1,
+      backgroundColor: 'gray', 
+      width: '80%',
+      marginVertical: 10, 
+  },
 });
 
 export default ProfileQR;

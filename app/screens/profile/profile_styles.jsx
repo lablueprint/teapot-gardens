@@ -14,50 +14,41 @@ const styles = StyleSheet.create({
     foregroundContainer: {
       flex: 1,
       backgroundColor: '#BFC0A7',
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      overflow: 'hidden',
-      zIndex: -1,
     },   
     events_container: {
-      marginTop: 20,
-      paddingHorizontal: 20,
+      justifyContent: 'center',
     },
     name: {
       textAlign: "center",
-      fontSize: 32,
+      fontSize: 24,
       marginBottom: 10,
       fontWeight: 600,
     },
     handle: {
       textAlign: "center",
       fontSize: 16,
-      marginBottom: 5,
-      marginTop: 15
+      marginBottom: 10,
+    },
+    bio: {
+      textAlign: "center",
+      fontSize: 16,
+      marginBottom: 10,
     },
     button: {
       alignItems: "center",
       justifyContent: "center",
-      padding: 7,
-      borderWidth: 1,
-      borderColor: 'grey',
-      marginBottom: 20,
-      width: 98,
-      borderRadius: 14,
-      backgroundColor: "#FFFFFF",
+      padding: 10,
+      margin: 10,
+      borderRadius: 12,
+      backgroundColor: "#DEDBD6",
+      width: 345,
+      height: 43,
     }, 
     qr: {
       alignItems: "center",
-      justifyContent: "center",
-      padding: 7,
-      borderWidth: 1,
-      borderColor: 'grey',
-      marginBottom: 50,
-      width: 300,
-      height: 150,
-      borderRadius: 14,
-      backgroundColor: "#FFFFFF",
+      padding: 12,
+      borderRadius: 12,
+      backgroundColor: "#DEDBD6",
     },
     buttonContainer: {
       alignItems: "center",
@@ -65,16 +56,25 @@ const styles = StyleSheet.create({
     title: {
       textAlign: "center",
       fontSize: 20,
-      marginBottom: 10,
+      marginTop: 110,
+      marginBottom: 25,
       fontSize: 32,
-      fontFamily: 'IMFell'
+      fontFamily: 'IMFell',
     },
     subtitle: {
-      fontSize: 18,
-      color: "white",
+      fontSize: 32,
+      color: "#161414",
       marginBottom: 5,
-      fontWeight: 600,
-      marginLeft: 20,
+      fontWeight: 500,
+      font: 'NewSpirit',
+    },
+    subsubtitle: {
+      fontSize: 16,
+      color: "#403C3C82",
+      // marginBottom: 30,
+    },
+    events: {
+      flex: 1
     },
     input: {
       height: 40,
@@ -83,14 +83,6 @@ const styles = StyleSheet.create({
       marginBottom: 10,
       paddingHorizontal: 10,
     },
-    eventContainer: {
-      borderColor: "gray", 
-      borderWidth: 1, 
-      padding: 10, 
-      marginVertical: 10,
-      marginRight: 10,
-      borderRadius: 10,
-    }, 
     badgeContainer: {
       borderColor: "gray", 
       borderWidth: 1, 
@@ -120,18 +112,44 @@ const styles = StyleSheet.create({
       borderTopLeftRadius: 90,
       borderTopRightRadius: 90,
       borderTopColor: '#E8E1DD',
-      // borderTopWidth: 10,
-      // shadowOffset: { width: 0, height: 2 },
-      // shadowOpacity: 0.1,
-      // shadowRadius: 4,
-      // elevation: 3,
     },
     bgWrapper: {
       flex: 1,
-      paddingTop: 90,
+      backgroundColor: '#EDEEEA',
+      borderTopLeftRadius: 32,
+      borderTopRightRadius: 32,
+      paddingVertical: 40,
+      paddingHorizontal: 24,
+    },
+    endText: {
+      fontSize: 16,
+      marginTop: 10,
+      marginBottom: 5,
+      fontWeight: 500,
+      alignSelf: "center",
+      alignItems: "center",
+    },
+    subText: {
+      color: "#403C3C80",
+    },
+    logo: {
+      color: "#403C3C80",
+      width: 58,
+      resizeMode: 'contain'
+    },
+    row: {
+      flexDirection: 'row', 
+      justifyContent: 'space-between' 
+    },
+    data: {
+      alignItems: "left",
+      padding: 12,
+      marginVertical: 10,
+      borderRadius: 12,
+      backgroundColor: "#DEDBD6",
+      width: 165,
+      marginBottom: 40,
     }
-    
-    
   });
   
   export default styles;
