@@ -22,8 +22,8 @@ import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's
 import sprout from "@assets/sprout.png";
 
 // const url = " https://272a-75-142-52-157.ngrok-free.app";
-const tempUserId = "678f3a6bc0368a4c717413a8";
-const url = "http://localhost:4000";
+const tempUserId = "68199b9f06fa2e1c7bd3796b";
+const url = "https://5253-2607-f010-2a7-1021-9515-5e07-f324-7904.ngrok-free.app";
 
 import community1 from '@assets/community1.png';
 import community2 from '@assets/community2.png';
@@ -106,10 +106,13 @@ const EventPage = () => {
     const fetchUser = async () => {
       try {
         // ------- CHANGE THE USER ID HERE --------- -> RIGHT NOW THE ID FOR AN ADMIN USER
-        const userId = "6789f49f8e0a009647312c7a"; // Admin user ID
+        const userId = "68199b9f06fa2e1c7bd3796b"; // Admin user ID
         const response = await axios.get(`${url}/api/users/${userId}`);
         if (response.status === 200) {
           console.log("Fetched user:", response.data);
+          console.log('attendingEvents', response.data.attendingEvents);
+          console.log('attendedEvents', response.data.attendedEvents);
+
           setUser(response.data);
           setAttendingEvents(response.data.attendingEvents || []);
           setAttendedEvents(response.data.attendedEvents || []);
@@ -203,9 +206,11 @@ useEffect(() => {
       const attendeeData = responses.map((res) => ({
         name: res.data.name,
         username: res.data.username,
-        tamagatchiXP: res.data.tamagatchiXP
+        tamagatchiXP: res.data.tamagatchiXP, 
+        attendedEvents: res.data.attendedEvents,
       }));      
       setAttendeeNames(attendeeData);
+      console.log("Attendee names:", attendeeData);
     } catch (error) {
       console.error("Error fetching attendee names:", error);
     }
@@ -346,6 +351,7 @@ const deleteUserEvent = async () => {
         <Image style={{ width: '100%', height: '500', resizeMode: "cover" }} source={Paradise} />
       </View>
       
+
       <View style={{borderRadius: 10}}>
       <View style={styles.container}>
         <Text style={styles.eventHeader}>{event?.name}</Text>
@@ -357,6 +363,20 @@ const deleteUserEvent = async () => {
           <Image style={styles.locationIcon} source={locationIcon}/>
           <Text style={styles.dateText}>{event?.location}</Text>
         </View>
+
+        {user?.admin &&(
+          <Pressable style={styles.shareButton} 
+            onPress={() => navigation.navigate(
+              {name: 'EventAnalytics', 
+              params: 
+                {eventData: JSON.stringify(event),stats: JSON.stringify(stats), 
+                  attendeeNames: JSON.stringify(attendeeNames), attendeeCount: attendeeCount,
+                }})}>
+            <Text style={styles.shareButtonText}>Event Analytics</Text>
+          </Pressable>
+          )
+        } 
+
         <Text style={styles.subtext}>ABOUT EVENT</Text>
         <Text style={styles.description}>{event?.eventDescription}</Text>
         <View style={{margin: 10}}></View>
@@ -419,16 +439,19 @@ const deleteUserEvent = async () => {
        <Text style={styles.subtext}>VOLUNTEER NOTES</Text>
        <Text style={styles.description}>{event?.volunteerNotes || 'N/A'}</Text>
 
-            
+        
         {console.log('attendingEvents bor', attendingEvents)}
-        <Buttons attending={attendingEvents.includes(event?._id)} />
+        {!user?.admin ? (
+          <Buttons attending={attendingEvents.includes(event?._id)} />
+        ) : (
+          <View style={{marginBottom: 30}} />
+        )}
             
         {/* -------- ADMIN SCREEN SECTION-----     */}
         {user?.admin && (
-          <View style={{ marginTop: 32 }}>
+          <View style={{ marginTop: 10 }}>
             {/* ────────── header ────────── */}
             <Text style={styles.adminHeader}>Event Analytics</Text>
-
             {/* ────────── tab row ───────── */}
             <View style={styles.tabRow}>
               {['Gender', 'Ethnicity', 'Income'].map(tab => (
@@ -585,8 +608,9 @@ const styles = StyleSheet.create({
   shareButton: {
     marginTop: 16,
     padding: 12,
-    borderRadius: 20,
-    backgroundColor: "#9D4C6A"
+    borderRadius: 16,
+    backgroundColor: "#9D4C6A", 
+    marginBottom: 20,
   },
   shareButtonText: {
     textAlign: "center",

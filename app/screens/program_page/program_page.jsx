@@ -128,7 +128,7 @@ const ProgramPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`${url}/api/users/678f3a6bc0368a4c717413a8`);
+        const response = await axios.get(`${url}/api/users/68199b9f06fa2e1c7bd3796b`);
         if (response.status === 200) {
           setUser(response.data);
         } else {
