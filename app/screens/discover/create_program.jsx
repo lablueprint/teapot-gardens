@@ -1,13 +1,24 @@
 import React, { useState, useEffect} from "react";
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, StyleSheet, Image, Pressable } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { TitleSharp } from "@mui/icons-material";
 import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import AddImage from '@assets/add_image.png'
+import EditImage from '@assets/add_image.png'
 import { useNavigation } from '@react-navigation/native';
 
-const url = 'http://localhost:4000'
+const url = 'https://1a02-2607-f010-2a7-1021-8928-8dad-f48e-e780.ngrok-free.app';
+
+const AddImage = ({ pickImage }) => {
+    return (
+        <Pressable style={styles.addImage} onPress={pickImage}>
+            <Image source={EditImage}></Image>
+            <Text style={{color: '#919191'}}>Edit Program Image</Text>
+        </Pressable>
+
+    )
+}
 
 const CreateProgram = () => {
     const navigation = useNavigation();
@@ -17,6 +28,25 @@ const CreateProgram = () => {
     const [open, setOpen] = useState(false); // for host dropdown
     const [items, setItems] = useState([]);
     const [host, setHost] = useState(null);
+    const [image, setImage] = useState("");
+
+    const pickImage = async() => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Permission denied!');
+            return;
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    }
 
     const dropdownItems = admins.map(admin => ({
         label: admin.name,
@@ -37,7 +67,7 @@ const CreateProgram = () => {
     }, []);
 
     const handleSubmit = async() => {
-        if (!description){
+        if (!description || !title || !host){
             alert("Error: please fill out all the fields"); 
         } else {
             const program = ({name: title, upcomingEvents: [], pastEvents: [], followList: [], description: description, host: host})
@@ -53,15 +83,13 @@ const CreateProgram = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.topContainer}>
+            <Pressable style={styles.topContainer} onPress={pickImage}>
                 <TouchableOpacity style={styles.backBtn} onPress={() => navigation.navigate('Discover')}>
                     <Ionicons name="chevron-back" size={22} color="#101828" />
                 </TouchableOpacity>
-                <View style={styles.addImage}>
-                    <Image source={AddImage}></Image>
-                    <Text style={{color: '#919191'}} >Edit Program Image</Text>
-                </View>
-            </View>
+                <View>{image? '' : <AddImage pickImage={pickImage}/>}</View>
+                {image && <Image source={{ uri: image }} style={styles.image} />}
+            </Pressable>
             <View style={styles.inputContainer}>
                 <TextInput 
                     style={styles.title}
@@ -127,6 +155,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: '10%',
+    },
+    image: {
+        height: '100%',
+        width: '100%',
     },
     title: {
         fontSize: 25, 
