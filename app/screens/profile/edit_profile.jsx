@@ -1,11 +1,13 @@
-import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Pressable, Image } from "react-native";
+import { TouchableOpacity, StyleSheet, Text, TextInput, View, Alert, Pressable, Image, ScrollView } from "react-native";
 import React, { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
-import grapes from '@assets/grapes.jpg';
+import imageadd from '@assets/image-add-fill.png';
+import backbutton from '@assets/back-button.png';
 import { useNavigation } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 // import planticon from '../../assets/planticon.png';
 
 const url = 'http://localhost:4000'
@@ -87,12 +89,26 @@ const EditProfile = () => {
     }
   };
 
+  const [fontsLoaded] = useFonts({
+      'NewSpirit': require('@assets/fonts/NewSpirit-Medium.otf'),
+  });
+
+  if (!fontsLoaded) return null;
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => { navigation.navigate('Profile')
+                          }}>
+          <Image source={backbutton} style={styles.backText} />
+        </TouchableOpacity>
       <View style={styles.header}>
-        <Text style={styles.title}>Edit Your Profile</Text>
+        <Text style={styles.title}>Edit Profile</Text>
         {/* <Image style={{marginTop: 3, marginLeft: 10,}}source={ planticon } /> */}
       </View>
+
+      <ScrollView style={styles.form}>
 
       <Pressable onPress={() => {
         const pickImage = async () => {
@@ -133,7 +149,7 @@ const EditProfile = () => {
         pickImage();
       }}>
         <Image 
-          source={profilePicture ? { uri: profilePicture } : grapes}
+          source={profilePicture ? { uri: profilePicture } : imageadd}
           style={styles.image}
         />
       </Pressable>
@@ -236,10 +252,11 @@ const EditProfile = () => {
     */}
       <View style={styles.buttonContainer} >
         <TouchableOpacity style={styles.button} onPress={handleSubmit} >
-          <Text style={{ fontSize: 18,}} >Update</Text>
+          <Text style={styles.buttonText} >Save Changes</Text>
         </TouchableOpacity>
       </View>
 
+    </ScrollView>
       
     </View>
 
@@ -250,36 +267,50 @@ export default EditProfile;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    backgroundColor: "#BFC0A7",
+    paddingTop: 90
   },
   input: {
-    height: 30,
-    borderColor: "gray",
-    borderWidth: 1,
+    height: 40,
+    backgroundColor: "#C1BBBB40",
     marginBottom: 10,
     paddingHorizontal: 10,
-    borderRadius: 8,
+    borderRadius: 10,
   },
   title: {
-    fontSize: 28,
-    paddingBottom: 20, 
+    fontSize: 32,
+    paddingBottom: 10, 
     fontWeight: 'bold',
+    fontFamily: 'NewSpirit',
   }, 
   header: {
     flexDirection: 'row', 
     fontSize: 40,
     marginTop: 20,
     marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     padding: 10,
     justifyContent: "center",
     alignItems: "center", 
-    borderRadius: 30,
-    width: '50%',
-    borderColor: 'black',
-    borderWidth: 1,
-    height: '27%',
+    borderRadius: 10,
+    height: 50,
+    width: '100%',
+    paddingHorizontal: 10,
+    backgroundColor: "#716F49"
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontFamily: 'NewSpirit',
+  },
+  backButton: { 
+    position: 'absolute', 
+    top: 60, 
+    left: 20, 
+    zIndex: 10 
   },
   buttonContainer: {
     alignItems: "center",
@@ -307,6 +338,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     marginVertical: 15,
+  },
+  form: {
+    backgroundColor: '#FFFFFF', 
+    padding: 30, 
+    borderRadius: 50,
+    
   },
 
 });

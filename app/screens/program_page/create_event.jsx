@@ -10,6 +10,10 @@ import pencil from '@assets/pencil.png';
 import calendar from '@assets/calendar.png';
 import locationIcon from '@assets/location-event.png';
 import { useFonts } from 'expo-font';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Platform } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
+import { Modal } from 'react-native';
 
 
 const CreateEvent = () => {
@@ -56,9 +60,13 @@ const CreateEvent = () => {
     }
 
     const [fontsLoaded] = useFonts({
-        'IMFell': require('@assets/fonts/IMFellGreatPrimer-Regular.ttf'),
-        'IMFellItalic': require('@assets/fonts/IMFellGreatPrimer-Italic.ttf'),
+        'NewSpirit': require('@assets/fonts/NewSpirit-Medium.otf'),
     });
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [dateTime, setDateTime] = useState(new Date());
+    const [prog, setProg] = useState(null);
+
+
 
     if (!fontsLoaded) return null;
     
@@ -81,7 +89,22 @@ const CreateEvent = () => {
 
         <View style={styles.form}>
 
+          {/* <RNPickerSelect
+            onValueChange={(value) => setProgram(value)}
+            value={program}
+            items={[
+              { label: 'Test', value: 'test' },
+              { label: 'Demo', value: 'demo' },
+            ]}
+            placeholder={{ label: 'Select Program', value: null }}
+            style={{
+              inputIOS: styles.dropdown,
+              inputAndroid: styles.dropdown,
+            }}
+            useNativeAndroidPickerStyle={false}
+          /> */}
           <TextInput style={styles.dropdown} placeholder="Program" />
+
           
           <View style={styles.titleRow}>
             <TextInput style={styles.titleInput} placeholder="Event Title" />
@@ -89,14 +112,45 @@ const CreateEvent = () => {
           </View>
 
           <View style={styles.row}>
-            <View style={styles.inputContainer}>
+            {/* <View style={styles.inputContainer}>
               <Image source={calendar} style={styles.icon} />
               <TextInput
                 style={styles.textInput}
                 placeholder="Date and Time"
                 placeholderTextColor="#888"
               />
-            </View>
+            </View> */}
+            
+
+            <TouchableOpacity style={styles.inputContainer} onPress={() => setShowDatePicker(true)}>
+              <Image source={calendar} style={styles.icon} />
+              <Text style={styles.dateText}>{dateTime.toLocaleString()}</Text>
+            </TouchableOpacity>
+
+            {/* Modal Picker */}
+            {showDatePicker && (
+              <Modal visible={showDatePicker} transparent animationType="slide">
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContent}>
+                    <DateTimePicker
+                      value={dateTime}
+                      mode="datetime"
+                      display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                      onChange={(event, selectedDate) => {
+                        if (event.type === 'set') {
+                          const currentDate = selectedDate || dateTime;
+                          setDateTime(currentDate);
+                          setDate(currentDate.toLocaleDateString());
+                          setTime(currentDate.toLocaleTimeString());
+                        }
+                      }}
+                    />
+                    <Button title="Done" onPress={() => setShowDatePicker(false)} />
+                  </View>
+                </View>
+              </Modal>
+            )}
+
             <View style={styles.inputContainer}>
               <Image source={locationIcon} style={styles.icon} />
               <TextInput
@@ -108,7 +162,20 @@ const CreateEvent = () => {
           </View>
 
           {/* Host */}
-          <TextInput style={styles.dropdown} placeholder="Event Host" />
+          {/* <RNPickerSelect
+            onValueChange={(value) => console.log("Host:", value)}
+            items={[
+              { label: 'Test', value: 'test' },
+              { label: 'Demo', value: 'demo' },
+            ]}
+            placeholder={{ label: 'Select Host', value: null }}
+            style={{
+              inputIOS: styles.dropdown,
+              inputAndroid: styles.dropdown,
+            }}
+          /> */}
+          <TextInput style={styles.dropdown} placeholder="Host" />
+
 
           {/* Description and Notes */}
           <TextInput style={styles.textArea} placeholder="Event Description" multiline />
@@ -185,7 +252,7 @@ const styles = StyleSheet.create({
     flex: 1, 
     fontSize: 42,
     textAlign: 'center',
-    fontFamily: 'IMFell',
+    fontFamily: 'NewSpirit',
   },
   editIcon: { 
     marginRight: 10 ,
@@ -225,7 +292,8 @@ const styles = StyleSheet.create({
   saveText: { 
     color: '#fff', 
     fontWeight: 'bold',
-    fontFamily: 'IMFell',
+    fontFamily: 'NewSpirit',
+    fontSize: 18,
   },
   inputContainer: {
     flexDirection: 'column',
@@ -239,6 +307,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     fontSize: 16,
   },
+  dateText: {
+    fontSize: 16,
+    color: '#000',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+
 });
 
 export default CreateEvent;
