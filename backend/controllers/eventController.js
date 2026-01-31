@@ -1,6 +1,7 @@
 const Event = require('../models/EventModel')
 const User = require("../models/UserModel");
 const mongoose = require('mongoose')
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 // get all events
 const getEvents = async (req, res) => {
@@ -221,6 +222,83 @@ const likeEvent = async (req, res) => {
     }
 };
 
+// Export event attendee data as CSV
+const exportEventData = async (req, res) => {
+    const { eventId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+        return res.status(404).json({ error: "Event not found" });
+    }
+
+    try {
+        const event = await Event.findById(eventId);
+        if (!event) {
+            return res.status(404).json({ error: "Event not found" });
+        }
+
+        // Get all attendees (both registered and attended)
+        const allAttendeeIds = [...new Set([...event.attendeeList])];
+
+        if (allAttendeeIds.length === 0) {
+            return res.status(200).json({ message: "No attendees to export" });
+        }
+
+        const users = await User.find({ _id: { $in: allAttendeeIds } });
+
+        // Prepare CSV data
+        const csvData = users.map(user => ({
+            name: user.name || 'N/A',
+            email: user.email || 'N/A',
+            username: user.username || 'N/A',
+            attended: user.attendedEvents.includes(eventId) ? 'Yes' : 'No',
+            registered: user.attendingEvents.includes(eventId) ? 'Yes' : 'No',
+            gender: user.genderIdentification || 'Unknown',
+            race: user.race || 'Unknown',
+            age: user.age || 'Unknown',
+            incomeLevel: user.incomeLevel || 0,
+            tamagotchiXP: user.tamagatchiXP || 0,
+            isNewAttendee: user.attendedEvents.length === 0 ? 'Yes' : 'No',
+        }));
+
+        // Instead of writing to file, return CSV as string
+        const csvWriter = createCsvWriter({
+            path: `/tmp/event_${eventId}_export.csv`,
+            header: [
+                { id: 'name', title: 'Name' },
+                { id: 'email', title: 'Email' },
+                { id: 'username', title: 'Username' },
+                { id: 'attended', title: 'Attended' },
+                { id: 'registered', title: 'Registered' },
+                { id: 'gender', title: 'Gender' },
+                { id: 'race', title: 'Race/Ethnicity' },
+                { id: 'age', title: 'Age' },
+                { id: 'incomeLevel', title: 'Income Level' },
+                { id: 'tamagotchiXP', title: 'Total XP' },
+                { id: 'isNewAttendee', title: 'First Time Attendee' },
+            ]
+        });
+
+        await csvWriter.writeRecords(csvData);
+
+        // Send file for download
+        res.download(`/tmp/event_${eventId}_export.csv`, `event_${event.name || eventId}_attendees.csv`, (err) => {
+            if (err) {
+                console.error('Error sending file:', err);
+                res.status(500).json({ error: 'Error downloading file' });
+            }
+            // Clean up temp file
+            const fs = require('fs');
+            fs.unlink(`/tmp/event_${eventId}_export.csv`, (unlinkErr) => {
+                if (unlinkErr) console.error('Error deleting temp file:', unlinkErr);
+            });
+        });
+
+    } catch (error) {
+        console.error("Error exporting event data:", error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 module.exports = {
     getEvents,
@@ -231,5 +309,6 @@ module.exports = {
     updateEventUsers,
     getAttendees,
     likeEvent,
-    getAttendeeStats
+    getAttendeeStats,
+    exportEventData
 }

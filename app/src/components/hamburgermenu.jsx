@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from "react-native";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from 'axios';
+import QRCode from "react-native-qrcode-svg";
 import Homepage from "@screens/homepage/homepage";
 import DiscoverPage from "@screens/discover/discover";
 import Profile from "@screens/profile/profile_page";
@@ -60,6 +62,27 @@ const Drawer = createDrawerNavigator();
 const ONBOARDING_KEY = 'hasSeenOnboardingV2';
 
 const CustomDrawerContent = (props) => {
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    // Temporary user ID - replace with actual user from AuthContext
+    const tempUserId = '6789f49f8e0a009647312c7a';
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:4000/api/users/${tempUserId}`);
+                setUserData(response.data);
+            } catch (error) {
+                console.log("Error fetching user data in drawer:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContainer}>
             <View style={styles.drawerHeader}>
@@ -67,6 +90,36 @@ const CustomDrawerContent = (props) => {
                 <TouchableOpacity onPress={() => props.navigation.closeDrawer()} style={styles.closeButton}>
                     <Image source={closeIcon} style={styles.closeIcon} />
                 </TouchableOpacity>
+            </View>
+
+            {/* User Profile Section with QR Code */}
+            <View style={styles.profileSection}>
+                {loading ? (
+                    <ActivityIndicator size="small" color="#333" />
+                ) : userData ? (
+                    <>
+                        <TouchableOpacity
+                            onPress={() => props.navigation.navigate('Profile')}
+                            style={styles.profilePhotoContainer}
+                        >
+                            <Image
+                                source={userData.profilePicture ? { uri: userData.profilePicture } : tempIcon}
+                                style={styles.profilePhoto}
+                            />
+                            <Text style={styles.profileName}>{userData.name || 'User'}</Text>
+                        </TouchableOpacity>
+
+                        {/* QR Code */}
+                        <View style={styles.qrCodeContainer}>
+                            <QRCode
+                                value={userData._id || 'no-id'}
+                                size={100}
+                                backgroundColor="#C5C9B7"
+                            />
+                            <Text style={styles.qrCodeLabel}>Member Barcode</Text>
+                        </View>
+                    </>
+                ) : null}
             </View>
 
             <View style={{ flex: 1 }}>
@@ -309,5 +362,40 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         borderRadius: 50,
     },
-    
+    profileSection: {
+        alignItems: 'center',
+        paddingVertical: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#999',
+        marginBottom: 10,
+    },
+    profilePhotoContainer: {
+        alignItems: 'center',
+        marginBottom: 15,
+    },
+    profilePhoto: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        borderWidth: 2,
+        borderColor: '#fff',
+        marginBottom: 8,
+    },
+    profileName: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#333',
+    },
+    qrCodeContainer: {
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+    },
+    qrCodeLabel: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 8,
+        fontWeight: '500',
+    },
 });

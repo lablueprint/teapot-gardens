@@ -21,38 +21,17 @@ import AttendeePopup from "@screens/event/attendeePopup.jsx";
 import garden from "@assets/garden.jpg"; // TODO: need to retrieve the program's pfp (same with host and attendees)
 import sprout from "@assets/sprout.png";
 
-// const url = " https://272a-75-142-52-157.ngrok-free.app";
-const tempUserId = "68199b9f06fa2e1c7bd3796b";
-const url = "https://5253-2607-f010-2a7-1021-9515-5e07-f324-7904.ngrok-free.app";
+const tempUserId = "696ad149027e7290f0c97e1e";
+const url = "http://localhost:4000";
 
+import { pickAndUploadEventPhoto } from '@app/utils/imageUpload';
 import community1 from '@assets/community1.png';
 import community2 from '@assets/community2.png';
 
-const mediaItems = [
-  {
-    id: '1',
-    name: "Japanese Garden",
-    image: community1,
-    type: 'photo',
-  },
-  {
-    id: '2',
-    name: "garden 2",
-    image: community2,
-    type: 'video',
-  },
-  {
-    id: '3',
-    name: "garden 3",
-    image: community1,
-    type: 'photo',
-  },
-  {
-    id: '4',
-    name: "garden 4",
-    image: community2,
-    type: 'photo',
-}
+// Fallback media items if no uploaded photos
+const fallbackMediaItems = [
+  { id: '1', name: "Japanese Garden", image: community1, type: 'photo' },
+  { id: '2', name: "garden 2", image: community2, type: 'photo' },
 ];
 
 
@@ -74,10 +53,21 @@ const EventPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
   const [stats, setStats] = useState({ userStatsList: [] }); // { userStatsList: [...] }
+  const [communityPhotos, setCommunityPhotos] = useState([]);
 
   const route = useRoute();
   const eventData = route.params?.eventData;
   console.log('event page evetndata', eventData);
+
+  // Build media items from event pictures or use fallback
+  const mediaItems = communityPhotos.length > 0
+    ? communityPhotos.map((url, index) => ({
+        id: String(index + 1),
+        name: `Community Photo ${index + 1}`,
+        image: { uri: url },
+        type: 'photo',
+      }))
+    : fallbackMediaItems;
 
   const photoCount = mediaItems.filter(item => item.type === 'photo').length;
   const videoCount = mediaItems.filter(item => item.type === 'video').length;
@@ -91,6 +81,10 @@ const EventPage = () => {
       try {
         const parsed = JSON.parse(eventData);
         setEvent(parsed);
+        // Set community photos from event's pictures array
+        if (parsed.pictures && parsed.pictures.length > 0) {
+          setCommunityPhotos(parsed.pictures);
+        }
         console.log("eventData", eventData);
       } catch (err) {
         console.error("Error parsing eventData:", err);
@@ -101,12 +95,29 @@ const EventPage = () => {
     }
   }, [eventData]);
 
+  // Handle uploading a community photo
+  const handleUploadPhoto = async () => {
+    if (!event?._id) {
+      Alert.alert('Error', 'Event not loaded yet');
+      return;
+    }
+    try {
+      const result = await pickAndUploadEventPhoto(event._id);
+      if (result && result.imageUrl) {
+        setCommunityPhotos(prev => [...prev, result.imageUrl]);
+        Alert.alert('Success', 'Photo uploaded!');
+      }
+    } catch (error) {
+      console.log('Error uploading photo:', error);
+      Alert.alert('Error', 'Failed to upload photo. Make sure Cloudinary is configured.');
+    }
+  };
+
   // Fetch user data (and event data) on mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // ------- CHANGE THE USER ID HERE --------- -> RIGHT NOW THE ID FOR AN ADMIN USER
-        const userId = "68199b9f06fa2e1c7bd3796b"; // Admin user ID
+        const userId = tempUserId;
         const response = await axios.get(`${url}/api/users/${userId}`);
         if (response.status === 200) {
           console.log("Fetched user:", response.data);
@@ -497,12 +508,17 @@ const deleteUserEvent = async () => {
               {`${photoCount} photos ${videoCount} videos`}
             </Text>
           </View>
-          <TouchableOpacity onPress={() =>  navigation.navigate({
-                                    name: 'CommunityPhotos',
-                                    params: { eventData: JSON.stringify(event), attendedEvents: JSON.stringify(attendedEvents), attendingEvents: JSON.stringify(attendingEvents)}, // converting the event object into a string json to pass it in
-                                })}> 
-              <Text style={styles.seeAllText}> See All {">"}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={handleUploadPhoto} style={{ marginRight: 10 }}>
+              <Ionicons name="add-circle-outline" size={24} color="#708238" />
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate({
+                                      name: 'CommunityPhotos',
+                                      params: { eventData: JSON.stringify(event), attendedEvents: JSON.stringify(attendedEvents), attendingEvents: JSON.stringify(attendingEvents)},
+                                  })}>
+                <Text style={styles.seeAllText}> See All {">"}</Text>
+              </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.photoGalleryContainer}>
           {mediaItems.map((item, index) => <Image key={index} source={item.image} style={styles.galleryPhoto}/>)}

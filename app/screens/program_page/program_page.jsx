@@ -128,7 +128,7 @@ const ProgramPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`${url}/api/users/68199b9f06fa2e1c7bd3796b`);
+        const response = await axios.get(`${url}/api/users/696ad149027e7290f0c97e1e`);
         if (response.status === 200) {
           setUser(response.data);
         } else {
@@ -136,47 +136,43 @@ const ProgramPage = () => {
         }
       } catch (error) {
         console.error('Error fetching user: ', error.message);
-      } finally {
-        setLoading(false);
       }
-      
+
     };
     const fetchEventsWithPictures = async () => {
+      // Skip fetching past events if program doesn't have any
+      if (!program || !program.pastEvents || program.pastEvents.length === 0) {
+        return;
+      }
+
       try {
-        // First fetch past events
-        const response = await axios.get(`${url}/api/programs/past-events/6789ed54a5e1c0261cefac4f`);
-        
-        if (response.status === 200) {
-          const eventIds = response.data;
-          setPastEvents(eventIds);
-          try{
-            const pictureResponses = await Promise.all(eventIds.map(id =>
-              axios.get(`${url}/api/events/${id}`)
-            ));
-            
-            setPastPictures(prevPictures => {
-              const updatedPictures = {...prevPictures};
-              pictureResponses.forEach((response, index) => {
-                const eventId = eventIds[index];
-                const pictures = response.data.pictures; 
-                updatedPictures[eventId] = [
-                  ...(updatedPictures[eventId] || []), 
-                  ...pictures
-                ];
-              });
-              return updatedPictures;
-            });
-          } catch(error){
-          console.error(error);
-        }
-        } 
+        // Fetch past events using the event IDs from program.pastEvents
+        const eventResponses = await Promise.all(
+          program.pastEvents.map(eventId =>
+            axios.get(`${url}/api/events/${eventId}`)
+          )
+        );
+
+        // Extract event data from responses
+        const events = eventResponses.map(res => res.data);
+        setPastEvents(events);
+
+        // Process pictures from events
+        const allPictures = {};
+        events.forEach(event => {
+          if (event.pictures && event.pictures.length > 0) {
+            allPictures[event._id] = event.pictures;
+          }
+        });
+
+        setPastPictures(allPictures);
       } catch (error) {
         console.error('Error fetching events:', error);
       }
     };
     fetchUser();
     fetchEventsWithPictures();
-  }, []);
+  }, [program]);
 
   // get event's pictures
 

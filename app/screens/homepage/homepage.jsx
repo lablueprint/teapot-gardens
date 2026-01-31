@@ -3,12 +3,9 @@ import { Text, View, StyleSheet, ScrollView, Image, Pressable, Dimensions, FlatL
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import Event from '@screens/program_page/event';
-import sample_logo from '@assets/sample.png';
-import pichu from '@assets/pichu.jpg';
-import pikachu from '@assets/pikachu.jpg';
-import raichu from '@assets/raichu.jpg';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '@app/context/AuthContext';
 
 import gardenBG    from '@assets/garden-assets/garden-background.png';
@@ -27,25 +24,64 @@ import plant_3_level_1 from '@assets/garden-assets/plant_3/plant_3_level_1.png';
 import plant_3_level_2 from '@assets/garden-assets/plant_3/plant_3_level_2.png';
 import plant_3_level_3 from '@assets/garden-assets/plant_3/plant_3_level_3.png';
 
-const url = 'https://7b82-2607-f010-2a7-1021-fcf6-2c41-ff88-8c09.ngrok-free.app'
+const url = 'http://localhost:4000'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
+// XP thresholds for each level
+const XP_THRESHOLDS = [0, 1000, 2000]; // Level 1: 0-999, Level 2: 1000-1999, Level 3: 2000+
+const MAX_LEVEL = 3;
+
+// Text position offsets for each level (distance from base position)
+// As the plant grows larger, move text higher (smaller top value)
+const TEXT_TOP_OFFSETS = [130, 110, 90]; // Level 1: 130, Level 2: 110, Level 3: 90
+
+// Helper function to calculate level info from XP
+const calculateLevelInfo = (xp) => {
+  let level = 1;
+  let currentLevelXP = 0;
+  let nextLevelXP = XP_THRESHOLDS[1];
+
+  if (xp >= XP_THRESHOLDS[2]) {
+    level = 3;
+    currentLevelXP = xp - XP_THRESHOLDS[2];
+    nextLevelXP = 1000; // For display purposes at max level
+  } else if (xp >= XP_THRESHOLDS[1]) {
+    level = 2;
+    currentLevelXP = xp - XP_THRESHOLDS[1];
+    nextLevelXP = XP_THRESHOLDS[2] - XP_THRESHOLDS[1];
+  } else {
+    level = 1;
+    currentLevelXP = xp;
+    nextLevelXP = XP_THRESHOLDS[1];
+  }
+
+  const progress = Math.min(currentLevelXP / nextLevelXP, 1);
+  const progressPercent = Math.round(progress * 100);
+
+  return {
+    level,
+    currentLevelXP,
+    nextLevelXP,
+    progress,
+    progressPercent,
+    isMaxLevel: level === MAX_LEVEL,
+  };
+};
+
 export default function Homepage() {
   const { user } = useContext(AuthContext);
+  const isFocused = useIsFocused();
 
-  // I added this - daniel 
-  const tempUserId = '6789f49f8e0a009647312c7a';
-  const tempEventId = '678f315b8d423da67c615e95';
+  // I added this - daniel
+  const tempUserId = '696ad149027e7290f0c97e1e';
   const userId = user?.userId || tempUserId;
 
   const [userData, setUserData] = useState(null);
   const [userAttendingEvents, setUserAttendingEvents] = useState([]);
   const [thisMonthEvents, setThisMonthEvents] = useState([]);
-  const [testEvent, setTestEvent] = useState(null);
 
   const [loading, setLoading] = useState(true);
-  let level_img = sample_logo;
   const [events, setEvents] = useState([]);
   const today = new Date();
   const currentYear = parseInt(today.getFullYear());
@@ -71,17 +107,17 @@ export default function Homepage() {
   const navigation = useNavigation();
   
   useEffect(() => {
+    if (!isFocused) return;
+
     const fetchUserData = async () => {
       if (!userId) {
         console.log("Waiting for userId...");
         return;
       }
       try {
-        // fetching user data here   
+        // fetching user data here
         const userResponse = await axios.get(`${url}/api/users/${tempUserId}`);
-        const testResponse = await axios.get(`${url}/api/events/${tempEventId}`);
-        setTestEvent(testResponse);
-  
+
         if (userResponse.status === 200) {
           
           setUserData(userResponse.data);
@@ -164,22 +200,22 @@ export default function Homepage() {
     // }  
   
     fetchUserData();
-  }, []);
+  }, [isFocused]);
   useEffect (() => {
     if (userAttendingEvents.length > 0) {
       populateEvents();
     }
   }, [userAttendingEvents, userId]);
 
-  if (userData && userData.tamagatchiXP !== undefined) {
-    if (userData.tamagatchiXP < 1000) {
-      level_img = pichu;
-    } else if (userData.tamagatchiXP <= 2000) {
-      level_img = pikachu;
-    } else {
-      level_img = raichu;
-    }
-  }
+  // Calculate level info from user XP
+  const levelInfo = calculateLevelInfo(userData?.tamagatchiXP || 0);
+
+  // Plant images by level (using plant_1 as default)
+  const plantImages = [plant_1_level_1, plant_1_level_2, plant_1_level_3];
+  const currentPlantImage = plantImages[levelInfo.level - 1] || plant_1_level_1;
+
+  // Dynamic text position based on level
+  const textTopPosition = TEXT_TOP_OFFSETS[levelInfo.level - 1] || TEXT_TOP_OFFSETS[0];
 
   const populateEvents = async () => {
     try {
@@ -209,15 +245,17 @@ return (
         <Image source={gardenBG} style={styles.croppedPetImg} resizeMode="cover" />
 
         {/* ---------- Flower Text ---------- */}
-        <Text style={styles.levelAbove}>Grey is looking good!</Text>
+        <Text style={[styles.levelAbove, { top: textTopPosition }]}>{userData?.tamagatchiName || 'Your plant'} is looking good!</Text>
         {/* ---------- Centered Flower Image ---------- */}
           <Image
-            source={plant_1_level_1} // ⬅️ use the flower image path
+            source={currentPlantImage}
             style={styles.centeredFlower}
             resizeMode="contain"
           />
         {/* ---------- Flower Level  Text ---------- */}
-          <Text style={styles.levelBelow}>LVL. 1</Text>
+          <Text style={styles.levelBelow}>
+            LVL. {levelInfo.level}/{MAX_LEVEL} • {levelInfo.currentLevelXP}/{levelInfo.nextLevelXP} XP
+          </Text>
       </View>
         {/* ---------- Upcoming Events ---------- */}
         <Text style={styles.sectionHdr}>My Upcoming Events</Text>
@@ -343,9 +381,8 @@ petCard: {
   },
   levelAbove: {
   position: 'absolute',
-  top: 130, // same pattern
-  left: 135, // same pattern
-  color: '#000',        // or white if needed
+  left: 135,
+  color: '#000',
   fontSize: 14,
   fontWeight: '600',
   zIndex: 3,
