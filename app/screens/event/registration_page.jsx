@@ -6,7 +6,7 @@ import axios from 'axios';
 import QRCode from "react-native-qrcode-svg";
 
 const RegistrationPage = () => {
-    const tempUserId = '6789f49f8e0a009647312c7a'
+    const tempUserId = '696ad149027e7290f0c97e1e'
     const [user, setUser] = useState({});
 
     useEffect(() => {

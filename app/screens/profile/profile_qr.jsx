@@ -8,7 +8,7 @@ import QRCode from "react-native-qrcode-svg";
 const url = 'https://c753-2607-f010-2a7-103f-d156-853f-9990-8831.ngrok-free.app'
 
 const ProfileQR = () => {
-    const tempUserId = '6789f49f8e0a009647312c7a'
+    const tempUserId = '696ad149027e7290f0c97e1e'
     const [user, setUser] = useState({});
 
     useEffect(() => {

@@ -8,13 +8,15 @@ const {
     updateEventUsers,
     getAttendees,
     likeEvent,
-    getAttendeeStats
+    getAttendeeStats,
+    exportEventData
 } = require('../controllers/eventController');
 
 const router = express.Router();
 
 // specific routes
 router.get('/:eventId/attendee-stats', getAttendeeStats);
+router.get('/:eventId/export', exportEventData);
 router.get('/attendees/:id', getAttendees);
 router.patch('/like/:id', likeEvent);
 

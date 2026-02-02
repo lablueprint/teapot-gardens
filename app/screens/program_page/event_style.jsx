@@ -6,13 +6,13 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 20,
         overflow: 'hidden',
-        marginRight: 15, 
-        height: '200',
-        width: '350',
+        marginRight: 15,
+        height: 200,
+        width: 350,
         backgroundColor: '#D0D4C2',
     },
     eventInfoContainer: {
-        height: '200',
+        height: 200,
         display: 'flex',
         flexDirection: 'row',
     },
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
     listText: {
         display: 'flex',
         justifyContent: 'space-between',
-        padding: '20',
-        width: '60%', 
+        padding: 20,
+        width: '60%',
     },
     listName: {
         fontFamily: 'IMFell',

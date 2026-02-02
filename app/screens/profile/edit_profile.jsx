@@ -11,7 +11,7 @@ import { useFonts } from 'expo-font';
 // import planticon from '../../assets/planticon.png';
 
 const url = 'http://localhost:4000'
-const tempUserId = '6789f49f8e0a009647312c7a'
+const tempUserId = '696ad149027e7290f0c97e1e'
 
 const EditProfile = () => {
 

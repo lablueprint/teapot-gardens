@@ -1,6 +1,6 @@
 
 const mongoose = require("mongoose");
-const bcrypt = require('react-native-bcrypt');
+const bcrypt = require('bcryptjs');
 const SALT_WORK_FACTOR = 10;
 
 const uniqueValidator = require('mongoose-unique-validator');
@@ -54,6 +54,10 @@ const userSchema = new Schema(
         tamagatchiLevel: {
             type: Number,
             default: 1,
+        },
+        tamagatchiName: {
+            type: String,
+            default: "Gary",
         },
         followedPrograms: {
             type: [String],

@@ -27,6 +27,10 @@ const programSchema = new Schema({
     },
     host: {
         type: String
+    },
+    coverImage: {
+        type: String,
+        default: ''
     }
 }, { timestamps: true })
 

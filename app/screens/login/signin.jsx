@@ -28,17 +28,28 @@ const SignIn = () => {
       Alert.alert("Error", "Please fill out all the fields.");
       return false;
     } else {
-      Alert.alert("Success", "Form submitted successfully!");
-
-      const user = { name: name, email: email, password: password, dob: birthday, username: username }
       try {
-        const response = await axios.post('https://5253-2607-f010-2a7-1021-9515-5e07-f324-7904.ngrok-free.app/api/users/login', { email1: email, password: password });
-        console.log(response.data)
+        const response = await axios.post('http://localhost:4000/api/users/login', { email1: email, password: password });
+        console.log('Login success:', response.data);
+        Alert.alert("Success", "Logged in successfully!");
         return true;
       }
       catch (error) {
-        console.log("error", error)
-        console.log(error.response.data)
+        console.log("Login error:", error);
+
+        // Show user-friendly error message
+        if (error.response) {
+          // Server responded with an error
+          const errorMessage = error.response.data?.error || "Login failed. Please try again.";
+          Alert.alert("Login Failed", errorMessage);
+        } else if (error.request) {
+          // Request was made but no response received
+          Alert.alert("Connection Error", "Could not connect to server. Please check if the backend is running.");
+        } else {
+          // Something else happened
+          Alert.alert("Error", "An error occurred while submitting the form.");
+        }
+        return false;
       }
     }
   };

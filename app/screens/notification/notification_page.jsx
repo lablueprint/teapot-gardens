@@ -13,7 +13,7 @@ export default function NotificationPage() {
     const [user, setUser] = useState({});
     const [userNotifs, setUserNotifs] = useState([]);
     
-    const tempUserId = '6789f49f8e0a009647312c7a';
+    const tempUserId = '696ad149027e7290f0c97e1e';
     const getUser = async () => {
       try {
           const response = await axios.get(`${url}/api/users/${tempUserId}`);
